@@ -17,7 +17,10 @@ class MyLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+      constraints: BoxConstraints(),
+      child: Center(
         child: Container(
           color: Colors.white,
           child: Padding(
@@ -74,10 +77,9 @@ class MyLogin extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )));
   }
 }
-
 
 class LinkText extends StatelessWidget {
   String text;
