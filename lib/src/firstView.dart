@@ -49,12 +49,15 @@ class MyLogin extends StatelessWidget {
                       labelStyle: TextStyle(
                           fontFamily: 'Monserrat',
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey),
+                          color: Colors.purple),
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.purple))),
                   obscureText: true,
                   controller: passFieldLoginController,
                   maxLength: 8,
+                  onChanged: (text){
+                    validate();
+                  },
                 ),
                 SizedBox(height: 40.0),
                 LoginButton(
@@ -78,6 +81,15 @@ class MyLogin extends StatelessWidget {
         ),
       ),
     )));
+  }
+}
+
+void validate(){
+  var length = passFieldLoginController.text;
+  if(length.length >=8 && !length.contains(RegExp(r'\W')) && RegExp(r'\d+\w*\d+').hasMatch(length)){
+    print("VALIDO");
+  }else{
+    print("NO VALIDO");
   }
 }
 
@@ -109,6 +121,7 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int count;
     return ButtonTheme(
         minWidth: 50.0,
         height: 50.0,
@@ -123,6 +136,7 @@ class LoginButton extends StatelessWidget {
             children: <Widget>[text],
           ),
           onPressed: () {
+            count = count+1;
             data = '{ "email": "' +
                 textFieldLoginController.text +
                 '","password": "' +
