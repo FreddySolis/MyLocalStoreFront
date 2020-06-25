@@ -3,29 +3,47 @@ import 'package:login_app/src/widgets/textField.dart';
 
 
 class MyCalendar extends StatefulWidget {
-  MyCalendar({Key key}) : super(key: key);
+  MyCalendar( {Key key,this.controller,this.name}) : super(key: key) ;
+
+  final TextEditingController controller;
+  final String name;
+
 
   @override
   _MyCalendarState createState() => _MyCalendarState();
 }
 
-
-
 class _MyCalendarState extends State<MyCalendar> {
-    final TextEditingController controller =
-      TextEditingController();
-
   void onPressButton() {
     setState(() {});
   }
 
-  void setDate(DateTime dateTime){
-    controller.text = dateTime.year.toString();
+  void setDate(DateTime dateTime) {
+    String month = '0';
+    if (dateTime.month < 10) {
+      month = '0' + dateTime.month.toString();
+    } else {
+      month = dateTime.month.toString();
+    }
+    widget.controller.text =
+        dateTime.year.toString() + '-' + month + '-' + dateTime.day.toString();
   }
 
   void showAlert() {
     AlertDialog dialog = AlertDialog(
-      content: CalendarDatePicker(initialDate: DateTime.now(), firstDate: DateTime(2020, 06), lastDate: DateTime(2101), onDateChanged: setDate,),
+      content: CalendarDatePicker(
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2020, 06),
+        lastDate: DateTime(2101),
+        onDateChanged: setDate,
+      ),
+      actions: <Widget>[
+        FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Aceptar')),
+      ],
     );
     showDialog(
         context: context,
@@ -33,7 +51,7 @@ class _MyCalendarState extends State<MyCalendar> {
           return dialog;
         });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -46,17 +64,19 @@ class _MyCalendarState extends State<MyCalendar> {
             children: <Widget>[
               Container(
                 child: TextFields(
-                  text: 'Fecha',
+                  text: widget.name,
                   style: placeHolderStyle,
-                  controller: controller,
+                  controller: widget.controller,
                   obscureText: false,
-
                 ),
               ),
             ],
           ),
         ),
-        RaisedButton(onPressed: showAlert, child: Icon(Icons.control_point), )
+        RaisedButton(
+          onPressed: showAlert,
+          child: Icon(Icons.control_point),
+        )
       ],
     );
   }
