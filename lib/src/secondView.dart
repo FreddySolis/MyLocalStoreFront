@@ -28,17 +28,17 @@ void registro() {
   if (passController.text == passConfirmController.text) {
     String data = '{ "name": "' +
         nameController.text +
-        '","lastName":"' +
+        '","last_name":"' +
         lastNameController.text +
         '","phone":"' +
         phoneNumberController.text +
         '","email":"' +
         emailController.text +
-        '","date":"' +
+        '","birthday":"' +
         calendarController.text +
         '","password":"' +
         passController.text +
-        '"';
+        '","password_confirmation":"' + passConfirmController.text + '"} ';
         print(data);
     Api.login(data).then((sucess) {
       if (sucess) {
