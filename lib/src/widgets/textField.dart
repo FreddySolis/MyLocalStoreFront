@@ -23,6 +23,7 @@ class TextFields extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(hintText: text, hintStyle: placeHolderStyle),
       controller: controller,
+      
     );
   }
 }

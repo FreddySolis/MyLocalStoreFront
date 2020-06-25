@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/src/widgets/textField.dart';
+//import 'package:login_app/src/widgets/calendar.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
+
+DateTime date;
+
+final TextEditingController calendarController = TextEditingController();
+
+void setDate(DateTime dateTime) {
+  date = dateTime;
+
+  print(date);
+}
 
 class SecondView extends StatelessWidget {
   final TextEditingController textFieldData1Controller =
@@ -54,13 +65,11 @@ class SecondView extends StatelessWidget {
                     ),
                     Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
                     Container(
-                        padding: EdgeInsets.only(left: marginDistance),
-                        child: TextFields(
-                          text: 'Fecha de nacimiento',
-                          style: placeHolderStyle,
-                          controller: textFieldData5Controller,
-                          obscureText: false,
-                        )),
+                      padding: EdgeInsets.only(left: marginDistance),
+                      child: MyCalendar(),
+
+                      //CalendarDatePicker(initialDate: DateTime.now(), firstDate: DateTime(2020, 06), lastDate: DateTime(2101), onDateChanged: setDate,)
+                    ),
                     Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
                     RowWithTextFields(
                       nombre1: 'Contraseña',
@@ -137,6 +146,79 @@ class RowWithTextFields extends StatelessWidget {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+////
+class MyCalendar extends StatefulWidget {
+  MyCalendar({Key key}) : super(key: key);
+
+  @override
+  _MyCalendarState createState() => _MyCalendarState();
+}
+
+class _MyCalendarState extends State<MyCalendar> {
+  void onPressButton() {
+    setState(() {});
+  }
+
+  void setDate(DateTime dateTime) {
+    String month = '0';
+    if (dateTime.month < 10) {
+      month = '0' + dateTime.month.toString();
+    } else {
+      month = dateTime.month.toString();
+    }
+    calendarController.text =
+        dateTime.year.toString() + '-' + month + '-' + dateTime.day.toString();
+  }
+
+  void showAlert() {
+    AlertDialog dialog = AlertDialog(
+      content: CalendarDatePicker(
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2020, 06),
+        lastDate: DateTime(2101),
+        onDateChanged: setDate,
+      ),
+      actions: <Widget>[
+        FlatButton(onPressed: () {}, child: Text('Aceptar')),
+      ],
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                child: TextFields(
+                  text: 'Fecha',
+                  style: placeHolderStyle,
+                  controller: calendarController,
+                  obscureText: false,
+                ),
+              ),
+            ],
+          ),
+        ),
+        RaisedButton(
+          onPressed: showAlert,
+          child: Icon(Icons.control_point),
+        )
       ],
     );
   }
