@@ -39,7 +39,7 @@ class SecondView extends StatelessWidget {
           passController.text +
           '","password_confirmation":"' +
           passConfirmController.text +
-          '"} ';
+          '","genre":"m","rol_id":"1" } ';
       print(data);
       Api.login(data).then((sucess) {
         if (sucess) {
