@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/src/widgets/textField.dart';
 //import 'package:login_app/src/widgets/calendar.dart';
+import 'package:login_app/Api/Api.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
@@ -8,6 +9,12 @@ double marginDistance = 20;
 DateTime date;
 
 final TextEditingController calendarController = TextEditingController();
+final TextEditingController nameController = TextEditingController();
+final TextEditingController lastNameController = TextEditingController();
+final TextEditingController phoneNumberController = TextEditingController();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passController = TextEditingController();
+final TextEditingController passConfirmController = TextEditingController();
 
 void setDate(DateTime dateTime) {
   date = dateTime;
@@ -16,20 +23,35 @@ void setDate(DateTime dateTime) {
 }
 
 class SecondView extends StatelessWidget {
-  final TextEditingController textFieldData1Controller =
-      TextEditingController();
-  final TextEditingController textFieldData2Controller =
-      TextEditingController();
-  final TextEditingController textFieldData3Controller =
-      TextEditingController();
-  final TextEditingController textFieldData4Controller =
-      TextEditingController();
-  final TextEditingController textFieldData5Controller =
-      TextEditingController();
-  final TextEditingController textFieldData6Controller =
-      TextEditingController();
-  final TextEditingController textFieldData7Controller =
-      TextEditingController();
+
+void registro() {
+  if (passController.text == passConfirmController.text) {
+    String data = '{ "name": "' +
+        nameController.text +
+        '","lastName":"' +
+        lastNameController.text +
+        '","phone":"' +
+        phoneNumberController.text +
+        '","email":"' +
+        emailController.text +
+        '","date":"' +
+        calendarController.text +
+        '","password":"' +
+        passController.text +
+        '"';
+        print(data);
+    Api.login(data).then((sucess) {
+      if (sucess) {
+      } else {
+
+      }
+    });
+  } else {
+    
+
+
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +71,8 @@ class SecondView extends StatelessWidget {
                     RowWithTextFields(
                       nombre1: 'Nombre',
                       nombre2: 'Apellido',
-                      controller1: textFieldData1Controller,
-                      controller2: textFieldData2Controller,
+                      controller1: nameController,
+                      controller2: lastNameController,
                       pass1: false,
                       pass2: false,
                     ),
@@ -58,8 +80,8 @@ class SecondView extends StatelessWidget {
                     RowWithTextFields(
                       nombre1: 'Telefono',
                       nombre2: 'Correo Electronico',
-                      controller1: textFieldData3Controller,
-                      controller2: textFieldData4Controller,
+                      controller1: phoneNumberController,
+                      controller2: emailController,
                       pass1: false,
                       pass2: false,
                     ),
@@ -74,15 +96,15 @@ class SecondView extends StatelessWidget {
                     RowWithTextFields(
                       nombre1: 'Contraseña',
                       nombre2: 'confirmar contrase',
-                      controller1: textFieldData6Controller,
-                      controller2: textFieldData7Controller,
+                      controller1: passController,
+                      controller2: passConfirmController,
                       pass1: true,
                       pass2: true,
                     ),
                     Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
                     Center(
                       child: RaisedButton(
-                        onPressed: null,
+                        onPressed: registro,
                         child: Text('Registrate'),
                       ),
                     )
@@ -92,6 +114,7 @@ class SecondView extends StatelessWidget {
     );
   }
 }
+
 
 class RowWithTextFields extends StatelessWidget {
   String nombre1;
@@ -184,7 +207,11 @@ class _MyCalendarState extends State<MyCalendar> {
         onDateChanged: setDate,
       ),
       actions: <Widget>[
-        FlatButton(onPressed: () {Navigator.pop(context);}, child: Text('Aceptar')),
+        FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Aceptar')),
       ],
     );
     showDialog(
