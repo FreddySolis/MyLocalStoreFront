@@ -184,7 +184,7 @@ class _MyCalendarState extends State<MyCalendar> {
         onDateChanged: setDate,
       ),
       actions: <Widget>[
-        FlatButton(onPressed: () {}, child: Text('Aceptar')),
+        FlatButton(onPressed: () {Navigator.pop(context);}, child: Text('Aceptar')),
       ],
     );
     showDialog(
