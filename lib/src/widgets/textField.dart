@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Color color2 = Colors.grey;
+Color color2 = Colors.purple[800];
 
 TextStyle placeHolderStyle = TextStyle(
-  
-  color: color2,
-  fontSize: 15,
+  fontFamily: 'Monserrat',
+  fontWeight:  FontWeight.bold,
+  color: Colors.purple
 );
 
 class TextFields extends StatelessWidget {
@@ -19,11 +19,16 @@ class TextFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat'),
       obscureText: obscureText,
-      decoration: InputDecoration(hintText: text, hintStyle: placeHolderStyle),
       controller: controller,
-      
+      decoration: InputDecoration(
+        labelText: text,
+        labelStyle:placeHolderStyle,
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.purple)
+        )
+      ),
     );
   }
 }

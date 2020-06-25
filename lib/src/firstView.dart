@@ -7,12 +7,6 @@ import 'package:login_app/src/widgets/textField.dart';
 Color color1 = Colors.green;
 Color color2 = Colors.grey;
 
-//estilos
-TextStyle placeHolderStyle = TextStyle(
-  color: color2,
-  fontSize: 15,
-);
-
 //controllers
 final TextEditingController textFieldLoginController = TextEditingController();
 final TextEditingController passFieldLoginController = TextEditingController();
@@ -23,96 +17,67 @@ class MyLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-      constraints: BoxConstraints(),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(30, 50, 20, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
-              child: Text.rich(TextSpan(
-                  text: 'Hello\nThere',
-                  style: TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
+      body: Center(
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 155.0,
+                  child: Image.network(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTVD7AIlcufvAefTV03juE0XbIEcld5IKxNHg&usqp=CAU',
                   ),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: '.',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: color1,
-                            fontSize: 60))
-                  ])),
+                ),
+                SizedBox(height: 20.0),
+                TextFields(
+                  text: 'Email',
+                  style: placeHolderStyle,
+                  controller: textFieldLoginController,
+                  obscureText: false,
+                ),
+                SizedBox(height: 20.0),
+                TextField(
+                  decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      labelStyle: TextStyle(
+                          fontFamily: 'Monserrat',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.purple))),
+                  obscureText: true,
+                  controller: passFieldLoginController,
+                  maxLength: 8,
+                ),
+                SizedBox(height: 40.0),
+                LoginButton(
+                  text: Text(
+                    'Ingresar',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.purple[200],
+                ),
+                SizedBox(height: 15.0),
+                RegisterButton(
+                  text: Text(
+                    'Registrar',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Colors.purple[300],
+                ),
+              ],
             ),
-            TextFields(
-              text: 'Email',
-              style: placeHolderStyle,
-              controller: textFieldLoginController,
-              obscureText: false,
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-            TextFields(
-                text: 'Password',
-                style: placeHolderStyle,
-                controller: passFieldLoginController,
-                obscureText: true),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-            Container(
-              child: NextPageButton(text: Text("ir a registro"), color: color1,),
-              padding: EdgeInsets.fromLTRB(195, 0, 0, 20),
-            ),
-            LoginButton(
-              text: Text(
-                'LOGIN',
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.green,
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-            RegisterButton(
-              text: Text('Log in with Facebook'),
-              color: Colors.white,
-            ),
-            Container(
-                padding: EdgeInsets.fromLTRB(90, 15, 0, 0),
-                child: Row(
-                  children: <Widget>[
-                    Text('New to Spotify? '),
-                    LinkText(
-                      text: 'Register',
-                      fontSize: 13,
-                    )
-                  ],
-                ))
-          ],
+          ),
         ),
       ),
-    )));
+    );
   }
 }
 
-/*class TextFields extends StatelessWidget {
-  String text;
-  TextStyle style;
-  TextEditingController controller;
-  bool obscureText;
-
-  TextFields({this.text, this.style, this.controller, this.obscureText});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-      obscureText: obscureText,
-      decoration: InputDecoration(hintText: text, hintStyle: placeHolderStyle),
-      controller: controller,
-    );
-  }
-}*/
 
 class LinkText extends StatelessWidget {
   String text;
@@ -131,26 +96,6 @@ class LinkText extends StatelessWidget {
           fontWeight: FontWeight.bold),
     );
   }
-  
-}
-
-class NextPageButton extends StatelessWidget{
-  Text text;
-  Color color;
-
-  NextPageButton({this.text,this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return RaisedButton(
-      child: Text("Registro"),
-      onPressed: (){
-        Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SecondView()));
-        }
-      );
-  }
-
 }
 
 class LoginButton extends StatelessWidget {
@@ -222,21 +167,18 @@ class RegisterButton extends StatelessWidget {
         height: 50.0,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25.0),
-              side: BorderSide(color: Colors.black, width: 2)),
-          padding: EdgeInsets.fromLTRB(75, 0, 0, 0),
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
           color: color,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'f  ',
-                style: TextStyle(fontSize: 25),
-              ),
-              text
-            ],
+            children: <Widget>[text],
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SecondView()));
+          },
         ));
   }
 }

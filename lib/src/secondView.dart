@@ -23,42 +23,37 @@ void setDate(DateTime dateTime) {
 }
 
 class SecondView extends StatelessWidget {
-
-void registro() {
-  if (passController.text == passConfirmController.text) {
-    String data = '{ "name": "' +
-        nameController.text +
-        '","last_name":"' +
-        lastNameController.text +
-        '","phone":"' +
-        phoneNumberController.text +
-        '","email":"' +
-        emailController.text +
-        '","birthday":"' +
-        calendarController.text +
-        '","password":"' +
-        passController.text +
-        '","password_confirmation":"' + passConfirmController.text + '"} ';
-        print(data);
-    Api.login(data).then((sucess) {
-      if (sucess) {
-      } else {
-
-      }
-    });
-  } else {
-    
-
-
+  void registro() {
+    if (passController.text == passConfirmController.text) {
+      String data = '{ "name": "' +
+          nameController.text +
+          '","last_name":"' +
+          lastNameController.text +
+          '","phone":"' +
+          phoneNumberController.text +
+          '","email":"' +
+          emailController.text +
+          '","birthday":"' +
+          calendarController.text +
+          '","password":"' +
+          passController.text +
+          '","password_confirmation":"' +
+          passConfirmController.text +
+          '"} ';
+      print(data);
+      Api.login(data).then((sucess) {
+        if (sucess) {
+        } else {}
+      });
+    } else {}
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Register'),
+        title: Text('Registro'),
       ),
       body: SingleChildScrollView(
           child: ConstrainedBox(
@@ -103,18 +98,30 @@ void registro() {
                     ),
                     Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
                     Center(
-                      child: RaisedButton(
-                        onPressed: registro,
-                        child: Text('Registrate'),
+                        child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
                       ),
-                    )
+                      padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
+                      color: Colors.purple[200],
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[Text("Confirmar",style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Monserrat'
+                          ),)],
+                      ),
+                      onPressed: () {
+                        registro();
+                      },
+                    ))
                   ],
                 ),
               ))),
     );
   }
 }
-
 
 class RowWithTextFields extends StatelessWidget {
   String nombre1;
