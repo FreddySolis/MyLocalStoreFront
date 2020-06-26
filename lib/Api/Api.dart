@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 
 
 class URLS{
-  static const String BASE_URL = 'https://62bb61ac1bb5.ngrok.io';
+  static const String BASE_URL = 'https://reqres.in/api';
 }
 
 class Api {

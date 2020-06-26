@@ -8,20 +8,18 @@ TextStyle placeHolderStyle = TextStyle(
   color: Colors.purple
 );
 
-class TextFields extends StatelessWidget {
+class TextFormFields extends StatelessWidget {
   String text;
   TextStyle style;
-  TextEditingController controller;
   bool obscureText;
 
-  TextFields({this.text, this.style, this.controller, this.obscureText});
+  TextFormFields({this.text, this.style, this.obscureText});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat'),
       obscureText: obscureText,
-      controller: controller,
       decoration: InputDecoration(
         labelText: text,
         labelStyle:placeHolderStyle,
@@ -29,6 +27,7 @@ class TextFields extends StatelessWidget {
           borderSide: BorderSide(color: Colors.purple)
         )
       ),
+      
     );
   }
 }

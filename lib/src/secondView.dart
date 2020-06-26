@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:login_app/src/widgets/textField.dart';
+
 import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
-
 DateTime date;
 
+
 final TextEditingController calendarController = TextEditingController();
-final TextEditingController nameController = TextEditingController();
-final TextEditingController lastNameController = TextEditingController();
-final TextEditingController phoneNumberController = TextEditingController();
-final TextEditingController emailController = TextEditingController();
-final TextEditingController passController = TextEditingController();
-final TextEditingController passConfirmController = TextEditingController();
 
 void setDate(DateTime dateTime) {
   date = dateTime;
@@ -22,32 +16,16 @@ void setDate(DateTime dateTime) {
   print(date);
 }
 
-class SecondView extends StatelessWidget {
-  void registro() {
-    if (passController.text == passConfirmController.text) {
-      String data = '{ "name": "' +
-          nameController.text +
-          '","last_name":"' +
-          lastNameController.text +
-          '","phone":"' +
-          phoneNumberController.text +
-          '","email":"' +
-          emailController.text +
-          '","birthday":"' +
-          calendarController.text +
-          '","password":"' +
-          passController.text +
-          '","password_confirmation":"' +
-          passConfirmController.text +
-          '","genre":"m","rol_id":1 } ';
-      print(data);
-      ApiR.login(data).then((sucess) {
-        if (sucess) {
-        } else {}
-      });
-    } else {}
-  }
+class SecondView extends StatefulWidget {
+  SecondView({Key key}) : super(key: key);
 
+  @override
+  _SecondViewState createState() => _SecondViewState();
+}
+
+class _SecondViewState extends State<SecondView> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+var mapData = new Map<String,String>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,89 +37,77 @@ class SecondView extends StatelessWidget {
           child: ConstrainedBox(
               constraints: BoxConstraints(),
               child: Container(
-                padding: EdgeInsets.fromLTRB(marginDistance, 60, 30, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    RowWithTextFields(
-                      nombre1: 'Nombre',
-                      nombre2: 'Apellido',
-                      controller1: nameController,
-                      controller2: lastNameController,
-                      pass1: false,
-                      pass2: false,
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
-                    RowWithTextFields(
-                      nombre1: 'Telefono',
-                      nombre2: 'Correo Electronico',
-                      controller1: phoneNumberController,
-                      controller2: emailController,
-                      pass1: false,
-                      pass2: false,
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
-                    Container(
-                      padding: EdgeInsets.only(left: marginDistance),
-                      child: MyCalendar(controller:calendarController ,name: 'Cumpleaños',),
+                  margin: EdgeInsets.all(marginDistance),
+                  padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        rowNameAndLastName(
+                            'Nombre', 'Apellido', 'name', 'last_name'),
+                        Padding(
+                            padding: EdgeInsets.only(bottom: bottomDistance)),
+                        rowPhoneAndEmail(
+                            'Telefono', 'Correo Electronico', 'phone', 'email'),
+                        Padding(
+                            padding: EdgeInsets.only(bottom: bottomDistance)),
+                        Container(
+                          padding: EdgeInsets.only(left: marginDistance),
+                          child: MyCalendar(
+                            controller: calendarController,
+                            name: 'Cumpleaños',
+                          ),
 
-                      //CalendarDatePicker(initialDate: DateTime.now(), firstDate: DateTime(2020, 06), lastDate: DateTime(2101), onDateChanged: setDate,)
+                          //CalendarDatePicker(initialDate: DateTime.now(), firstDate: DateTime(2020, 06), lastDate: DateTime(2101), onDateChanged: setDate,)
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(bottom: bottomDistance)),
+                        rowPasswordAndConfirmPassword(
+                            'Contraseña',
+                            'confirmar contrase',
+                            'password',
+                            'password_confirmation'),
+                        Padding(
+                            padding: EdgeInsets.only(bottom: bottomDistance)),
+                        Center(child: submidButton())
+                      ],
                     ),
-                    Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
-                    RowWithTextFields(
-                      nombre1: 'Contraseña',
-                      nombre2: 'confirmar contrase',
-                      controller1: passController,
-                      controller2: passConfirmController,
-                      pass1: true,
-                      pass2: true,
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
-                    Center(
-                        child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
-                      color: Colors.purple[200],
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[Text("Confirmar",style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Monserrat'
-                          ),)],
-                      ),
-                      onPressed: () {
-                        registro();
-                      },
-                    ))
-                  ],
-                ),
-              ))),
+                  )))),
     );
   }
-}
 
-class RowWithTextFields extends StatelessWidget {
-  String nombre1;
-  String nombre2;
-  bool pass1;
-  bool pass2;
-  TextEditingController controller1;
-  TextEditingController controller2;
+  Widget submidButton() {
+    return RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25.0),
+      ),
+      padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
+      color: Colors.purple[200],
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "Confirmar",
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Monserrat'),
+          )
+        ],
+      ),
+      onPressed: () {
+        if(formKey.currentState.validate()){
+          formKey.currentState.save();
+          mapData['birtday'] = calendarController.text;
+          print(mapData);
+        }
+      },
+    );
+  }
 
-  RowWithTextFields(
-      {this.nombre1,
-      this.nombre2,
-      this.controller1,
-      this.controller2,
-      this.pass1,
-      this.pass2});
-
-
-  @override
-  Widget build(BuildContext context) {
+  Widget rowPasswordAndConfirmPassword(
+      String nombre1, String nombre2, String jsonName, String jsonName2) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -150,14 +116,7 @@ class RowWithTextFields extends StatelessWidget {
         Expanded(
           child: Column(
             children: <Widget>[
-              Container(
-                child: TextFields(
-                  text: nombre1,
-                  style: placeHolderStyle,
-                  controller: controller1,
-                  obscureText: pass1,
-                ),
-              ),
+              Container(child: passField(nombre1, jsonName)),
             ],
           ),
         ),
@@ -166,21 +125,164 @@ class RowWithTextFields extends StatelessWidget {
           // wrap your Column in Expanded
           child: Column(
             children: <Widget>[
-              Container(
-                child: TextFields(
-                  text: nombre2,
-                  style: placeHolderStyle,
-                  controller: controller2,
-                  obscureText: pass2,
-                ),
-              ),
+              Container(child: passField(nombre2, jsonName2)),
             ],
           ),
         ),
       ],
     );
   }
+
+  Widget rowPhoneAndEmail(
+      String nombre1, String nombre2, String jsonName, String jsonName2) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(padding: EdgeInsets.fromLTRB(marginDistance, 0, 0, 0)),
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Container(child: phoneField(nombre1, jsonName)),
+            ],
+          ),
+        ),
+        Padding(padding: EdgeInsets.fromLTRB(0, 0, marginDistance, 0)),
+        Expanded(
+          // wrap your Column in Expanded
+          child: Column(
+            children: <Widget>[
+              Container(child: emailField(nombre2, jsonName2)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget rowNameAndLastName(
+      String nombre1, String nombre2, String jsonName, String jsonName2) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(padding: EdgeInsets.fromLTRB(marginDistance, 0, 0, 0)),
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Container(child: nameField(nombre1, jsonName)),
+            ],
+          ),
+        ),
+        Padding(padding: EdgeInsets.fromLTRB(0, 0, marginDistance, 0)),
+        Expanded(
+          // wrap your Column in Expanded
+          child: Column(
+            children: <Widget>[
+              Container(child: nameField(nombre2, jsonName2)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget emailField(String name, String mapName) {
+    return TextFormField(
+      keyboardType: TextInputType.emailAddress,
+      style: textStyle,
+      obscureText: false,
+      decoration: InputDecoration(
+          labelText: name,
+          labelStyle: placeHolderStyle,
+          focusedBorder: underlineInputBorder),
+      validator: (value) {
+        if (RegExp('.+[@].+').hasMatch(value)) {
+          return null;
+        } else {
+          return '$name invalido';
+        }
+      },
+      onSaved: (String value) {
+        mapData[mapName] = value;
+      },
+    );
+  }
+
+  Widget passField(String name, String mapName) {
+    return TextFormField(
+      style: textStyle,
+      obscureText: true,
+      decoration: InputDecoration(
+          labelText: name,
+          labelStyle: placeHolderStyle,
+          focusedBorder: underlineInputBorder),
+      validator: (value) {
+        print(value);
+        if (RegExp('^.*[!\$@#%^&*(),.?":{}<>].*').hasMatch(value) &&
+            value.length > 7) {
+          return null;
+        } else {
+          return '$name invalida';
+        }
+      },
+      onSaved: (String value) {
+        mapData[mapName] = value;
+      },
+    );
+  }
+
+  Widget phoneField(String name, String mapName) {
+    return TextFormField(
+      keyboardType: TextInputType.phone,
+      style: textStyle,
+      obscureText: false,
+      decoration: InputDecoration(
+          labelText: name,
+          labelStyle: placeHolderStyle,
+          focusedBorder: underlineInputBorder),
+      validator: (value) {
+        if (RegExp('[0-9]{10}').hasMatch(value)) {
+          return null;
+        } else {
+          return '$name invalido';
+        }
+      },
+      onSaved: (String value) {
+        mapData[mapName] = value;
+      },
+    );
+  }
+
+  Widget nameField(String name, String mapName) {
+    return TextFormField(
+      style: textStyle,
+      obscureText: false,
+      decoration: InputDecoration(
+          labelText: name,
+          labelStyle: placeHolderStyle,
+          focusedBorder: underlineInputBorder),
+      validator: (value) {
+        if (RegExp('[a-zA-Z]+').hasMatch(value)) {
+          return null;
+        } else {
+          return '$name invalido';
+        }
+      },
+      onSaved: (String value) {
+        print(mapName);
+        print(value);
+        mapData[mapName] = value;
+      },
+    );
+  }
 }
 
 ////
+TextStyle placeHolderStyle = TextStyle(
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Colors.purple);
+TextStyle textStyle = TextStyle(
+    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat');
 
+UnderlineInputBorder underlineInputBorder =
+    UnderlineInputBorder(borderSide: BorderSide(color: Colors.purple));

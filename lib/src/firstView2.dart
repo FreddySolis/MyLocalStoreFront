@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/secondView.dart';
-import 'package:login_app/src/widgets/textField.dart';
+
 
 //Colores
 Color color1 = Colors.green;
 Color color2 = Colors.grey;
 
 //controllers
-final TextEditingController textFieldLoginController = TextEditingController();
-final TextEditingController passFieldLoginController = TextEditingController();
 
 class MyLogin extends StatelessWidget {
   const MyLogin({Key key}) : super(key: key);
@@ -25,6 +23,8 @@ class MyLogin extends StatelessWidget {
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(36.0),
+            child: Form(
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +39,6 @@ class MyLogin extends StatelessWidget {
                 TextFields(
                   text: 'Email',
                   style: placeHolderStyle,
-                  controller: textFieldLoginController,
                   obscureText: false,
                 ),
                 SizedBox(height: 20.0),
@@ -53,8 +52,6 @@ class MyLogin extends StatelessWidget {
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.purple))),
                   obscureText: true,
-                  controller: passFieldLoginController,
-                  maxLength: 8,
                   onChanged: (text){
                     validate();
                   },
@@ -77,6 +74,8 @@ class MyLogin extends StatelessWidget {
                 ),
               ],
             ),
+            )
+
           ),
         ),
       ),
@@ -197,4 +196,4 @@ class RegisterButton extends StatelessWidget {
           },
         ));
   }
-}
+}*/

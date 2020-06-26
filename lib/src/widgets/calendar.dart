@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login_app/src/widgets/textField.dart';
+
 
 
 class MyCalendar extends StatefulWidget {
@@ -33,7 +33,7 @@ class _MyCalendarState extends State<MyCalendar> {
     AlertDialog dialog = AlertDialog(
       content: CalendarDatePicker(
         initialDate: DateTime.now(),
-        firstDate: DateTime(2020, 06),
+        firstDate: DateTime(1900, 01),
         lastDate: DateTime(2101),
         onDateChanged: setDate,
       ),
@@ -63,11 +63,9 @@ class _MyCalendarState extends State<MyCalendar> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                child: TextFields(
-                  text: widget.name,
-                  style: placeHolderStyle,
-                  controller: widget.controller,
-                  obscureText: false,
+                child: textFormField(
+                  widget.name,
+                  widget.controller,
                 ),
               ),
             ],
@@ -80,4 +78,28 @@ class _MyCalendarState extends State<MyCalendar> {
       ],
     );
   }
+
+
+Widget textFormField(String name, TextEditingController controller){
+  return TextFormField(
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat'),
+      obscureText: false,
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: name,
+        labelStyle:placeHolderStyle,
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.purple)
+        )
+      ),
+      
+    );
+}
+
+TextStyle placeHolderStyle = TextStyle(
+  fontFamily: 'Monserrat',
+  fontWeight:  FontWeight.bold,
+  color: Colors.purple
+);
+  
 }
