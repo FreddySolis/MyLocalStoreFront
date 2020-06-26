@@ -29,14 +29,20 @@ var mapData = new Map<String,String>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff040404),
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Color(0xfff8a933),
         title: Text('Registro'),
       ),
       body: SingleChildScrollView(
           child: ConstrainedBox(
               constraints: BoxConstraints(),
               child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xff1d2120),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   margin: EdgeInsets.all(marginDistance),
                   padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
                   child: Form(
@@ -65,12 +71,15 @@ var mapData = new Map<String,String>();
                             padding: EdgeInsets.only(bottom: bottomDistance)),
                         rowPasswordAndConfirmPassword(
                             'Contraseña',
-                            'confirmar contrase',
+                            'Confirmar Contraseña',
                             'password',
                             'password_confirmation'),
                         Padding(
                             padding: EdgeInsets.only(bottom: bottomDistance)),
-                        Center(child: submidButton())
+                        Center(child: submidButton()),
+                        SizedBox(
+                          width: 20,
+                        )
                       ],
                     ),
                   )))),
@@ -82,18 +91,22 @@ var mapData = new Map<String,String>();
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
       ),
-      padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
-      color: Colors.purple[200],
-      child: Row(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+      //color: Colors.purple[200],
+      color: Color(0xfff8a933),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "Confirmar",
+        children: <Widget>[Center(
+          child: Text(
+            "CONFIRMAR",
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Monserrat'),
-          )
+                fontFamily: 'Monserrat',
+                fontSize: 15,
+            ),
+          ),
+        )
         ],
       ),
       onPressed: () {
@@ -280,9 +293,9 @@ var mapData = new Map<String,String>();
 
 ////
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Colors.purple);
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Color(0xfff8a933));
 TextStyle textStyle = TextStyle(
-    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat');
+    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat', color: Colors.white);
 
 UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: Colors.purple));
+    UnderlineInputBorder(borderSide: BorderSide(color: Color(0xfff8a933)));

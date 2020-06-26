@@ -89,7 +89,7 @@ Widget textFormField(String name, TextEditingController controller){
         labelText: name,
         labelStyle:placeHolderStyle,
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.purple)
+          borderSide: BorderSide(color: Color(0xfff8a933))
         )
       ),
       
@@ -99,7 +99,8 @@ Widget textFormField(String name, TextEditingController controller){
 TextStyle placeHolderStyle = TextStyle(
   fontFamily: 'Monserrat',
   fontWeight:  FontWeight.bold,
-  color: Colors.purple
+  color: Color(0xfff8a933)
+  //color: Colors.purple
 );
   
 }

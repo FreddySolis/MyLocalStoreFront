@@ -15,12 +15,12 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff040404),
         body: SingleChildScrollView(
             child: ConstrainedBox(
       constraints: BoxConstraints(),
       child: Center(
         child: Container(
-          color: Colors.white,
           child: Padding(
               padding: const EdgeInsets.all(36.0),
               child: Form(
@@ -29,28 +29,73 @@ class _LoginState extends State<Login> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
-                      height: 155.0,
-                      child: Image.network(
-                        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTVD7AIlcufvAefTV03juE0XbIEcld5IKxNHg&usqp=CAU',
+                    Container(
+                      height: 400,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage('https://steamuserimages-a.akamaihd.net/ugc/787413668525333111/FAAB46B13296369D7FD9F07E7B44A982A8665D8C/'),
+                          fit: BoxFit.cover
+                          )
+                      ),
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0.0, 250.0, 0.0, 0.0),
+                            child: Text('MyStore',
+                                style: TextStyle(
+                                    fontSize: 80.0, fontWeight: FontWeight.bold, color: Color(0xfff8a933), fontFamily: 'Monserrat')),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 20.0),
-                    emailField(),
-                    SizedBox(height: 20.0),
-                    passField(),
-                    SizedBox(height: 40.0),
+
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(1.0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                                color: Color(0xff050505),
+                                borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 20.0),
+                                emailField(),
+                                SizedBox(height: 20.0),
+                                passField(),
+                                SizedBox(height: 40.0),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     loginButton(
                       Text(
-                        'Ingresar',
+                        'INGRESAR',
                         style: TextStyle(color: Colors.white),
                       ),
                       Colors.purple[200],
                     ),
-                    SizedBox(height: 15.0),
+                    SizedBox(height: 100.0),
+                    Text("No tienes cuenta aun?",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          fontSize: 16,
+                          decoration: TextDecoration.underline),
+                    ),
+                    SizedBox(height: 10.0),
                     registerButton(
                       Text(
-                        'Registrar',
+                        'REGISTRATE',
                         style: TextStyle(color: Colors.white),
                       ),
                       Colors.purple[300],
@@ -69,13 +114,13 @@ class _LoginState extends State<Login> {
         height: 50.0,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
-          color: color,
-          child: Row(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          color: Colors.orange,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[text],
+            children: <Widget>[Center(child: text,)],
           ),
           onPressed: () {
             if (formKey.currentState.validate()) {
@@ -93,17 +138,17 @@ class _LoginState extends State<Login> {
         height: 50.0,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(10),
           ),
-          padding: EdgeInsets.fromLTRB(135, 0, 0, 0),
-          color: color,
-          child: Row(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          color: Colors.deepOrangeAccent,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[text],
+            children: <Widget>[Center(child: text,)],
           ),
           onPressed: () {
-            //Navigator.push(
-            //  context, MaterialPageRoute(builder: (context) => SecondView()));
+            Navigator.push(
+             context, MaterialPageRoute(builder: (context) => SecondView()));
           },
         ));
   }
@@ -114,9 +159,19 @@ class _LoginState extends State<Login> {
       style: textStyle,
       obscureText: false,
       decoration: InputDecoration(
-          labelText: 'Correo',
+          labelText: 'Correo Electronico',
           labelStyle: placeHolderStyle,
-          focusedBorder: underlineInputBorder),
+          hoverColor: Colors.white,
+          fillColor: Color(0xff1d2120),
+          filled: true,
+          focusedBorder: underlineInputBorder,
+          enabledBorder: UnderlineInputBorder(
+          borderRadius: new BorderRadius.circular(10),
+          borderSide: new BorderSide(color: Colors.white)
+
+        ),
+          prefixIcon: Icon(Icons.email,color: Colors.white,)
+      ),
       validator: (value) {
         if (RegExp('.+[@].+').hasMatch(value)) {
           return null;
@@ -136,9 +191,21 @@ class _LoginState extends State<Login> {
       style: textStyle,
       obscureText: true,
       decoration: InputDecoration(
-          labelText: 'contraseña',
+          labelText: 'Contraseña',
           labelStyle: placeHolderStyle,
-          focusedBorder: underlineInputBorder),
+          fillColor: Color(0xff1d2120),
+          filled: true,
+          border: new OutlineInputBorder(
+            borderRadius: new BorderRadius.all(Radius.circular(90.0))
+          ),
+          focusedBorder: underlineInputBorder,
+          enabledBorder: UnderlineInputBorder(
+              borderRadius: new BorderRadius.circular(10),
+              borderSide: new BorderSide(color: Colors.white)
+
+          ),
+          prefixIcon: Icon(Icons.enhanced_encryption, color: Colors.white,)
+      ),
       /*validator: (value) {
         if (RegExp('^.*[!@#%^&*(),.?":{}<>].*').hasMatch(value) &&
             value.length > 7) {
@@ -156,12 +223,13 @@ class _LoginState extends State<Login> {
 
 ///
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Colors.purple);
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Color(0xfff8a933));
+
 TextStyle textStyle = TextStyle(
-    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat');
+    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat', color: Colors.white);
 
 UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: Colors.purple));
+    UnderlineInputBorder(borderSide: BorderSide(color: Color(0xff7a541b)));
 
 /*
               Api.login(mapData).then((sucess) {
