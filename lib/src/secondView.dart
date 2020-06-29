@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
 import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 
@@ -113,7 +113,40 @@ var mapData = new Map<String,String>();
         if(formKey.currentState.validate()){
           formKey.currentState.save();
           mapData['birtday'] = calendarController.text;
-          print(mapData);
+          mapData['rol_id'] = '1';
+          mapData['genre'] = 'm';
+                        Api.login(JsonEncoder().convert(mapData)).then((sucess) {
+                if (sucess) {
+                  showDialog(
+                      builder: (context) => AlertDialog(
+                            title: Text('registrado con exito'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Ok'),
+                              )
+                            ],
+                          ),
+                      context: context);
+                } else {
+                  showDialog(
+                      builder: (context) => AlertDialog(
+                            title: Text('error al registro'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Ok'),
+                              )
+                            ],
+                          ),
+                      context: context);
+                  return;
+                }
+              });
         }
       },
     );

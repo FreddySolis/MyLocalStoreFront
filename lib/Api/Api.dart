@@ -28,7 +28,7 @@ class Api {
 }
 
 class ApiR {
-  static Future<bool> login(data) async {
+  static Future<bool> registro(data) async {
     final response = await http.post('${URLS.BASE_URL}/register', body: data,headers: {
   "Content-Type": "application/json",
   "Accept": "application/json"
