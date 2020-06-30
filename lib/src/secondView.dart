@@ -7,7 +7,6 @@ double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
 
-
 final TextEditingController calendarController = TextEditingController();
 
 void setDate(DateTime dateTime) {
@@ -25,7 +24,7 @@ class SecondView extends StatefulWidget {
 
 class _SecondViewState extends State<SecondView> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-var mapData = new Map<String,String>();
+  var mapData = new Map<String, String>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,57 +95,58 @@ var mapData = new Map<String,String>();
       color: Color(0xfff8a933),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[Center(
-          child: Text(
-            "CONFIRMAR",
-            style: TextStyle(
+        children: <Widget>[
+          Center(
+            child: Text(
+              "CONFIRMAR",
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Monserrat',
                 fontSize: 15,
+              ),
             ),
-          ),
-        )
+          )
         ],
       ),
       onPressed: () {
-        if(formKey.currentState.validate()){
+        if (formKey.currentState.validate()) {
           formKey.currentState.save();
-          mapData['birtday'] = calendarController.text;
+          mapData['birthday'] = calendarController.text;
           mapData['rol_id'] = '1';
           mapData['genre'] = 'm';
-                        ApiR.registro(JsonEncoder().convert(mapData)).then((sucess) {
-                if (sucess) {
-                  showDialog(
-                      builder: (context) => AlertDialog(
-                            title: Text('registrado con exito'),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Ok'),
-                              )
-                            ],
-                          ),
-                      context: context);
-                } else {
-                  showDialog(
-                      builder: (context) => AlertDialog(
-                            title: Text('error al registro'),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Ok'),
-                              )
-                            ],
-                          ),
-                      context: context);
-                  return;
-                }
-              });
+          ApiR.registro(JsonEncoder().convert(mapData)).then((sucess) {
+            if (sucess) {
+              showDialog(
+                  builder: (context) => AlertDialog(
+                        title: Text('registrado con exito'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Ok'),
+                          )
+                        ],
+                      ),
+                  context: context);
+            } else {
+              showDialog(
+                  builder: (context) => AlertDialog(
+                        title: Text('error al registro'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Ok'),
+                          )
+                        ],
+                      ),
+                  context: context);
+              return;
+            }
+          });
         }
       },
     );
@@ -326,9 +326,14 @@ var mapData = new Map<String,String>();
 
 ////
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: Color(0xfff8a933));
+    fontFamily: 'Monserrat',
+    fontWeight: FontWeight.bold,
+    color: Color(0xfff8a933));
 TextStyle textStyle = TextStyle(
-    fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat', color: Colors.white);
+    fontWeight: FontWeight.bold,
+    fontSize: 17,
+    fontFamily: 'Monserrat',
+    color: Colors.white);
 
 UnderlineInputBorder underlineInputBorder =
     UnderlineInputBorder(borderSide: BorderSide(color: Color(0xfff8a933)));
