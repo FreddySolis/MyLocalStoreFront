@@ -115,7 +115,7 @@ var mapData = new Map<String,String>();
           mapData['birtday'] = calendarController.text;
           mapData['rol_id'] = '1';
           mapData['genre'] = 'm';
-                        Api.login(JsonEncoder().convert(mapData)).then((sucess) {
+                        ApiR.registro(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
                   showDialog(
                       builder: (context) => AlertDialog(
