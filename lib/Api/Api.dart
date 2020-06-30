@@ -24,9 +24,8 @@ class Api {
   }
 
   static Future<bool> registro(data) async {
-    String encData = enc(data);
     final response = await http.post('${URLS.BASE_URL}/register',
-        body: encData,
+        body: data,
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
