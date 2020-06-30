@@ -115,7 +115,7 @@ class _SecondViewState extends State<SecondView> {
           mapData['birthday'] = calendarController.text;
           mapData['rol_id'] = '1';
           mapData['genre'] = 'm';
-          ApiR.registro(JsonEncoder().convert(mapData)).then((sucess) {
+          Api.registro(JsonEncoder().convert(mapData)).then((sucess) {
             if (sucess) {
               showDialog(
                   builder: (context) => AlertDialog(
