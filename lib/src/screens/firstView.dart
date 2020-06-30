@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/secondView.dart';
-
+import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 
 
@@ -226,7 +226,7 @@ class _LoginState extends State<Login> {
       },
       onSaved: (String value) {
         print(value);
-        mapData['email'] = value;
+        mapData['email'] = enc(value);
       },
     );
   }
@@ -259,7 +259,7 @@ class _LoginState extends State<Login> {
         }
       },*/
       onSaved: (String value) {
-        mapData['password'] = value;
+        mapData['password'] = enc(value);
       },
     );
   }

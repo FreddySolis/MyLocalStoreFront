@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
+import 'package:login_app/src/encrypt.dart';
+
 
 double bottomDistance = 20;
 double marginDistance = 20;
@@ -250,7 +252,7 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = value;
+        mapData[mapName] = enc(value);
       },
     );
   }
@@ -273,7 +275,7 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = value;
+        mapData[mapName] = enc(value);
       },
     );
   }
@@ -295,7 +297,7 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = value;
+        mapData[mapName] = enc(value);
       },
     );
   }
@@ -318,7 +320,7 @@ class _SecondViewState extends State<SecondView> {
       onSaved: (String value) {
         print(mapName);
         print(value);
-        mapData[mapName] = value;
+        mapData[mapName] = enc(value);
       },
     );
   }
