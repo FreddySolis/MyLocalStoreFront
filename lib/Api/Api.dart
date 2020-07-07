@@ -37,4 +37,63 @@ class Api {
       return false;
     }
   }
+
+  static Future<bool> direccion_get(int id) async {
+    final response = await http.post('${URLS.BASE_URL}/address/$id',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        });
+    print(desEnc(response.body));
+    if (response.statusCode == 200) {
+      print(response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> direccion_post(data) async {
+    final response = await http.post('${URLS.BASE_URL}/address',
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        });
+    print(desEnc(response.body));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> direccion_put(data) async {
+    final response = await http.put('${URLS.BASE_URL}/address',
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        });
+    print(desEnc(response.body));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> direccion_delete(data) async {
+    final response = await http.delete('${URLS.BASE_URL}/address',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        });
+    print(desEnc(response.body));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
