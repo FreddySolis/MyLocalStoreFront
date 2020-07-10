@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:address_search_text_field/address_search_text_field.dart';
 
@@ -13,6 +14,10 @@ class _AddressViewState extends State<AddressView> {
   AddressPoint addresspoint = null;
   TextEditingController addressController = new TextEditingController();
   TextEditingController addressController2 = new TextEditingController();
+  TextEditingController phone = new TextEditingController();
+  TextEditingController indications = new TextEditingController();
+  TextEditingController street1 = new TextEditingController();
+  TextEditingController street2 = new TextEditingController();
   var mapData = new Map<String, String>();
   bool addressExist = false;
   bool _validate = false;
@@ -83,6 +88,10 @@ class _AddressViewState extends State<AddressView> {
               ),
               Container(
                 padding: EdgeInsets.all(10.0),
+                child: _addressInputs(),
+              ),
+              Container(
+                padding: EdgeInsets.all(10.0),
                 child: _buttonAddressAccess(),
               ),
               Container(
@@ -139,15 +148,22 @@ class _AddressViewState extends State<AddressView> {
     return AddressSearchTextField(
       controller: addressController,
       decoration: InputDecoration(
-        hintText: "Ingrese Nueva Direccion",
+        labelText: "Ingrese Nueva Direccion",
         errorText: _validate ? 'La direccion no\'puede ser vacio' : null,
+        focusedBorder: UnderlineInputBorder(
+            borderRadius: new BorderRadius.circular(10),
+            borderSide: new BorderSide(color: Colors.black)),
+        enabledBorder: UnderlineInputBorder(
+            borderRadius: new BorderRadius.circular(10),
+            borderSide: new BorderSide(color: Colors.blueAccent)),
       ),
       style: TextStyle(),
       country: "México",
-      hintText: "Calle numero, col, ciudad, pais",
+      barrierDismissible: false,
+      hintText: "Calle numero, col, cp ciudad, pais",
       noResultsText: "Sin resultados",
       exceptions: <String>[],
-      coordForRef: true,
+      coordForRef: false,
       onDone: (AddressPoint point) {
         print(point.latitude);
         print(point.longitude);
@@ -157,6 +173,81 @@ class _AddressViewState extends State<AddressView> {
         addresspoint = point;
         Navigator.of(context).pop();
       },
+    );
+  }
+
+  Widget _addressInputs(){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          TextField(
+            keyboardType: TextInputType.number,
+            controller: phone,
+            inputFormatters: <TextInputFormatter> [WhitelistingTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(
+                labelText: 'Numero Telefonico',
+                focusedBorder: UnderlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10),
+                    borderSide: new BorderSide(color: Colors.black)),
+                enabledBorder: UnderlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10),
+                    borderSide: new BorderSide(color: Colors.blueAccent)),
+                prefixIcon: Icon(
+                  Icons.phone,
+                  color: Colors.black,
+                )),
+          ),
+          TextField(
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            controller: indications,
+            decoration: InputDecoration(
+                labelText: 'Indicaciones',
+                focusedBorder: UnderlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10),
+                    borderSide: new BorderSide(color: Colors.black)),
+                enabledBorder: UnderlineInputBorder(
+                    borderRadius: new BorderRadius.circular(10),
+                    borderSide: new BorderSide(color: Colors.blueAccent)),
+                ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child:  TextField(
+                  controller: street1,
+                  decoration: InputDecoration(
+                    labelText: 'Calle 1',
+                    focusedBorder: UnderlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10),
+                        borderSide: new BorderSide(color: Colors.black)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10),
+                        borderSide: new BorderSide(color: Colors.blueAccent)),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: street2,
+                  decoration: InputDecoration(
+                    labelText: 'Calle 2',
+                    focusedBorder: UnderlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10),
+                        borderSide: new BorderSide(color: Colors.black)),
+                    enabledBorder: UnderlineInputBorder(
+                        borderRadius: new BorderRadius.circular(10),
+                        borderSide: new BorderSide(color: Colors.blueAccent)),
+                  ),
+                ),
+              )
+
+            ],
+          )
+        ],
+      ),
     );
   }
 
