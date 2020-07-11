@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:login_app/Api/Api.dart';
+import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
@@ -14,6 +15,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  final pushNotification = new PushNotificationProvider();
+
+  @override
+  void initState(){
+    super.initState();
+    pushNotification.initialize();
+  }
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var mapData = new Map<String, String>();
   @override
@@ -194,8 +204,9 @@ class _LoginState extends State<Login> {
             ],
           ),
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SecondView()));
+            pushNotification.send();
+            // Navigator.push(
+            //     context, MaterialPageRoute(builder: (context) => SecondView()));
           },
         ));
   }
