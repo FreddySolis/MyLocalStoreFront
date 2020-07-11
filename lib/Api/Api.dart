@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:login_app/src/encrypt.dart';
 class URLS {
-  static const String BASE_URL = 'https://reqres.in/api';
+  static const String BASE_URL = 'http://ec2-54-81-19-209.compute-1.amazonaws.com:8000';
 }
 
 
@@ -15,7 +15,6 @@ class Api {
           "Content-Type": "application/json",
           "Accept": "application/json"
         });
-    print(desEnc(response.body));
     if (response.statusCode == 200) {
       return true;
     } else {

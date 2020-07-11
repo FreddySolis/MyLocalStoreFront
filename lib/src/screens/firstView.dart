@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
-
-
+import 'package:login_app/configs.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xff040404),
+        backgroundColor: backgroundColor,
         body: SingleChildScrollView(
             child: ConstrainedBox(
           constraints: BoxConstraints(),
@@ -49,7 +49,7 @@ class _LoginState extends State<Login> {
                                     style: TextStyle(
                                         fontSize: 80.0,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xfff8a933),
+                                        color: textcolor,
                                         fontFamily: 'Monserrat')),
                               ),
                             ],
@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
                               Container(
                                 padding: EdgeInsets.all(1),
                                 decoration: BoxDecoration(
-                                  color: Color(0xff050505),
+                                  color: backgroundColor,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Column(
@@ -84,15 +84,15 @@ class _LoginState extends State<Login> {
                         loginButton(
                           Text(
                             'INGRESAR',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: inputsTextColor),
                           ),
-                          Colors.purple[200],
+                          buttonLoginColor,
                         ),
                         SizedBox(height: 100.0),
                         Text(
                           "No tienes cuenta aun?",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: inputsTextColor,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Montserrat',
                               fontSize: 16,
@@ -102,9 +102,9 @@ class _LoginState extends State<Login> {
                         registerButton(
                           Text(
                             'REGISTRATE',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: inputsTextColor),
                           ),
-                          Colors.purple[300],
+                          registerButtonColor,
                         ),
                       ],
                     ),
@@ -123,7 +123,7 @@ class _LoginState extends State<Login> {
             borderRadius: BorderRadius.circular(10),
           ),
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          color: Colors.orange,
+          color: color,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -136,7 +136,9 @@ class _LoginState extends State<Login> {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
               print(JsonEncoder().convert(mapData));
-              Api.login(JsonEncoder().convert(mapData)).then((sucess) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SecondView()));
+              /*Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
                   showDialog(
                       builder: (context) => AlertDialog(
@@ -167,7 +169,7 @@ class _LoginState extends State<Login> {
                       context: context);
                   return;
                 }
-              });
+              } );*/
             }
           },
         ));
@@ -182,7 +184,7 @@ class _LoginState extends State<Login> {
             borderRadius: BorderRadius.circular(10),
           ),
           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          color: Colors.deepOrangeAccent,
+          color: registerButtonColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -206,16 +208,16 @@ class _LoginState extends State<Login> {
       decoration: InputDecoration(
           labelText: 'Correo Electronico',
           labelStyle: placeHolderStyle,
-          hoverColor: Colors.white,
+          hoverColor: inputsTextColor,
           fillColor: Color(0xff1d2120),
           filled: true,
           focusedBorder: underlineInputBorder,
           enabledBorder: UnderlineInputBorder(
               borderRadius: new BorderRadius.circular(10),
-              borderSide: new BorderSide(color: Colors.white)),
+              borderSide: new BorderSide(color: inputsTextColor)),
           prefixIcon: Icon(
             Icons.email,
-            color: Colors.white,
+            color: inputsTextColor,
           )),
       validator: (value) {
         if (RegExp('.+[@].+').hasMatch(value)) {
@@ -245,10 +247,10 @@ class _LoginState extends State<Login> {
           focusedBorder: underlineInputBorder,
           enabledBorder: UnderlineInputBorder(
               borderRadius: new BorderRadius.circular(10),
-              borderSide: new BorderSide(color: Colors.white)),
+              borderSide: new BorderSide(color: inputsTextColor)),
           prefixIcon: Icon(
             Icons.enhanced_encryption,
-            color: Colors.white,
+            color: inputsTextColor,
           )),
       /*validator: (value) {
         if (RegExp('^.*[!@#%^&*(),.?":{}<>].*').hasMatch(value) &&
@@ -267,18 +269,16 @@ class _LoginState extends State<Login> {
 
 ///
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat',
-    fontWeight: FontWeight.bold,
-    color: Color(0xfff8a933));
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: textcolor);
 
 TextStyle textStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 17,
     fontFamily: 'Monserrat',
-    color: Colors.white);
+    color: inputsTextColor);
 
-UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: Color(0xff7a541b)));
+UnderlineInputBorder underlineInputBorder = UnderlineInputBorder(
+    borderSide: BorderSide(color: textFieldsunderlineColor));
 
 /*
               Api.login(mapData).then((sucess) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:login_app/configs.dart';
+
 
 
 
@@ -89,7 +91,7 @@ Widget textFormField(String name, TextEditingController controller){
         labelText: name,
         labelStyle:placeHolderStyle,
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Color(0xfff8a933))
+          borderSide: BorderSide(color:textcolor)
         )
       ),
       
@@ -99,7 +101,7 @@ Widget textFormField(String name, TextEditingController controller){
 TextStyle placeHolderStyle = TextStyle(
   fontFamily: 'Monserrat',
   fontWeight:  FontWeight.bold,
-  color: Color(0xfff8a933)
+  color: textcolor
   //color: Colors.purple
 );
   

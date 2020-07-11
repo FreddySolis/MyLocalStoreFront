@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/encrypt.dart';
-
+import 'package:login_app/configs.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
@@ -30,10 +30,10 @@ class _SecondViewState extends State<SecondView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff040404),
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xfff8a933),
+        backgroundColor: textcolor,
         title: Text('Registro'),
       ),
       body: SingleChildScrollView(
@@ -93,8 +93,7 @@ class _SecondViewState extends State<SecondView> {
         borderRadius: BorderRadius.circular(25.0),
       ),
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-      //color: Colors.purple[200],
-      color: Color(0xfff8a933),
+      color: submitFormButtonColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -102,7 +101,7 @@ class _SecondViewState extends State<SecondView> {
             child: Text(
               "CONFIRMAR",
               style: TextStyle(
-                color: Colors.white,
+                color: inputsTextColor,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Monserrat',
                 fontSize: 15,
@@ -330,12 +329,12 @@ class _SecondViewState extends State<SecondView> {
 TextStyle placeHolderStyle = TextStyle(
     fontFamily: 'Monserrat',
     fontWeight: FontWeight.bold,
-    color: Color(0xfff8a933));
+    color: textcolor);
 TextStyle textStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 17,
     fontFamily: 'Monserrat',
-    color: Colors.white);
+    color: inputsTextColor);
 
 UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: Color(0xfff8a933)));
+    UnderlineInputBorder(borderSide: BorderSide(color: textFieldsunderlineColor));
