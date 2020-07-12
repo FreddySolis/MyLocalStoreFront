@@ -1,7 +1,7 @@
 import 'package:encrypt/encrypt.dart';
 
 String enc(String text) {
-  final plainText = text;
+ /* final plainText = text;
   final key = Key.fromUtf8('xxxSecretKey1xxxxxxSecretKey1xxx');
   final iv = IV.fromLength(16);
 
@@ -14,8 +14,9 @@ String enc(String text) {
   //print(decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit
   print(encrypted
       .base64); // R4PxiU3h8YoIRqVowBXm36ZcCeNeZ4s1OvVBTfFlZRdmohQqOpPQqD1YecJeZMAop/hZ4OxqgC1WtwvX/hP9mw==
-
-  return encrypted.base64;
+      
+  return encrypted.base64;*/
+  return text;
 }
 
 

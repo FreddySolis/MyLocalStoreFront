@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/providers/push_notifications_provider.dart';
-import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
+//routes
+import 'package:login_app/src/secondView.dart';
+import 'package:login_app/src/screens/productList.dart';
+import 'package:login_app/src/screens/productForm.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -15,11 +18,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   final pushNotification = new PushNotificationProvider();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     pushNotification.initialize();
   }
@@ -47,6 +49,8 @@ class _LoginState extends State<Login> {
                           height: 400,
                           decoration: BoxDecoration(
                               image: DecorationImage(
+                                  //https://steamuserimages-a.akamaihd.net/ugc/787413668525333111/FAAB46B13296369D7FD9F07E7B44A982A8665D8C/
+                                  //https://dynamic.brandcrowd.com/asset/logo/a7113a63-6440-47bd-8e20-ce74be61571c/logo?v=4&text=shop
                                   image: NetworkImage(
                                       'https://steamuserimages-a.akamaihd.net/ugc/787413668525333111/FAAB46B13296369D7FD9F07E7B44A982A8665D8C/'),
                                   fit: BoxFit.cover)),
@@ -57,7 +61,7 @@ class _LoginState extends State<Login> {
                                     EdgeInsets.fromLTRB(0.0, 250.0, 0.0, 0.0),
                                 child: Text('MyStore',
                                     style: TextStyle(
-                                        fontSize: 80.0,
+                                        fontSize: 75.0,
                                         fontWeight: FontWeight.bold,
                                         color: textcolor,
                                         fontFamily: 'Monserrat')),
@@ -94,7 +98,7 @@ class _LoginState extends State<Login> {
                         loginButton(
                           Text(
                             'INGRESAR',
-                            style: TextStyle(color: inputsTextColor),
+                            style: TextStyle(color: backgroundColor),
                           ),
                           buttonLoginColor,
                         ),
@@ -112,10 +116,16 @@ class _LoginState extends State<Login> {
                         registerButton(
                           Text(
                             'REGISTRATE',
-                            style: TextStyle(color: inputsTextColor),
+                            style: TextStyle(color: backgroundColor),
                           ),
                           registerButtonColor,
                         ),
+                        RaisedButton(onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProductForm(text: 'testSlug')));
+                        })
                       ],
                     ),
                   )),
@@ -146,23 +156,10 @@ class _LoginState extends State<Login> {
             if (formKey.currentState.validate()) {
               formKey.currentState.save();
               print(JsonEncoder().convert(mapData));
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SecondView()));
-              /*Api.login(JsonEncoder().convert(mapData)).then((sucess) {
+              Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
-                  showDialog(
-                      builder: (context) => AlertDialog(
-                            title: Text('Logueado con exito'),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Ok'),
-                              )
-                            ],
-                          ),
-                      context: context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProductList()));
                 } else {
                   showDialog(
                       builder: (context) => AlertDialog(
@@ -179,7 +176,7 @@ class _LoginState extends State<Login> {
                       context: context);
                   return;
                 }
-              } );*/
+              });
             }
           },
         ));
@@ -205,8 +202,8 @@ class _LoginState extends State<Login> {
           ),
           onPressed: () {
             pushNotification.send();
-            // Navigator.push(
-            //     context, MaterialPageRoute(builder: (context) => SecondView()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SecondView()));
           },
         ));
   }
@@ -220,7 +217,7 @@ class _LoginState extends State<Login> {
           labelText: 'Correo Electronico',
           labelStyle: placeHolderStyle,
           hoverColor: inputsTextColor,
-          fillColor: Color(0xff1d2120),
+          fillColor: backgroundColor,
           filled: true,
           focusedBorder: underlineInputBorder,
           enabledBorder: UnderlineInputBorder(
@@ -228,7 +225,7 @@ class _LoginState extends State<Login> {
               borderSide: new BorderSide(color: inputsTextColor)),
           prefixIcon: Icon(
             Icons.email,
-            color: inputsTextColor,
+            color: iconColor,
           )),
       validator: (value) {
         if (RegExp('.+[@].+').hasMatch(value)) {
@@ -239,7 +236,8 @@ class _LoginState extends State<Login> {
       },
       onSaved: (String value) {
         print(value);
-        mapData['email'] = enc(value);
+        //mapData['email'] = enc(value);
+        mapData['email'] = value;
       },
     );
   }
@@ -251,7 +249,7 @@ class _LoginState extends State<Login> {
       decoration: InputDecoration(
           labelText: 'Contraseña',
           labelStyle: placeHolderStyle,
-          fillColor: Color(0xff1d2120),
+          fillColor: backgroundColor,
           filled: true,
           border: new OutlineInputBorder(
               borderRadius: new BorderRadius.all(Radius.circular(90.0))),
@@ -261,7 +259,7 @@ class _LoginState extends State<Login> {
               borderSide: new BorderSide(color: inputsTextColor)),
           prefixIcon: Icon(
             Icons.enhanced_encryption,
-            color: inputsTextColor,
+            color: iconColor,
           )),
       /*validator: (value) {
         if (RegExp('^.*[!@#%^&*(),.?":{}<>].*').hasMatch(value) &&
@@ -272,7 +270,8 @@ class _LoginState extends State<Login> {
         }
       },*/
       onSaved: (String value) {
-        mapData['password'] = enc(value);
+        //mapData['password'] = enc(value);
+        mapData['password'] = value;
       },
     );
   }

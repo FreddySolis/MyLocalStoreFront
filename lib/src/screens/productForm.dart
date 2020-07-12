@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/configs.dart';
@@ -8,23 +7,45 @@ import 'package:login_app/configs.dart';
 double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
+int id;
+final TextEditingController name = TextEditingController();
+final TextEditingController price = TextEditingController();
+final TextEditingController discount = TextEditingController();
+final TextEditingController stock = TextEditingController();
+final TextEditingController description = TextEditingController();
+final TextEditingController size = TextEditingController();
 
-final TextEditingController calendarController = TextEditingController();
-
-void setDate(DateTime dateTime) {
-  date = dateTime;
-
-  print(date);
-}
-
-class SecondView extends StatefulWidget {
-  SecondView({Key key}) : super(key: key);
+class ProductForm extends StatefulWidget {
+  final String text;
+  ProductForm({this.text, Key key}) : super(key: key);
 
   @override
-  _SecondViewState createState() => _SecondViewState();
+  _ProductFormState createState() => _ProductFormState();
 }
 
-class _SecondViewState extends State<SecondView> {
+class _ProductFormState extends State<ProductForm> {
+  @override
+  void initState() {
+    initData(widget.text);
+    super.initState();
+  }
+
+  void initData(String text) async {
+    List dataTemp;
+    await Api.product_getBySlug(text).then((sucess) {
+      dataTemp = jsonDecode(sucess);
+    });
+    setState(() {
+      name.text = dataTemp[0]['name'];
+      price.text = dataTemp[0]['price'].toString();
+      discount.text = dataTemp[0]['discount'].toString();
+      stock.text = dataTemp[0]['stock'].toString();
+      description.text = dataTemp[0]['description'];
+      size.text = dataTemp[0]['size'];
+      id = dataTemp[0]['id'];
+    });
+  }
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var mapData = new Map<String, String>();
   @override
@@ -34,7 +55,7 @@ class _SecondViewState extends State<SecondView> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: textcolor,
-        title: Text('Registro'),
+        title: Text('productos'),
       ),
       body: SingleChildScrollView(
           child: ConstrainedBox(
@@ -51,30 +72,16 @@ class _SecondViewState extends State<SecondView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        rowNameAndLastName(
-                            'Nombre', 'Apellido', 'name', 'last_name'),
+                        rowNameAndPrice(
+                            'Nombre', 'precio', 'name', 'price', name, price),
                         Padding(
                             padding: EdgeInsets.only(bottom: bottomDistance)),
-                        rowPhoneAndEmail(
-                            'Telefono', 'Correo Electronico', 'phone', 'email'),
+                        rowDiscountAndStock('Descuento', 'cantidad', 'discount',
+                            'stock', discount, stock),
                         Padding(
                             padding: EdgeInsets.only(bottom: bottomDistance)),
-                        Container(
-                          padding: EdgeInsets.only(left: marginDistance),
-                          child: MyCalendar(
-                            controller: calendarController,
-                            name: 'Cumpleaños',
-                          ),
-
-                          //CalendarDatePicker(initialDate: DateTime.now(), firstDate: DateTime(2020, 06), lastDate: DateTime(2101), onDateChanged: setDate,)
-                        ),
-                        Padding(
-                            padding: EdgeInsets.only(bottom: bottomDistance)),
-                        rowPasswordAndConfirmPassword(
-                            'Contraseña',
-                            'Confirmar Contraseña',
-                            'password',
-                            'password_confirmation'),
+                        rowDescriptionAndSize('Descripcion', 'Tamaño',
+                            'description', 'size', description, size),
                         Padding(
                             padding: EdgeInsets.only(bottom: bottomDistance)),
                         Center(child: submidButton()),
@@ -113,48 +120,56 @@ class _SecondViewState extends State<SecondView> {
       onPressed: () {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
-          mapData['birthday'] = calendarController.text;
-          mapData['rol_id'] = '1';
-          mapData['genre'] = 'm';
-          Api.registro(JsonEncoder().convert(mapData)).then((sucess) {
-            if (sucess) {
-              showDialog(
-                  builder: (context) => AlertDialog(
-                        title: Text('registrado con exito'),
-                        actions: <Widget>[
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('Ok'),
-                          )
-                        ],
-                      ),
-                  context: context);
-            } else {
-              showDialog(
-                  builder: (context) => AlertDialog(
-                        title: Text('error al registro'),
-                        actions: <Widget>[
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('Ok'),
-                          )
-                        ],
-                      ),
-                  context: context);
-              return;
-            }
-          });
+          mapData['slug'] = 'testSlug';
+          mapData['category_id'] = '1';
+          mapData['final_price'] = (int.parse(mapData['price']) *
+                  (int.parse(mapData['discount']) / 100))
+              .toString();
+          print(mapData['final_price']);
+          if (widget.text == '') {
+            Api.product_create(JsonEncoder().convert(mapData))
+                .then((sucess) {
+              if (sucess) {
+                //print(sucess);
+              } else {
+
+              }
+            });
+          } else {
+            Api.product_update(JsonEncoder().convert(mapData), id)
+                .then((sucess) {
+              if (sucess) {
+                print(sucess);
+              } else {
+                showDialog(
+                    builder: (context) => AlertDialog(
+                          title: Text('error al registro'),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Ok'),
+                            )
+                          ],
+                        ),
+                    context: context);
+                return;
+              }
+            });
+          }
         }
       },
     );
   }
 
-  Widget rowPasswordAndConfirmPassword(
-      String nombre1, String nombre2, String jsonName, String jsonName2) {
+  Widget rowDescriptionAndSize(
+      String nombre1,
+      String nombre2,
+      String jsonName,
+      String jsonName2,
+      TextEditingController controller1,
+      TextEditingController controller2) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -163,7 +178,7 @@ class _SecondViewState extends State<SecondView> {
         Expanded(
           child: Column(
             children: <Widget>[
-              Container(child: passField(nombre1, jsonName)),
+              Container(child: nameField(nombre1, jsonName, controller1)),
             ],
           ),
         ),
@@ -172,7 +187,7 @@ class _SecondViewState extends State<SecondView> {
           // wrap your Column in Expanded
           child: Column(
             children: <Widget>[
-              Container(child: passField(nombre2, jsonName2)),
+              Container(child: nameField(nombre2, jsonName2, controller2)),
             ],
           ),
         ),
@@ -180,8 +195,13 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 
-  Widget rowPhoneAndEmail(
-      String nombre1, String nombre2, String jsonName, String jsonName2) {
+  Widget rowDiscountAndStock(
+      String nombre1,
+      String nombre2,
+      String jsonName,
+      String jsonName2,
+      TextEditingController controller1,
+      TextEditingController controller2) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,7 +210,7 @@ class _SecondViewState extends State<SecondView> {
         Expanded(
           child: Column(
             children: <Widget>[
-              Container(child: phoneField(nombre1, jsonName)),
+              Container(child: priceField(nombre1, jsonName, controller1)),
             ],
           ),
         ),
@@ -199,7 +219,7 @@ class _SecondViewState extends State<SecondView> {
           // wrap your Column in Expanded
           child: Column(
             children: <Widget>[
-              Container(child: emailField(nombre2, jsonName2)),
+              Container(child: priceField(nombre2, jsonName2, controller2)),
             ],
           ),
         ),
@@ -207,8 +227,13 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 
-  Widget rowNameAndLastName(
-      String nombre1, String nombre2, String jsonName, String jsonName2) {
+  Widget rowNameAndPrice(
+      String nombre1,
+      String nombre2,
+      String jsonName,
+      String jsonName2,
+      TextEditingController controller1,
+      TextEditingController controller2) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +242,7 @@ class _SecondViewState extends State<SecondView> {
         Expanded(
           child: Column(
             children: <Widget>[
-              Container(child: nameField(nombre1, jsonName)),
+              Container(child: nameField(nombre1, jsonName, controller1)),
             ],
           ),
         ),
@@ -226,7 +251,7 @@ class _SecondViewState extends State<SecondView> {
           // wrap your Column in Expanded
           child: Column(
             children: <Widget>[
-              Container(child: nameField(nombre2, jsonName2)),
+              Container(child: priceField(nombre2, jsonName2, controller2)),
             ],
           ),
         ),
@@ -234,75 +259,10 @@ class _SecondViewState extends State<SecondView> {
     );
   }
 
-  Widget emailField(String name, String mapName) {
+  Widget nameField(
+      String name, String mapName, TextEditingController controller) {
     return TextFormField(
-      keyboardType: TextInputType.emailAddress,
-      style: textStyle,
-      obscureText: false,
-      decoration: InputDecoration(
-          labelText: name,
-          labelStyle: placeHolderStyle,
-          focusedBorder: underlineInputBorder),
-      validator: (value) {
-        if (RegExp('.+[@].+').hasMatch(value)) {
-          return null;
-        } else {
-          return '$name invalido';
-        }
-      },
-      onSaved: (String value) {
-        mapData[mapName] = enc(value);
-      },
-    );
-  }
-
-  Widget passField(String name, String mapName) {
-    return TextFormField(
-      style: textStyle,
-      obscureText: true,
-      decoration: InputDecoration(
-          labelText: name,
-          labelStyle: placeHolderStyle,
-          focusedBorder: underlineInputBorder),
-      validator: (value) {
-        print(value);
-        if (RegExp('^.*[!\$@#%^&*(),.?":{}<>].*').hasMatch(value) &&
-            value.length > 7) {
-          return null;
-        } else {
-          return '$name invalida';
-        }
-      },
-      onSaved: (String value) {
-        mapData[mapName] = enc(value);
-      },
-    );
-  }
-
-  Widget phoneField(String name, String mapName) {
-    return TextFormField(
-      keyboardType: TextInputType.phone,
-      style: textStyle,
-      obscureText: false,
-      decoration: InputDecoration(
-          labelText: name,
-          labelStyle: placeHolderStyle,
-          focusedBorder: underlineInputBorder),
-      validator: (value) {
-        if (RegExp('[0-9]{10}').hasMatch(value)) {
-          return null;
-        } else {
-          return '$name invalido';
-        }
-      },
-      onSaved: (String value) {
-        mapData[mapName] = enc(value);
-      },
-    );
-  }
-
-  Widget nameField(String name, String mapName) {
-    return TextFormField(
+      controller: controller,
       style: textStyle,
       obscureText: false,
       decoration: InputDecoration(
@@ -317,8 +277,30 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        print(mapName);
-        print(value);
+        mapData[mapName] = enc(value);
+      },
+    );
+  }
+
+  Widget priceField(
+      String name, String mapName, TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      style: textStyle,
+      obscureText: false,
+      decoration: InputDecoration(
+          labelText: name,
+          labelStyle: placeHolderStyle,
+          focusedBorder: underlineInputBorder),
+      validator: (value) {
+        if (RegExp('[0-9]+').hasMatch(value)) {
+          return null;
+        } else {
+          return '$name invalido';
+        }
+      },
+      onSaved: (String value) {
         mapData[mapName] = enc(value);
       },
     );
@@ -327,14 +309,12 @@ class _SecondViewState extends State<SecondView> {
 
 ////
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat',
-    fontWeight: FontWeight.bold,
-    color: textcolor);
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: textcolor);
 TextStyle textStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 17,
     fontFamily: 'Monserrat',
     color: inputsTextColor);
 
-UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: textFieldsunderlineColor));
+UnderlineInputBorder underlineInputBorder = UnderlineInputBorder(
+    borderSide: BorderSide(color: textFieldsunderlineColor));

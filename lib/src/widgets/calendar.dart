@@ -73,9 +73,11 @@ class _MyCalendarState extends State<MyCalendar> {
             ],
           ),
         ),
-        RaisedButton(
+        
+        FlatButton(
           onPressed: showAlert,
-          child: Icon(Icons.control_point),
+          child: Icon(Icons.control_point,color: iconColor,),
+          color: Colors.transparent,
         )
       ],
     );
