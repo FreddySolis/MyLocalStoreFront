@@ -16,14 +16,13 @@ class PushNotificationProvider {
       print("====FCM TOKEN===");
       fcmToken = token;
       print(token);
-      //c8pgKIpqwSE:APA91bGDQNQWvTwOdnoiSXwuzHqw2a8TFsO9N0Fx5g9ztmfEgGpqoXGnLNFtoTijqXsdDO11hmDnsGIublNUk5WBKSZ97-N03so8wWWrZjsgZtS1xFmZ_W2nWUzd2L-OVC69cvFtJPso
     });
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("====On Message=== $message");
       },
-        // onBackgroundMessage: myBackgroundMessageHandler,
+        
       onLaunch: (Map<String, dynamic> message) async {
         print("====On Launch=== $message");
       },
@@ -57,17 +56,4 @@ class PushNotificationProvider {
       ),
     );
   }
-  
-
-  // Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
-  //   if (message.containsKey('data')) {
-  //     // Handle data messagesssss
-  //     final dynamic data = message['data'];
-  //   }
-
-  //   if (message.containsKey('notification')) {
-  //     // Handle notification message
-  //     final dynamic notification = message['notification'];
-  //   }
-  // }
 }
