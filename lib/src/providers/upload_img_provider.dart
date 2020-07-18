@@ -6,13 +6,13 @@ import 'package:intl/intl.dart';
 
 class UploadImgs {
   String url;
-  String descrip;
+  String slug;
 
-  void uploadStatusImg( List<File> imgs, bool validateAndSave) async {
+  void uploadStatusImg( List<File> imgs) async {
     final StorageReference postImgRef =
-        FirebaseStorage.instance.ref().child("Post Imgs");
+        FirebaseStorage.instance.ref().child("Products Imgs");
 
-    if (validateAndSave && imgs.isNotEmpty) {
+    if (imgs.isNotEmpty) {
       for (var img in imgs) {
         var timeKey = DateTime.now();
         final StorageUploadTask uploadTask =
@@ -37,7 +37,7 @@ class UploadImgs {
     String time = formatTime.format(dbTimeKey);
 
     DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var data = {"img": url, "description": descrip, "date": date, "time": time};
-    ref.child("Posts").push().set(data);
+    var data = {"img": url, "slug": slug, "date": date, "time": time};
+    ref.child("Products").push().set(data);
   }
 }
