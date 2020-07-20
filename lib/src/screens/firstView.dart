@@ -37,8 +37,9 @@ print('token : ' + token);
     if (token != '') {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ProductList()));
+      Navigator.of(context).pushNamed('/MainView');
+      /*Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }
   }
 

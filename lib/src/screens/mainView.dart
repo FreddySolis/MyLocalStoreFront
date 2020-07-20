@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/src/screens/addressView.dart';
 import 'package:login_app/src/screens/productList.dart';
+import 'package:login_app/src/screens/profile.dart';
 
 import 'firstView.dart';
 
-class MainClient extends StatefulWidget{
+class MainView extends StatefulWidget{
   @override
-  _MainClient createState() => _MainClient();
+  _MainView createState() => _MainView();
 
 }
 
-class _MainClient extends State<MainClient>{
+class _MainView extends State<MainView>{
   int _select = 0;
   String _selectTitle = "Productos";
 
@@ -22,8 +23,7 @@ class _MainClient extends State<MainClient>{
   _getDrawerItemWidget(int p){
     switch(p){
       case 0: return ProductList();
-      case 1: return AddressView();
-
+      case 1: return Profile();
     }
   }
   @override
@@ -32,10 +32,6 @@ class _MainClient extends State<MainClient>{
       appBar: AppBar(
         title: Row(
           children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.exit_to_app,color: Colors.white,size: 30.0) ,
-              onPressed: null,
-              color: Colors.black,),
             Text(_selectTitle),
           ],
         ),
@@ -96,19 +92,17 @@ class _MainClient extends State<MainClient>{
             });
           },
         ),
+        Divider(),
         ListTile(
-          title: Text("Mis Compras"),
-          leading: Icon(Icons.format_list_bulleted),
-          selected: (3 == _select),
+          title: Text("Cerrar Sesion"),
+          leading: Icon(Icons.exit_to_app),
           onTap: (){
             setState(() {
               Navigator.of(context).pop();
-              _select = 3;
-              _selectTitle = "Mis Compras";
+              Navigator.of(context).pushNamed('/Login');
             });
           },
         ),
-        Divider(),
 
       ],
     );
