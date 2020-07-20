@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
 import 'dart:convert';
@@ -18,6 +19,7 @@ class Api {
           "Accept": "application/json"
         });
         print(response.statusCode);
+        print(response.body);
     if (response.statusCode >=200 && response.statusCode <=204) {
       Map<String, dynamic> temp = jsonDecode(response.body);
       globals.token = temp['token'];
@@ -44,62 +46,66 @@ class Api {
     }
   }
 //------------- Direccion ---------
-  static Future<bool> direccion_get(int id) async {
-    final response = await http.post('${URLS.BASE_URL}/address/$id',
+  static Future<http.Response> direccion_get(String bearer) async {
+    final response = await http.get('${URLS.BASE_URL}/address/',
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiMmJhOTM4MjVmMzI2ZTRlN2JjMTBmNzViOThiNDE0OTNiNzA2OGRmMmRlYjA1NDczYTJkMTg5OTQ1ZGRkYWE5OWZjZTJlOTVmY2MyNjJjY2MiLCJpYXQiOjE1OTQ5NDU2ODMsIm5iZiI6MTU5NDk0NTY4MywiZXhwIjoxNjI2NDgxNjgzLCJzdWIiOiI1Iiwic2NvcGVzIjpbXX0.mvA8r16D2EGm7MoALZASlEaHzgLhFJ2XKDz-W8yPJ5RKkJYcCPLfhwefxoRuh-Bi43gXBIolxe22nrSADHelMG6UKxqMUhekV9sWkz3et3OjWzkWdIIGihRYgH5Gm9yQMmy7NPKb0u9lUZgiVhY1H7gASrt1FoApH-Oq8eWkByqCvCASTYln4YVL3k2VmAJTd6SckNK2sAsriCtVd99CzBE3gEmud0eSsKzsYOnTXeePb_fAi_goOuaCKIrFoEMcjOUYhVu-UAhdUVsRwdvpAYwK-90-B8kcxDRf9McuLZYrmGnFQ7oL8kXlCtqsDS30mz5vSviIIorNZ7xNcSyKjj8PLPfpuTzDvqB2WynAsqfyOP5gybFSW_FzVG6fRd3iUS3TvjMNUv1RQe4MDCD48IwhCjXUP4PRvuAhtZm_idJEsDMSNB8f4jPOKSdjZpEF5FTJ6DcHbtPNrt4ZWYUJBmkxc0LkZZmSesIJHQmsXyc0mJ494jRd8ZqKEzgrcSX4nAW_gKlNqhDFq-Iakam4CfO8G0M-HK3oG4swKScUjcizAuB8hE0uakLaXkk_3H0q-Wbhg4M9wu9bbmsYJrVgI01rL9360Y9PGwQrvgTUu8_Y0m5AjX_aeiktbcwrrIQ5yFLrGRY8TBCoLoQ71GCO4qLKNRvvY_OfEgelxWe4fG8 ",
         });
-    print(desEnc(response.body));
+    print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
-      return true;
+      return response;
     } else {
-      return false;
+      return null;
     }
   }
 
-  static Future<bool> direccion_post(data) async {
+  static Future<http.Response> direccion_post(String bearer, data) async {
     final response = await http.post('${URLS.BASE_URL}/address',
         body: data,
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiMmJhOTM4MjVmMzI2ZTRlN2JjMTBmNzViOThiNDE0OTNiNzA2OGRmMmRlYjA1NDczYTJkMTg5OTQ1ZGRkYWE5OWZjZTJlOTVmY2MyNjJjY2MiLCJpYXQiOjE1OTQ5NDU2ODMsIm5iZiI6MTU5NDk0NTY4MywiZXhwIjoxNjI2NDgxNjgzLCJzdWIiOiI1Iiwic2NvcGVzIjpbXX0.mvA8r16D2EGm7MoALZASlEaHzgLhFJ2XKDz-W8yPJ5RKkJYcCPLfhwefxoRuh-Bi43gXBIolxe22nrSADHelMG6UKxqMUhekV9sWkz3et3OjWzkWdIIGihRYgH5Gm9yQMmy7NPKb0u9lUZgiVhY1H7gASrt1FoApH-Oq8eWkByqCvCASTYln4YVL3k2VmAJTd6SckNK2sAsriCtVd99CzBE3gEmud0eSsKzsYOnTXeePb_fAi_goOuaCKIrFoEMcjOUYhVu-UAhdUVsRwdvpAYwK-90-B8kcxDRf9McuLZYrmGnFQ7oL8kXlCtqsDS30mz5vSviIIorNZ7xNcSyKjj8PLPfpuTzDvqB2WynAsqfyOP5gybFSW_FzVG6fRd3iUS3TvjMNUv1RQe4MDCD48IwhCjXUP4PRvuAhtZm_idJEsDMSNB8f4jPOKSdjZpEF5FTJ6DcHbtPNrt4ZWYUJBmkxc0LkZZmSesIJHQmsXyc0mJ494jRd8ZqKEzgrcSX4nAW_gKlNqhDFq-Iakam4CfO8G0M-HK3oG4swKScUjcizAuB8hE0uakLaXkk_3H0q-Wbhg4M9wu9bbmsYJrVgI01rL9360Y9PGwQrvgTUu8_Y0m5AjX_aeiktbcwrrIQ5yFLrGRY8TBCoLoQ71GCO4qLKNRvvY_OfEgelxWe4fG8 ",
         });
-    print(desEnc(response.body));
-    if (response.statusCode == 200) {
-      return true;
+    print(response.body);
+    if (response.statusCode == 201) {
+      return response;
     } else {
-      return false;
+      return null;
     }
   }
 
-  static Future<bool> direccion_put(data) async {
-    final response = await http.put('${URLS.BASE_URL}/address',
+  static Future<http.Response> direccion_put(id, data) async {
+    final response = await http.put('${URLS.BASE_URL}/address/$id',
         body: data,
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiMmJhOTM4MjVmMzI2ZTRlN2JjMTBmNzViOThiNDE0OTNiNzA2OGRmMmRlYjA1NDczYTJkMTg5OTQ1ZGRkYWE5OWZjZTJlOTVmY2MyNjJjY2MiLCJpYXQiOjE1OTQ5NDU2ODMsIm5iZiI6MTU5NDk0NTY4MywiZXhwIjoxNjI2NDgxNjgzLCJzdWIiOiI1Iiwic2NvcGVzIjpbXX0.mvA8r16D2EGm7MoALZASlEaHzgLhFJ2XKDz-W8yPJ5RKkJYcCPLfhwefxoRuh-Bi43gXBIolxe22nrSADHelMG6UKxqMUhekV9sWkz3et3OjWzkWdIIGihRYgH5Gm9yQMmy7NPKb0u9lUZgiVhY1H7gASrt1FoApH-Oq8eWkByqCvCASTYln4YVL3k2VmAJTd6SckNK2sAsriCtVd99CzBE3gEmud0eSsKzsYOnTXeePb_fAi_goOuaCKIrFoEMcjOUYhVu-UAhdUVsRwdvpAYwK-90-B8kcxDRf9McuLZYrmGnFQ7oL8kXlCtqsDS30mz5vSviIIorNZ7xNcSyKjj8PLPfpuTzDvqB2WynAsqfyOP5gybFSW_FzVG6fRd3iUS3TvjMNUv1RQe4MDCD48IwhCjXUP4PRvuAhtZm_idJEsDMSNB8f4jPOKSdjZpEF5FTJ6DcHbtPNrt4ZWYUJBmkxc0LkZZmSesIJHQmsXyc0mJ494jRd8ZqKEzgrcSX4nAW_gKlNqhDFq-Iakam4CfO8G0M-HK3oG4swKScUjcizAuB8hE0uakLaXkk_3H0q-Wbhg4M9wu9bbmsYJrVgI01rL9360Y9PGwQrvgTUu8_Y0m5AjX_aeiktbcwrrIQ5yFLrGRY8TBCoLoQ71GCO4qLKNRvvY_OfEgelxWe4fG8 "
         });
-    print(desEnc(response.body));
+    print(response.body);
     if (response.statusCode == 200) {
-      return true;
+      return response;
     } else {
-      return false;
+      return null;
     }
   }
 
-  static Future<bool> direccion_delete(data) async {
-    final response = await http.delete('${URLS.BASE_URL}/address',
+  static Future<http.Response> direccion_delete(int id) async {
+    final response = await http.delete('${URLS.BASE_URL}/address/$id',
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiMmJhOTM4MjVmMzI2ZTRlN2JjMTBmNzViOThiNDE0OTNiNzA2OGRmMmRlYjA1NDczYTJkMTg5OTQ1ZGRkYWE5OWZjZTJlOTVmY2MyNjJjY2MiLCJpYXQiOjE1OTQ5NDU2ODMsIm5iZiI6MTU5NDk0NTY4MywiZXhwIjoxNjI2NDgxNjgzLCJzdWIiOiI1Iiwic2NvcGVzIjpbXX0.mvA8r16D2EGm7MoALZASlEaHzgLhFJ2XKDz-W8yPJ5RKkJYcCPLfhwefxoRuh-Bi43gXBIolxe22nrSADHelMG6UKxqMUhekV9sWkz3et3OjWzkWdIIGihRYgH5Gm9yQMmy7NPKb0u9lUZgiVhY1H7gASrt1FoApH-Oq8eWkByqCvCASTYln4YVL3k2VmAJTd6SckNK2sAsriCtVd99CzBE3gEmud0eSsKzsYOnTXeePb_fAi_goOuaCKIrFoEMcjOUYhVu-UAhdUVsRwdvpAYwK-90-B8kcxDRf9McuLZYrmGnFQ7oL8kXlCtqsDS30mz5vSviIIorNZ7xNcSyKjj8PLPfpuTzDvqB2WynAsqfyOP5gybFSW_FzVG6fRd3iUS3TvjMNUv1RQe4MDCD48IwhCjXUP4PRvuAhtZm_idJEsDMSNB8f4jPOKSdjZpEF5FTJ6DcHbtPNrt4ZWYUJBmkxc0LkZZmSesIJHQmsXyc0mJ494jRd8ZqKEzgrcSX4nAW_gKlNqhDFq-Iakam4CfO8G0M-HK3oG4swKScUjcizAuB8hE0uakLaXkk_3H0q-Wbhg4M9wu9bbmsYJrVgI01rL9360Y9PGwQrvgTUu8_Y0m5AjX_aeiktbcwrrIQ5yFLrGRY8TBCoLoQ71GCO4qLKNRvvY_OfEgelxWe4fG8 "
         });
-    print(desEnc(response.body));
+    print(response.body);
     if (response.statusCode == 200) {
-      return true;
+      return response;
     } else {
-      return false;
+      return null;
     }
   }
 
