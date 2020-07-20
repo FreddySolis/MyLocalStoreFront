@@ -48,7 +48,7 @@ class _SingleImageUploadState extends State<SingleImageUpload> {
                     : null;
                 },
                 onSaved: (value) {
-                  upload.descrip = value;
+                  //upload.descrip = value;
                   return value;
                 },
               ),
@@ -62,7 +62,7 @@ class _SingleImageUploadState extends State<SingleImageUpload> {
               textColor: Colors.white,
               color: Colors.lightBlue,
               onPressed: (){
-                upload.uploadStatusImg(imgs,validateAndSave());
+                //upload.uploadStatusImg(imgs,validateAndSave());
                 clean();
               },
             )

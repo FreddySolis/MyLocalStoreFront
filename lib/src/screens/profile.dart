@@ -5,6 +5,7 @@ import 'package:login_app/Api/Api.dart';
 import 'dart:convert';
 import 'package:login_app/src/extras/variables.dart' as globals;
 
+
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
 

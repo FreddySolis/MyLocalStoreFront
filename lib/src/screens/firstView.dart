@@ -5,7 +5,8 @@ import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:login_app/src/extras/variables.dart' as globals;
 //routes
 import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/screens/productList.dart';
@@ -24,7 +25,21 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    isLogued();
     pushNotification.initialize();
+  }
+
+  void isLogued() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final token = prefs.getString('token') ?? '';
+print('token : ' + token);
+    if (token != '') {
+      globals.token = token;
+      await Api.get_UserByToken().then((value) => null);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ProductList()));
+    }
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -121,14 +136,21 @@ class _LoginState extends State<Login> {
                           ),
                           registerButtonColor,
                         ),
-                        RaisedButton(onPressed: () {
-                          Navigator.push(
-                              context,
-                              /*MaterialPageRoute(
+                        RaisedButton(
+                            child: Text('perfil'),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  /*MaterialPageRoute(
                                   builder: (context) => ProductForm(text: 'testSlug')));*/
-                                                                MaterialPageRoute(
-                                  builder: (context) => Profile() ) );
-                        })
+                                  MaterialPageRoute(
+                                      builder: (context) => Profile()));
+                            }),
+                        RaisedButton(
+                            child: Text('log'),
+                            onPressed: () {
+                              Api.logOut().then((value) => null);
+                            })
                       ],
                     ),
                   )),
