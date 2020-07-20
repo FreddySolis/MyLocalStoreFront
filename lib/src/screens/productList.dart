@@ -25,31 +25,50 @@ class ProductList extends StatefulWidget {
 class _ProductListState extends State<ProductList> {
   List data = new List();
   BuildContext context;
+  var categorias = new List<Categoria>();
+  List<DropdownMenuItem<Categoria>> _dropCategoria;
+  Categoria _selectCategoria;
+
 
   @override
   void initState() {
     getProducts();
     super.initState();
+    for(int i = 0; i < 5; i++){
+      Categoria cat = new Categoria(i, "Categoria$i");
+      categorias.add(cat);
+    }
+    _dropCategoria = buildDropdownMenuItems(categorias);
+    _selectCategoria = _dropCategoria[0].value;
   }
+
+  List<DropdownMenuItem<Categoria>> buildDropdownMenuItems(List categorias){
+    List<DropdownMenuItem<Categoria>> items = List();
+    for(Categoria cat in categorias){
+      items.add(DropdownMenuItem(
+        value: cat,
+        child: Text(cat.name),)
+      );
+    }
+    return items;
+  }
+
 
   @override
   Widget build(context) {
     return Container(
-        child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              backgroundColor: textcolor,
-              title: Text('Lista de productos'),
-            ),
-            body: Container(
-                child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(children: <Widget>[
-                Expanded(
-                  child: showProduct(context),
-                )
-              ]),
-            ))));
+      child: Scaffold(
+          body: Column(
+            children: <Widget>[
+              Container(
+                child: _drowdownListCategorias(),
+              ),
+              Expanded(
+                child: showProduct(context),
+              )
+            ],
+          )),
+    );
   }
 
   getProducts() async {
@@ -78,6 +97,21 @@ class _ProductListState extends State<ProductList> {
         });
       });
     });
+  }
+  onChangeDropItem(Categoria selectedCat){
+    print(selectedCat.id);
+    setState(() {
+      _selectCategoria = selectedCat;
+    });
+  }
+  Widget _drowdownListCategorias(){
+    return Container(
+      child: DropdownButton(
+        value: _selectCategoria,
+        items: _dropCategoria,
+        onChanged: onChangeDropItem,
+      ),
+    );
   }
 
   Widget showProduct(BuildContext cont) {
@@ -121,7 +155,11 @@ class _ProductListState extends State<ProductList> {
                   onTap: () => {showInfoProduct(cont, data[index])}));
         } else {
           return Card(
-            child: Text("Hello World"),
+            child: IconButton(
+              icon: Icon(Icons.error),
+              onPressed: (){},
+            ),
+            
           );
         }
       }),
@@ -259,6 +297,12 @@ class TextFormFields extends StatelessWidget {
       ),
     );
   }
+}
+
+class Categoria{
+  int id;
+  String name;
+  Categoria(this.id,this.name);
 }
 
 TextStyle cardTitles =

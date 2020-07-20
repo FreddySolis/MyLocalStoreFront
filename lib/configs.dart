@@ -43,3 +43,9 @@ Color submitFormButtonColor = Color(0xff00AABB);
 Color iconColor = Colors.grey;
 
 Color otherText = Colors.black;
+
+//--------- nuevos colores -------------
+Color primary = Colors.white;
+Color secondary = Color(0xff00AABB);
+Color buttons = Color(0xff007a8b);
+Color buttonsLight = Color(0xff5cdced);
