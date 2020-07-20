@@ -1,5 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:login_app/src/encrypt.dart';
+import 'package:login_app/src/extras/variables.dart' as globals;
+import 'dart:convert';
 
 class URLS {
   static const String BASE_URL = 'http://ec2-54-81-19-209.compute-1.amazonaws.com:8000';
@@ -9,7 +11,6 @@ class URLS {
 
 class Api {
   static Future<bool> login(data) async {
-
     final response = await http.post('${URLS.BASE_URL}/login',
         body: data,
         headers: {
@@ -18,6 +19,10 @@ class Api {
         });
         print(response.statusCode);
     if (response.statusCode >=200 && response.statusCode <=204) {
+      Map<String, dynamic> temp = jsonDecode(response.body);
+      globals.token = temp['token'];
+      get_UserByToken();
+
       return true;
     } else {
       return false;
@@ -138,6 +143,7 @@ class Api {
     }
   }
 
+    // ignore: non_constant_identifier_names
     static Future<bool> product_update(data,id) async {
     final response = await http.put('${URLS.BASE_URL}/products/$id',
         body: data,
@@ -149,6 +155,41 @@ class Api {
       return true;
     } else {
       return false;
+    }
+  }
+
+  //----------users-------
+      // ignore: non_constant_identifier_names
+    static Future<String> get_userInfoById(data,id) async {
+      print(data);
+    final response = await http.post('${URLS.BASE_URL}/products/$id',
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        });
+    if (response.statusCode >=200 && response.statusCode <=204) {
+      return response.body;
+    } else {
+      return '';
+    }
+  }
+
+     // ignore: non_constant_identifier_names
+    static Future<String> get_UserByToken() async {
+    final response = await http.get('${URLS.BASE_URL}/auth_user',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": 'Bearer ${globals.token}'
+        });
+        print(response.body);
+      Map<String, dynamic> temp = jsonDecode(response.body);
+      globals.rolId = temp['rol_id'];
+    if (response.statusCode >=200 && response.statusCode <=204) {
+      return response.body;
+    } else {
+      return '';
     }
   }
   

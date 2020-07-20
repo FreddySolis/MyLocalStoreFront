@@ -5,10 +5,11 @@ import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
+
 //routes
 import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/screens/productList.dart';
-import 'package:login_app/src/screens/productForm.dart';
+import 'package:login_app/src/screens/profile.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -123,8 +124,10 @@ class _LoginState extends State<Login> {
                         RaisedButton(onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProductForm(text: 'testSlug')));
+                              /*MaterialPageRoute(
+                                  builder: (context) => ProductForm(text: 'testSlug')));*/
+                                                                MaterialPageRoute(
+                                  builder: (context) => Profile() ) );
                         })
                       ],
                     ),
