@@ -12,7 +12,7 @@ double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
 int id;
-int count=5;
+int count=6;
 String slug;
 final TextEditingController name = TextEditingController();
 final TextEditingController price = TextEditingController();
