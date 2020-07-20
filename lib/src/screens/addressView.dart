@@ -40,22 +40,23 @@ class _AddressViewState extends State<AddressView> {
   _getAddress(){
     direcciones = [];
     Api.direccion_get("eo").then((value){
-      var jsonData = json.decode(value.body);
-      setState(() {
-        addressExist = true;
-        for(var i in jsonData){
-          Direccion direc = Direccion(i["id"],i["address"], i["contactphone"], i["indications"], i["street1"], i["street2"]);
-          direcciones.add(direc);
-        }
-      });
-      print(direcciones.length);
+      if(value != null){
+        var jsonData = json.decode(value.body);
+        setState(() {
+          addressExist = true;
+          for(var i in jsonData){
+            Direccion direc = Direccion(i["id"],i["address"], i["contactphone"], i["indications"], i["street1"], i["street2"]);
+            direcciones.add(direc);
+          }
+        });
+        print(direcciones.length);
+      }
     });
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffolKey,
-      appBar: _appbarr(),
       body: _body(),
     );
   }
