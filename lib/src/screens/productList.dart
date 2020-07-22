@@ -53,6 +53,27 @@ class _ProductListState extends State<ProductList> {
     return items;
   }
 
+  _getCategories(){
+    var categorias = new List<Categoria>();
+    Api.categorias_get("eo").then((value){
+      if(value != null){
+        var jsonData = json.decode(value.body);
+        setState((){
+          for(var i in jsonData){
+            Categoria cat = Categoria(i["id"],i["name"]);
+            categorias.add(cat);
+          }
+        });
+        _dropCategoria = buildDropdownMenuItems(categorias);
+        _selectCategoria = _dropCategoria[0].value;
+
+      }else{
+        print("Error");
+      }
+    });
+  }
+
+
 
   @override
   Widget build(context) {
