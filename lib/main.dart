@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login_app/src/screens/firstView.dart';
+import 'package:login_app/src/screens/mainView.dart';
 
 /*void main(){
   
@@ -8,7 +9,7 @@ import 'package:login_app/src/screens/firstView.dart';
       home: Login()
     )
   );
-}*
+}*/
 class StaticVariable{
 static String token = '' ;
 }
@@ -22,12 +23,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyStore',
-      initialRoute: "/Login",
+      initialRoute: "/MainView",
       routes: {
         '/Login':(context) => Login(),
-        '/ProductList':(context) => ProductList(),
-        '/Address':(context) => AddressView(),
-        '/MainCliente':(context) => MainClient(),
+        '/MainView':(context) => MainView(),
       },
     );
   }
