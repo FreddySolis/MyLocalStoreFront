@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/screens/addressView.dart';
 import 'package:login_app/src/screens/productList.dart';
 import 'package:login_app/src/screens/profile.dart';
 import 'package:login_app/src/screens/shoppingCar.dart';
+import 'package:login_app/src/extras/variables.dart' as globals;
 
 
 import 'firstView.dart';
@@ -16,9 +20,12 @@ class MainView extends StatefulWidget{
 class _MainView extends State<MainView>{
   int _select = 0;
   String _selectTitle = "Productos";
+  String name = "Cargando";
+  String email = "Cargando";
+
 
   @override
-  void initState() {
+  void initState() {;
     super.initState();
 
   }
@@ -29,6 +36,7 @@ class _MainView extends State<MainView>{
       case 2: return ShoppingCar();
     }
   }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -41,7 +49,7 @@ class _MainView extends State<MainView>{
 
       ),
       endDrawer: Drawer(
-          child: _listViewVendedor()
+          child: _listViewVendedor(),
       ),
       body: _getDrawerItemWidget(_select),
     );
@@ -51,11 +59,11 @@ class _MainView extends State<MainView>{
     return ListView(
       children: <Widget>[
         UserAccountsDrawerHeader(
-          accountName: Text("Joseph Joestar"),
-          accountEmail: Text("joseph@hotmail.com"),
+          accountName: Text(name),
+          accountEmail: Text(email),
           currentAccountPicture: CircleAvatar(
             backgroundColor: Colors.red,
-            child: Text("J", style: TextStyle(fontSize: 40),),
+            child: Text(name[0], style: TextStyle(fontSize: 40),),
           ),
         ),
         ListTile(

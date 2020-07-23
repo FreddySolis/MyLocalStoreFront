@@ -28,17 +28,31 @@ class _CreateSeller extends State<CreateSeller>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(
+        title: Row(
+          children: <Widget>[
+            Text("Crear Vendedor"),
+          ],
+        ),
+      ),
       body:SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(),
           child: Form(
             key: formKey,
-            child:Column(
-              children: <Widget>[
-                _addressInputs(),
-                _buttonSellerCreate()
-              ],
-            ) ,
+            child:Container(
+              margin: EdgeInsets.all(20.0),
+
+              child: Column(
+                children: <Widget>[
+                  _addressInputs(),
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    child: _buttonSellerCreate(),
+                  )
+                ],
+              ) ,
+            )
           )
         ),
       )
@@ -272,8 +286,8 @@ class _CreateSeller extends State<CreateSeller>{
           mapData["password"] = passwordController.text;
           mapData["password_confirmation"] = passwordController2.text;
           mapData["rol_id"] = "2";
-          //mapData["birthday"] = calendarController.text;
-          mapData["birthday"] = "12-12-12";
+          mapData["birthday"] = calendarController.text;
+          //mapData["birthday"] = "12-12-12";
           mapData["genre"] = _selectGenero;
           mapData["phone"] = phoneController.text;
           print(JsonEncoder().convert(mapData));
@@ -293,8 +307,8 @@ class _CreateSeller extends State<CreateSeller>{
         }
 
       },
-      padding: EdgeInsets.all(8.0),
-      color: Colors.lightGreen,
+      padding: EdgeInsets.fromLTRB(80, 0, 80, 0),
+      color: textcolor,
       child: Text(
         "Aceptar",
         style: TextStyle(

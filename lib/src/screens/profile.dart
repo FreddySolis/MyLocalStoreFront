@@ -5,6 +5,8 @@ import 'package:login_app/Api/Api.dart';
 import 'dart:convert';
 import 'package:login_app/src/extras/variables.dart' as globals;
 
+import 'createSeller.dart';
+
 
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
@@ -141,9 +143,9 @@ class _ProfileState extends State<Profile> {
                         SingleChildScrollView(
                           child: Column(
                             children: <Widget>[
-                              profileCard('$cardName1', icon1, 1),
-                              profileCard('$cardName2', icon2, 2),
-                              profileCard('$cardName3', icon3, 3)
+                              profileCard('$cardName1', icon1, 1, context),
+                              profileCard('$cardName2', icon2, 2, context),
+                              profileCard('$cardName3', icon3, 3, context)
                             ],
                           ),
                         )
@@ -156,7 +158,7 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-Widget profileCard(String text, Icon icon, int idCard) {
+Widget profileCard(String text, Icon icon, int idCard, context) {
   return SizedBox(
     height: 130,
     width: 300,
@@ -181,13 +183,13 @@ Widget profileCard(String text, Icon icon, int idCard) {
             ],
           ),
           onTap: () {
-            actions(idCard);
+            actions(idCard, context);
           },
         )),
   );
 }
 
-void actions(int idCard) {
+void actions(int idCard, context) {
   if (globals.rolId == 1) {
     switch (idCard) {
       case 1:
@@ -222,10 +224,12 @@ void actions(int idCard) {
     switch (idCard) {
       case 1:
         print('test 3');
+        Navigator.of(context).pushNamed("/createSeller");
+
         break;
       case 2:
-        break;
 
+        break;
       case 3:
         break;
 
@@ -271,10 +275,10 @@ Widget customAppBar() {
     centerTitle: true,
     backgroundColor: secondary,
     actions: <Widget>[
-      Container(
+      /*Container(
         margin: EdgeInsets.only(right: 5),
         child: Icon(Icons.menu),
-      )
+      )*/
     ],
     elevation: 0,
   );
