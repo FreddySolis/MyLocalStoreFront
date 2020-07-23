@@ -239,4 +239,35 @@ class Api {
       return null;
     }
   }
+  
+  //ShoppingCar
+   static Future<bool> add_ShoppingCar(data) async {
+    final response = await http.post('${URLS.BASE_URL}/add-to-sc/',
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": '${globals.token}'
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<String> get_ShoppingCar() async {
+    final response = await http.get('${URLS.BASE_URL}/prods-of-sc/',
+    headers: {
+      "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": '${globals.token}',
+    });
+
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
 }
