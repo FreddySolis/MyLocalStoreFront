@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:login_app/src/screens/createSeller.dart';
 import 'package:login_app/src/screens/firstView.dart';
+import 'package:login_app/src/screens/mainView.dart';
+import 'package:login_app/src/screens/productForm.dart';
 
 void main(){
   
@@ -27,9 +30,9 @@ class MyApp extends StatelessWidget {
       initialRoute: "/Login",
       routes: {
         '/Login':(context) => Login(),
-        '/ProductList':(context) => ProductList(),
-        '/Address':(context) => AddressView(),
-        '/MainCliente':(context) => MainClient(),
+        '/MainView':(context) => MainView(),
+        '/createSeller':(context) => CreateSeller(),
+        '/createProduct':(context) => ProductForm(),
       },
     );
   }

@@ -5,6 +5,7 @@ import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
+import 'package:login_app/src/screens/mainView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
 import 'package:login_app/src/widgets/makePayment.dart';
@@ -38,7 +39,7 @@ class _LoginState extends State<Login> {
     if (token != '') {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
-      Navigator.of(context).pushNamed('/MainView');
+
       /*Navigator.push(
           context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }
@@ -195,8 +196,9 @@ class _LoginState extends State<Login> {
               print(JsonEncoder().convert(mapData));
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProductList()));
+                  Navigator.of(context).pushNamed('/MainView');
+                  /*Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProductList()));*/
                 } else {
                   showDialog(
                       builder: (context) => AlertDialog(
