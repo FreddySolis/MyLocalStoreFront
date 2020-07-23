@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:login_app/configs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
+import 'package:login_app/src/widgets/makePayment.dart';
 //routes
 import 'package:login_app/src/secondView.dart';
 import 'package:login_app/src/screens/productList.dart';
@@ -33,7 +34,7 @@ class _LoginState extends State<Login> {
     final prefs = await SharedPreferences.getInstance();
 
     final token = prefs.getString('token') ?? '';
-print('token : ' + token);
+    print('token : ' + token);
     if (token != '') {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
@@ -151,6 +152,16 @@ print('token : ' + token);
                             child: Text('log'),
                             onPressed: () {
                               Api.logOut().then((value) => null);
+                            }),
+                        RaisedButton(
+                            child: Text('test paypal'),
+                            onPressed: () {
+                                                            Navigator.push(
+                                  context,
+                                  /*MaterialPageRoute(
+                                  builder: (context) => ProductForm(text: 'testSlug')));*/
+                                  MaterialPageRoute(
+                                      builder: (context) => makePayment()));
                             })
                       ],
                     ),
