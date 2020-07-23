@@ -39,7 +39,7 @@ class _AddressViewState extends State<AddressView> {
   }
   _getAddress(){
     direcciones = [];
-    Api.direccion_get("eo").then((value){
+    Api.direccion_get().then((value){
       if(value != null){
         var jsonData = json.decode(value.body);
         setState(() {
@@ -241,7 +241,7 @@ class _AddressViewState extends State<AddressView> {
               mapData["street1"] = street1.text;
               mapData["street2"] = street2.text;
               print(JsonEncoder().convert(mapData));
-              Api.direccion_post("eo",JsonEncoder().convert(mapData)).then((value){
+              Api.direccion_post(JsonEncoder().convert(mapData)).then((value){
                 var jsonData = json.decode(value.body);
                 if(jsonData["messaje"] != "Dirección guardada exitosamente"){
                   print(value.body);

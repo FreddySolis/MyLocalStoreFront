@@ -38,7 +38,7 @@ print('token : ' + token);
     if (token != '') {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
-      Navigator.of(context).pushNamed('/MainView');
+
       /*Navigator.push(
           context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }
@@ -185,8 +185,9 @@ print('token : ' + token);
               print(JsonEncoder().convert(mapData));
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainView()));
+                  Navigator.of(context).pushNamed('/MainView');
+                  /*Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProductList()));*/
                 } else {
                   showDialog(
                       builder: (context) => AlertDialog(
