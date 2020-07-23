@@ -33,13 +33,8 @@ class _ProductListState extends State<ProductList> {
   @override
   void initState() {
     getProducts();
+    getCategories();
     super.initState();
-    for (int i = 0; i < 5; i++) {
-      Categoria cat = new Categoria(i, "Categoria$i");
-      categorias.add(cat);
-    }
-    _dropCategoria = buildDropdownMenuItems(categorias);
-    _selectCategoria = _dropCategoria[0].value;
   }
 
   List<DropdownMenuItem<Categoria>> buildDropdownMenuItems(List categorias) {
@@ -98,8 +93,67 @@ class _ProductListState extends State<ProductList> {
     });
   }
 
-  onChangeDropItem(Categoria selectedCat) {
+  getCategories() async {
+    var categorias = new List<Categoria>();
+    Categoria cat = Categoria(0,"Todos");
+    categorias.add(cat);
+    Api.categorias_get().then((value){
+      if(value != null){
+        var jsonData = json.decode(value.body);
+        setState((){
+          for(var i in jsonData){
+            Categoria cat = Categoria(i["id"],i["name"]);
+            categorias.add(cat);
+          }
+        });
+        _dropCategoria = buildDropdownMenuItems(categorias);
+        _selectCategoria = _dropCategoria[0].value;
+
+      }else{
+        print("Error");
+      }
+    });
+  }
+
+  filtrerProducts(id) async{
+    List<Product> fireTemp = [];
+    List dataTemp;
+
+    Api.products_by_categories(id).then((value){
+      if(value != null){
+        dataTemp = json.decode(value.body);
+        productsRef.once().then((DataSnapshot snap) {
+          var keys = snap.value.keys;
+          var dat = snap.value;
+
+          for (var oneKey in keys) {
+            Product pro = Product(dat[oneKey]['img'], dat[oneKey]['slug']);
+            fireTemp.add(pro);
+          }
+          for (int i = 0; i < dataTemp.length; i++) {
+            fireTemp.forEach((g) => {
+              if (dataTemp[i]['slug'] == g.slug)
+                {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
+            });
+          }
+          setState(() {
+            data = dataTemp;
+          });
+        });
+
+      }else{
+        print("Error");
+      }
+    });
+  }
+
+  onChangeDropItem(Categoria selectedCat){
     print(selectedCat.id);
+    if(selectedCat.id!=0){
+      filtrerProducts(selectedCat.id);
+    }else{
+      getProducts();
+    }
     setState(() {
       _selectCategoria = selectedCat;
     });

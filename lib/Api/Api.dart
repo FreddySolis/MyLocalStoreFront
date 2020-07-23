@@ -59,7 +59,7 @@ class Api {
           "Content-Type": "application/json",
           "Accept": "application/json"
         });
-    print(desEnc(response.body));
+    print(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -224,7 +224,7 @@ class Api {
   }
 
   //----------categorias-------
-  static Future<http.Response> categorias_get(String categories) async {
+  static Future<http.Response> categorias_get() async {
     final response = await http.get('${URLS.BASE_URL}/categories/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -232,6 +232,20 @@ class Api {
       '${globals.token}'
     });
     print(response.body);
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<http.Response> products_by_categories(id) async {
+    final response = await http.get('${URLS.BASE_URL}/prod_by_category/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    });
+    //print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
       return response;
