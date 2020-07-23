@@ -5,6 +5,7 @@ import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
+import 'package:login_app/src/screens/mainView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
 //routes
@@ -185,7 +186,7 @@ print('token : ' + token);
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProductList()));
+                      MaterialPageRoute(builder: (context) => MainView()));
                 } else {
                   showDialog(
                       builder: (context) => AlertDialog(

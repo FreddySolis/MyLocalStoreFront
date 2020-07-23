@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:login_app/src/screens/addressView.dart';
 import 'package:login_app/src/screens/productList.dart';
 import 'package:login_app/src/screens/profile.dart';
+import 'package:login_app/src/screens/shoppingCar.dart';
+
 
 import 'firstView.dart';
 
@@ -24,6 +26,7 @@ class _MainView extends State<MainView>{
     switch(p){
       case 0: return ProductList();
       case 1: return Profile();
+      case 2: return ShoppingCar();
     }
   }
   @override

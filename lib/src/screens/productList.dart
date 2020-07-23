@@ -13,6 +13,7 @@ final TextEditingController stock = TextEditingController();
 final TextEditingController description = TextEditingController();
 final TextEditingController size = TextEditingController();
 final TextEditingController category = TextEditingController();
+final TextEditingController quantity = TextEditingController();
 final productsRef = FirebaseDatabase.instance.reference().child("Products");
 
 class ProductList extends StatefulWidget {
@@ -29,12 +30,11 @@ class _ProductListState extends State<ProductList> {
   List<DropdownMenuItem<Categoria>> _dropCategoria;
   Categoria _selectCategoria;
 
-
   @override
   void initState() {
     getProducts();
     super.initState();
-    for(int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++) {
       Categoria cat = new Categoria(i, "Categoria$i");
       categorias.add(cat);
     }
@@ -42,32 +42,31 @@ class _ProductListState extends State<ProductList> {
     _selectCategoria = _dropCategoria[0].value;
   }
 
-  List<DropdownMenuItem<Categoria>> buildDropdownMenuItems(List categorias){
+  List<DropdownMenuItem<Categoria>> buildDropdownMenuItems(List categorias) {
     List<DropdownMenuItem<Categoria>> items = List();
-    for(Categoria cat in categorias){
+    for (Categoria cat in categorias) {
       items.add(DropdownMenuItem(
         value: cat,
-        child: Text(cat.name),)
-      );
+        child: Text(cat.name),
+      ));
     }
     return items;
   }
-
 
   @override
   Widget build(context) {
     return Container(
       child: Scaffold(
           body: Column(
-            children: <Widget>[
-              Container(
-                child: _drowdownListCategorias(),
-              ),
-              Expanded(
-                child: showProduct(context),
-              )
-            ],
-          )),
+        children: <Widget>[
+          Container(
+            child: _drowdownListCategorias(),
+          ),
+          Expanded(
+            child: showProduct(context),
+          )
+        ],
+      )),
     );
   }
 
@@ -88,9 +87,9 @@ class _ProductListState extends State<ProductList> {
         }
         for (int i = 0; i < dataTemp.length; i++) {
           fireTemp.forEach((g) => {
-            if (dataTemp[i]['slug'] == g.slug)
-              {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
-          });
+                if (dataTemp[i]['slug'] == g.slug)
+                  {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
+              });
         }
         setState(() {
           data = dataTemp;
@@ -98,13 +97,15 @@ class _ProductListState extends State<ProductList> {
       });
     });
   }
-  onChangeDropItem(Categoria selectedCat){
+
+  onChangeDropItem(Categoria selectedCat) {
     print(selectedCat.id);
     setState(() {
       _selectCategoria = selectedCat;
     });
   }
-  Widget _drowdownListCategorias(){
+
+  Widget _drowdownListCategorias() {
     return Container(
       child: DropdownButton(
         value: _selectCategoria,
@@ -127,10 +128,8 @@ class _ProductListState extends State<ProductList> {
                   child: Column(children: <Widget>[
                     Container(
                         child: Center(
-                            child: 
-                              Image.network(data[index]['img'],
-                                width: 700,
-                                height: 180))),
+                            child: Image.network(data[index]['img'],
+                                width: 700, height: 180))),
                     Container(
                       margin: EdgeInsets.all(5),
                       child: Column(
@@ -157,9 +156,8 @@ class _ProductListState extends State<ProductList> {
           return Card(
             child: IconButton(
               icon: Icon(Icons.error),
-              onPressed: (){},
+              onPressed: () {},
             ),
-            
           );
         }
       }),
@@ -167,8 +165,57 @@ class _ProductListState extends State<ProductList> {
   }
 }
 
+  addShopping(int idProduct,int numProduct, BuildContext c) async{
+    var mapData = new Map<String, int>();
+    mapData['product_id'] = idProduct;
+    mapData['quantity'] = numProduct;
+
+    print(JsonEncoder().convert(mapData));
+    await Api.add_ShoppingCar(JsonEncoder().convert(mapData)).then((sucess){
+      if (sucess) {
+        showDialog(
+          builder: (context) => AlertDialog(
+            title: Text('Agregado al carrito'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(c).pop();
+                },
+                child: Text('Ok'),
+              )
+            ],
+          ),
+          context: c
+        );
+          return;
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => ProductList()));
+      } else {
+        showDialog(
+          builder: (context) => AlertDialog(
+            title: Text('error al agregar a compra'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(c).pop();
+                },
+                child: Text('Ok'),
+              )
+            ],
+          ),
+          context: c
+        );
+          return;
+      }
+    }).catchError((onError){print("ESTE ES EL ERROR $onError");});
+
+  }
+
 void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {
   List imgList = [];
+  var quant=1;
 
   productsRef
       .orderByChild("slug")
@@ -189,6 +236,7 @@ void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {
     stock.text = infoProduct["stock"].toString();
     description.text = infoProduct["description"];
     size.text = infoProduct["size"];
+    quantity.text = quant.toString();
 
     showDialog(
         context: conte,
@@ -236,8 +284,62 @@ void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {
                                     child: Icon(Icons.add_shopping_cart),
                                     backgroundColor: const Color(0xFF1BC0C5),
                                     onPressed: () {
-                                      Navigator.of(contextPop).pop();
-                                      cleanFields();
+                                       showDialog(
+                                        context: contextPop,
+                                        builder: (BuildContext contextPop2) {
+                                          return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20.0)),
+                                              child: SizedBox(
+                                                height: 150,
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      ListTile(
+                                                        title: Row(
+                                                          children: <Widget>[
+                                                            Expanded(
+                                                              child: FloatingActionButton(
+                                                                  onPressed: () {
+                                                                    if(quant==0){
+                                                                      quant = 0;
+                                                                      quantity.text = quant.toString();
+                                                                    }else{
+                                                                      quant = quant-1;
+                                                                      quantity.text = quant.toString();
+                                                                    }
+                                                                    // Navigator.of(contextPop2).pop();
+                                                                  },
+                                                                  child: Icon(Icons.remove)),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                              TextFormField(
+                                                                textAlign: TextAlign.center,
+                                                                controller: quantity,
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: FloatingActionButton(
+                                                                  onPressed: () {
+                                                                    quant = quant+1;
+                                                                    quantity.text = quant.toString();
+                                                                    // Navigator.of(contextPop2).pop();
+                                                                  },
+                                                                  child: Icon(Icons.add)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10,),
+                                                      FloatingActionButton(
+                                                        onPressed: () {
+                                                          addShopping(infoProduct['id'],quant,contextPop2);
+                                                        },
+                                                        child: Icon(Icons.done),
+                                                      )
+                                                    ],
+                                                  )));
+                                        });
                                     },
                                   )),
                                   Expanded(
@@ -299,10 +401,10 @@ class TextFormFields extends StatelessWidget {
   }
 }
 
-class Categoria{
+class Categoria {
   int id;
   String name;
-  Categoria(this.id,this.name);
+  Categoria(this.id, this.name);
 }
 
 TextStyle cardTitles =
