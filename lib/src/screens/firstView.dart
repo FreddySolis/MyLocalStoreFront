@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/providers/push_notifications_provider.dart';
@@ -23,6 +24,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final pushNotification = new PushNotificationProvider();
+  Widget svg = SvgPicture.network(
+    'https://firebasestorage.googleapis.com/v0/b/mystore-54a31.appspot.com/o/logo%2Flogo.svg?alt=media&token=a0872a7f-be0b-478f-bd4d-212f2ec7463c',
+    semanticsLabel: 'Acme Logo'
+  );
 
   @override
   void initState() {
@@ -66,27 +71,7 @@ class _LoginState extends State<Login> {
                       children: <Widget>[
                         Container(
                           height: 400,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  //https://steamuserimages-a.akamaihd.net/ugc/787413668525333111/FAAB46B13296369D7FD9F07E7B44A982A8665D8C/
-                                  //https://dynamic.brandcrowd.com/asset/logo/a7113a63-6440-47bd-8e20-ce74be61571c/logo?v=4&text=shop
-                                  image: NetworkImage(
-                                      'https://steamuserimages-a.akamaihd.net/ugc/787413668525333111/FAAB46B13296369D7FD9F07E7B44A982A8665D8C/'),
-                                  fit: BoxFit.cover)),
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                padding:
-                                    EdgeInsets.fromLTRB(0.0, 250.0, 0.0, 0.0),
-                                child: Text('MyStore',
-                                    style: TextStyle(
-                                        fontSize: 75.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: textcolor,
-                                        fontFamily: 'Monserrat')),
-                              ),
-                            ],
-                          ),
+                          child: svg,
                         ),
                         SizedBox(
                           height: 10.0,
