@@ -11,31 +11,7 @@ class ShoppingList extends StatefulWidget {
 }
 
 class _ShoppingListState extends State<ShoppingList> {
-  List data = [{
-        "created_at": "2020-03-16 16:10:51",
-        "deleted_at": null,
-        "id": 2,
-        "is_active": 1,
-        "name": "Maybank",
-        "updated_at": "2020-03-16 16:18:06"
-      },
-      {
-        "created_at": "2020-03-16 16:27:37",
-        "deleted_at": null,
-        "id": 3,
-        "is_active": 1,
-        "name": "India International Bank (Malaysia) Berhad",
-        "updated_at": "2020-03-16 16:27:37"
-      },
-      {
-        "created_at": "2020-03-16 16:27:37",
-        "deleted_at": null,
-        "id": 4,
-        "is_active": 1,
-        "name": "National Bank of Abu Dhabi Malaysia Berhad",
-        "updated_at": "2020-03-16 16:27:37"
-      }];
-  int total = 0;
+  List data = new List();
 
   @override
   void initState() {
@@ -50,8 +26,8 @@ class _ShoppingListState extends State<ShoppingList> {
         body: Column(children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                children: List.generate(data.length, (index) {
+                child: Column(
+                    children: List.generate(data.length, (index) {
               return Center(
                 child: Column(children: <Widget>[
                   Card(
@@ -61,63 +37,65 @@ class _ShoppingListState extends State<ShoppingList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          // Container(
-                          //   child: Image.network(
-                          //       'https://images.rappi.com.mx/restaurants_background/food-inn-comida-china-home1-1569623118508.png?d=200x200',
-                          //       fit: BoxFit.fill),
-                          // ),
                           Container(
                             margin: EdgeInsets.all(15),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Center(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text(
-                                        "Compra ${data[index]['name']}",
-                                        style: cardTitles,
-                                      ),
-                                      Text(
-                                        "Fecha ${data[index]['created_at']}",
-                                        style: cardText,
-                                      ),
-                                      // Text(
-                                      //   'Cantidad: ${data[index]['cantidad']}',
-                                      //   style: cardText,
-                                      // ),
-                                      // Text(
-                                      //   'Subtotal: \$ ${data[index]['subtotal']}',
-                                      //   style: cardText,
-                                      // ),
-                                    ]
-                                  )
-                                ),  
+                                    child: Column(children: <Widget>[
+                                  Text(
+                                    "Monto total de compra: ${data[index]['cart_total']}",
+                                    style: cardTitles,
+                                  ),
+                                  Text(
+                                    "Fecha de la compra ${data[index]['created_at']}",
+                                    style: cardText,
+                                  ),
+                                ])),
                               ],
                             ),
                           )
                         ],
                       ),
-                       onTap: () => { showDialog(
-                        context: context,
-                        builder: (BuildContext contextPop) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                            child: SizedBox(
-                              height: 150,
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "ID ${data[index]['id']}",
-                                    style: cardTitles,
-                                  ),
-                                ]
-                              )
-                            )                      
-                          );
-                        }
-                       ),
+                      onTap: () => {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext contextPop) {
+                              return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
+                                  child: SingleChildScrollView(
+                                      child: SizedBox(
+                                          child: Column(children: <Widget>[
+                                    Card(
+                                        child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "Producto:  ${data[index]['name']}",
+                                          style: cardTitles,
+                                        ),
+                                        Text(
+                                          "Precio: \$ ${data[index]['price']}",
+                                          style: cardTitles,
+                                        ),
+                                        Text(
+                                          "Cantidad:  ${data[index]['quantity']}",
+                                          style: cardTitles,
+                                        ),
+                                        Text(
+                                          "Porción:  ${data[index]['size']}",
+                                          style: cardTitles,
+                                        ),
+                                        Text(
+                                          "Subtotal:  ${data[index]['subtotal']}",
+                                          style: cardTitles,
+                                        ),
+                                      ],
+                                    ))
+                                  ]))));
+                            }),
                       },
                     ),
                   ),
@@ -125,54 +103,42 @@ class _ShoppingListState extends State<ShoppingList> {
               );
             }))),
           ),
-          SizedBox(
-            height: 100,
-            child:Center(
-            child: Text(
-              "Monto total: \$ $total"),
-            ) ,
-          )
-          
         ]),
       ),
     );
   }
 
   getBuysUser() async {
-    int suma = 0;
+    List temp;
     List dataTemp;
-    List aux2 = [];
-    Map<String, dynamic> aux;
 
-    await Api.get_AllPayment().then((onValue){
-      print("====ESTO ES onValue====");
-      print(onValue);
+    await Api.get_AllPayment().then((onValue) {
+      dataTemp = jsonDecode(onValue);
     });
-    // await Api.get_UsersPayment(3).then((sucess) {
-    //   dataTemp = jsonDecode(sucess);
-    //   // aux = jsonDecode(sucess);
-    //   print("====ESTO ES DATATEMP====");
-    //   print(dataTemp);
-    // });
-    // dataTemp.forEach((value) async {
-    //   var slug = value['product_id'];
-    //   await Api.product_getBySlug(slug).then((succes) {
-    //     aux = jsonDecode(succes);
-    //     suma = suma + (aux['price'] * value['quantity']);
-    //     aux['subtotal'] = suma;
-    //     total = total + suma;
-    //     aux['cantidad'] = value['quantity'];
-    //     aux2.add(aux);
-    //     suma = 0;
-    //     print("Valor AUX ${aux}");
-    //   });
-      setState(() {
 
-        // print("total = $total");
-        // data2 = aux2;
-        // data = dataTemp;
+    for (var i = 0; i < dataTemp.length; i++) {
+      await Api.get_UsersPayment(dataTemp[i]['sc_id']).then((sucess) {
+        temp = jsonDecode(sucess);
+        for (var i = 0; i < temp.length; i++) {
+          var a = [
+            temp[i]['product']['price'],
+            temp[i]['quantity'],
+            temp[i]['subtotal'],
+            temp[i]['product']['name'],
+            temp[i]['product']['size']
+          ];
+          dataTemp[i]['price'] = a[0];
+          dataTemp[i]['quantity'] = a[1];
+          dataTemp[i]['subtotal'] = a[2];
+          dataTemp[i]['name'] = a[3];
+          dataTemp[i]['size'] = a[4];
+        }
       });
-    // });
+    }
+
+    setState(() {
+      data = dataTemp;
+    });
   }
 }
 
