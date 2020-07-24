@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/widgets/calendar.dart';
-
+import 'package:login_app/src/encrypt.dart';
 import '../../configs.dart';
 
 final TextEditingController calendarController = TextEditingController();
@@ -283,13 +283,13 @@ class _CreateSeller extends State<CreateSeller>{
           mapData["name"] = nameController.text;
           mapData["last_name"] = lastnameController.text;
           mapData["email"] = emailController.text;
-          mapData["password"] = passwordController.text;
-          mapData["password_confirmation"] = passwordController2.text;
+          mapData["password"] = enc(passwordController.text);
+          mapData["password_confirmation"] = enc(passwordController2.text);
           mapData["rol_id"] = "2";
           mapData["birthday"] = calendarController.text;
           //mapData["birthday"] = "12-12-12";
           mapData["genre"] = _selectGenero;
-          mapData["phone"] = phoneController.text;
+          mapData["phone"] = enc(phoneController.text);
           print(JsonEncoder().convert(mapData));
           if(passwordController.text == passwordController2.text){
             Api.registro(JsonEncoder().convert(mapData)).then((value) {

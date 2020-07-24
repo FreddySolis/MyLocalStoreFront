@@ -89,6 +89,7 @@ Widget textFormField(String name, TextEditingController controller){
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, fontFamily: 'Monserrat'),
       obscureText: false,
       controller: controller,
+      enabled: false,
       decoration: InputDecoration(
         labelText: name,
         labelStyle:placeHolderStyle,

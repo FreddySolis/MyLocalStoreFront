@@ -15,9 +15,7 @@ class Profile extends StatefulWidget {
   _ProfileState createState() => _ProfileState();
 }
 
-String name = 'Daniel';
-String last_name = 'Guerra';
-String email = 'Dani_guerr@hotmail.com';
+
 
 String cardName1 = '';
 String cardName2 = '';
@@ -42,12 +40,11 @@ Icon icon3 = Icon(
 class _ProfileState extends State<Profile> {
   @override
   void initState() {
-    initData();
     initNamesCards();
     super.initState();
   }
 
-  void initData() async {
+  /*void initData() async {
     Map<String, dynamic> dataTemp;
     await Api.get_UserByToken().then((sucess) {
       dataTemp = jsonDecode(sucess);
@@ -57,7 +54,7 @@ class _ProfileState extends State<Profile> {
       last_name = dataTemp['last_name'].toString();
       email = dataTemp['email'].toString();
     });
-  }
+  }*/
 
   initNamesCards() {
     setState(() {
@@ -258,7 +255,7 @@ Widget customAppBar() {
                   ),
                   Padding(padding: EdgeInsets.only(left: 10)),
                   Text(
-                    '$name' + ' $last_name',
+                    '${globals.name}' + ' ${globals.lastName}',
                     style: textStyle,
                   )
                 ],
@@ -266,7 +263,7 @@ Widget customAppBar() {
               Container(
                   margin: EdgeInsets.only(left: 50),
                   child: Text(
-                    '#$email',
+                    '#${globals.email}',
                     style: textStyleSubText,
                   ))
             ],

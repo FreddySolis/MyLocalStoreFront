@@ -25,8 +25,7 @@ void setDate(DateTime dateTime) {
 }
 
 class SecondView extends StatefulWidget {
-    final String text;
-  SecondView({this.text, Key key}) : super(key: key);
+  SecondView({ Key key}) : super(key: key);
 
   @override
   _SecondViewState createState() => _SecondViewState();
@@ -36,13 +35,13 @@ class _SecondViewState extends State<SecondView> {
 
     @override
   void initState() {
-    initData(widget.text);
+    initData();
     super.initState();
   }
 
-    void initData(String text) async {
+    void initData() async {
     List dataTemp;
-    await Api.get_userInfoById(text,widget.text).then((sucess) {
+    await Api.get_UserByToken().then((sucess) {
       dataTemp = jsonDecode(sucess);
     });
     setState(() {
@@ -138,7 +137,7 @@ class _SecondViewState extends State<SecondView> {
           formKey.currentState.save();
           mapData['birthday'] = calendarController.text;
           mapData['genre'] = 'm';
-          Api.registro(JsonEncoder().convert(mapData)).then((sucess) {
+          Api.update_user(JsonEncoder().convert(mapData)).then((sucess) {
             if (sucess) {
               showDialog(
                   builder: (context) => AlertDialog(
@@ -274,7 +273,7 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = enc(value);
+        mapData[mapName] = value;
       },
     );
   }
@@ -344,7 +343,7 @@ class _SecondViewState extends State<SecondView> {
       onSaved: (String value) {
         print(mapName);
         print(value);
-        mapData[mapName] = enc(value);
+        mapData[mapName] = value;
       },
     );
   }
