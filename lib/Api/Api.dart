@@ -284,4 +284,35 @@ class Api {
       return null;
     }
   }
+
+  //Pays
+  static Future<String> get_UsersPayment(id) async {
+    final response = await http.get('${URLS.BASE_URL}/products_by_cars/$id',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    });
+
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<String> get_AllPayment() async {
+    final response = await http.post('${URLS.BASE_URL}/user-payments/',
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    });
+
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
 }
