@@ -214,7 +214,8 @@ class Api {
       "Authorization": '${globals.token}'
     });
     print(response.body);
-    Map<String, dynamic> temp = jsonDecode(response.body);
+    //Map<String, dynamic> temp = jsonDecode(response.body);
+    Map<String, dynamic> temp = json.decode(response.body);
     globals.rolId = temp['rol_id'];
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
@@ -280,6 +281,23 @@ class Api {
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  //----------Ventas-------
+  static Future<http.Response> get_Ventas() async {
+    final response = await http.get('${URLS.BASE_URL}/all-payments/', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization":
+      '${globals.token}'
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      //print(response.body);
+      return response;
     } else {
       return null;
     }

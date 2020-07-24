@@ -196,7 +196,7 @@ class _LoginState extends State<Login> {
               print(JsonEncoder().convert(mapData));
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
-                  Navigator.of(context).pushNamed('/MainView');
+                  Navigator.of(context).pushReplacementNamed('/MainView');
                   /*Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProductList()));*/
                 } else {

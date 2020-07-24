@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:login_app/src/screens/addressView.dart';
 import 'package:login_app/src/screens/createSeller.dart';
 import 'package:login_app/src/screens/firstView.dart';
 import 'package:login_app/src/screens/mainView.dart';
+import 'package:login_app/src/screens/paymentsView.dart';
 import 'package:login_app/src/screens/productForm.dart';
 
 void main(){
@@ -16,8 +18,8 @@ class StaticVariable{
 static String token = '' ;
 }
 
-/*
-void main(){
+
+/*void main(){
   runApp(MyApp());
 }
 
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         '/MainView':(context) => MainView(),
         '/createSeller':(context) => CreateSeller(),
         '/createProduct':(context) => ProductForm(),
+        '/sellers':(context) => PaymentsView(),
+        '/address':(context) => AddressView(),
       },
     );
   }

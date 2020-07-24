@@ -32,7 +32,7 @@ class _MainView extends State<MainView>{
   _getDrawerItemWidget(int p){
     switch(p){
       case 0: return ProductList();
-      case 1: return Profile();
+
       case 2: return ShoppingCar();
     }
   }
@@ -83,10 +83,9 @@ class _MainView extends State<MainView>{
           leading: Icon(Icons.person),
           selected: (1 == _select),
           onTap: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile()));
             setState(() {
-              Navigator.of(context).pop();
-              _select = 1;
-              _selectTitle = "Perfil";
+
             });
           },
         ),
