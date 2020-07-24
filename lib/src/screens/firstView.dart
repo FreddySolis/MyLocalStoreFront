@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
     if (token != '') {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
-
+      Navigator.of(context).pushNamed('/MainView');
       /*Navigator.push(
           context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }
@@ -275,8 +275,7 @@ class _LoginState extends State<Login> {
       },
       onSaved: (String value) {
         print(value);
-        //mapData['email'] = enc(value);
-        mapData['email'] = value;
+      mapData['email'] = value;
       },
     );
   }
@@ -309,8 +308,8 @@ class _LoginState extends State<Login> {
         }
       },*/
       onSaved: (String value) {
-        //mapData['password'] = enc(value);
-        mapData['password'] = value;
+        mapData['password'] = enc(value);
+        //mapData['password'] = value;
       },
     );
   }

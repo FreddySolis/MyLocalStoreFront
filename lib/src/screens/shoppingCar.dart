@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/configs.dart';
 import 'dart:convert';
+import 'package:login_app/src/widgets/PaypalPayment.dart';
 
 class ShoppingCar extends StatefulWidget {
   ShoppingCar({Key key}) : super(key: key);
@@ -28,8 +29,8 @@ class _ShoppingCarState extends State<ShoppingCar> {
         body: Column(children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                children: List.generate(data2.length, (index) {
+                child: Column(
+                    children: List.generate(data2.length, (index) {
               return Center(
                 child: Column(children: <Widget>[
                   Card(
@@ -77,12 +78,23 @@ class _ShoppingCarState extends State<ShoppingCar> {
           ),
           SizedBox(
             height: 100,
-            child:Center(
-            child: Text(
-              "Monto total: \$ $total"),
-            ) ,
-          )
-          
+            child: Center(
+              child: Text("Monto total: \$ $total"),
+            ),
+          ),
+          RaisedButton(onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => PaypalPayment(
+                  onFinish: (number) async {
+                    // payment done
+                    Api.pay_ShopingCar().then((sucess) {});
+                    Api.pay_id(number.toString()).then((sucess) {});
+                  },
+                ),
+              ),
+            );
+          })
         ]),
       ),
     );
@@ -107,7 +119,7 @@ class _ShoppingCarState extends State<ShoppingCar> {
         aux['cantidad'] = value['quantity'];
         aux2.add(aux);
         suma = 0;
-        print("Valor AUX ${aux}");
+        print("Valor AUX $aux");
       });
       setState(() {
         print("total = $total");

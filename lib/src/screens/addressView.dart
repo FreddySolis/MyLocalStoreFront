@@ -41,7 +41,7 @@ class _AddressViewState extends State<AddressView> {
     direcciones = [];
     Api.direccion_get().then((value){
       if(value != null){
-        var jsonData = json.decode(value.body);
+        var jsonData = json.decode(value);
         setState(() {
           addressExist = true;
           for(var i in jsonData){

@@ -251,7 +251,7 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = enc(value);
+        mapData[mapName] = value;
       },
     );
   }
@@ -319,7 +319,7 @@ class _SecondViewState extends State<SecondView> {
       onSaved: (String value) {
         print(mapName);
         print(value);
-        mapData[mapName] = enc(value);
+        mapData[mapName] = value;
       },
     );
   }

@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:login_app/src/providers/PaypalServices.dart';
+import 'package:login_app/Api/Api.dart';
+import 'dart:convert';
+import 'package:login_app/src/extras/variables.dart' as globals;
 
 class PaypalPayment extends StatefulWidget {
   final Function onFinish;
+  
 
-  PaypalPayment({this.onFinish});
+  PaypalPayment({this.onFinish, });
 
   @override
   State<StatefulWidget> createState() {
@@ -23,24 +27,32 @@ class PaypalPaymentState extends State<PaypalPayment> {
   PaypalServices services = PaypalServices();
 
   // you can change default currency according to your need
-  Map<dynamic,dynamic> defaultCurrency = {"symbol": "USD ", "decimalDigits": 2, "symbolBeforeTheNumber": true, "currency": "USD"};
+  Map<dynamic,dynamic> defaultCurrency = {"symbol": "MXN ", "decimalDigits": 2, "symbolBeforeTheNumber": true, "currency": "MXN"};
 
   bool isEnableShipping = false;
   bool isEnableAddress = false;
 
   String returnURL = 'return.example.com';
+
   String cancelURL= 'cancel.example.com';
 
 
   @override
   void initState() {
     super.initState();
-
+         List dataTempProducts = new List();
+        List dataTempAddress = new List();
     Future.delayed(Duration.zero, () async {
       try {
         accessToken = await services.getAccessToken();
-
-        final transactions = getOrderParams();
+            await Api.get_ShoppingCar().then((sucess) {
+      dataTempProducts = jsonDecode(sucess);
+    });
+    
+      await Api.direccion_get().then((sucess) {
+      dataTempAddress = jsonDecode(sucess);
+    });
+        final transactions = getOrderParams(dataTempProducts,dataTempAddress);
         final res =
             await services.createPaypalPayment(transactions, accessToken);
         if (res != null) {
@@ -67,34 +79,42 @@ class PaypalPaymentState extends State<PaypalPayment> {
   }
 
   // item name, price and quantity
-  String itemName = 'iPhone X';
-  String itemPrice = '1.99';
-  int quantity = 1;
 
-  Map<String, dynamic> getOrderParams() {
-    List items = [
-      {
-        "name": itemName,
-        "quantity": quantity,
-        "price": itemPrice,
-        "currency": defaultCurrency["currency"]
-      }
-    ];
+  Map<String, dynamic> getOrderParams(List data,List dataAddress) {
 
-
-    // checkout invoice details
-    String totalAmount = '1.99';
-    String subTotalAmount = '1.99';
+    print(data);
+    print(dataAddress);
+        String totalAmount = '0';
+    String subTotalAmount = '0';
     String shippingCost = '0';
     int shippingDiscountCost = 0;
-    String userFirstName = 'Gulshan';
-    String userLastName = 'Yadav';
-    String addressCity = 'Delhi';
-    String addressStreet = 'Mathura Road';
-    String addressZipCode = '110014';
-    String addressCountry = 'India';
-    String addressState = 'Delhi';
-    String addressPhoneNumber = '+919990119091';
+    String userFirstName = globals.name;
+    String userLastName = globals.lastName;
+    String addressCity = dataAddress[0]['city'];
+    String addressStreet = dataAddress[0]['street'];
+    String addressZipCode = dataAddress[0]['zip_code'];
+    String addressCountry = dataAddress[0]['country'];
+    String addressState = dataAddress[0]['state'];
+    String addressPhoneNumber = '+52' + dataAddress[0]['phone_number'];
+
+    List items = new List();
+    int totalTemp = 0;
+    data.forEach((element) {
+      print(element['product']);
+      items.add({
+        "name": element['product']['name'],
+        "quantity": element['quantity'],
+        "price": element['product']['price'].toString(),
+        "currency": defaultCurrency["currency"]
+      });
+      totalTemp = element['product']['price'] * element['quantity'] + totalTemp;
+    });
+    totalAmount = totalTemp.toString();
+    subTotalAmount = totalTemp.toString();
+
+
+    print(items);
+
 
     Map<String, dynamic> temp = {
       "intent": "sale",

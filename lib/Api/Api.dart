@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
+import 'package:login_app/src/screens/productForm.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,11 +20,12 @@ class Api {
         });
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       Map<String, dynamic> temp = jsonDecode(response.body);
-      globals.token = 'Bearer ' +  temp['token'];
+      globals.token = 'Bearer ' + temp['token'];
       get_UserByToken();
       final prefs = await SharedPreferences.getInstance();
 
-      prefs.setString('token',globals.token);
+      prefs.setString('token', globals.token);
+      print(true);
 
       return true;
     } else {
@@ -31,26 +33,23 @@ class Api {
     }
   }
 
-    static Future<bool> logOut() async {
-    final response = await http.post('${URLS.BASE_URL}/logout',
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": globals.token
-        });
+  static Future<bool> logOut() async {
+    final response = await http.post('${URLS.BASE_URL}/logout', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    print(response.statusCode);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.remove('token');
 
-
       return true;
     } else {
       return false;
     }
   }
-
-  
 
   static Future<bool> registro(data) async {
     final response = await http.post('${URLS.BASE_URL}/register',
@@ -60,6 +59,20 @@ class Api {
           "Accept": "application/json"
         });
     print(response.body);
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> update_user(data) async {
+    final response =
+        await http.post('${URLS.BASE_URL}/register', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -68,17 +81,16 @@ class Api {
   }
 
 //------------- Direccion ---------
-  static Future<http.Response> direccion_get() async {
+  static Future<String> direccion_get() async {
     final response = await http.get('${URLS.BASE_URL}/address/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization":
-      '${globals.token}'
+      "Authorization": '${globals.token}'
     });
     print(response.body);
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
       print(response.body);
-      return response;
+      return response.body;
     } else {
       return null;
     }
@@ -89,9 +101,8 @@ class Api {
         await http.post('${URLS.BASE_URL}/address', body: data, headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-          "Authorization":
-          '${globals.token}'
-        });
+      "Authorization": '${globals.token}'
+    });
     print(response.body);
     if (response.statusCode == 201) {
       return response;
@@ -105,9 +116,8 @@ class Api {
         await http.put('${URLS.BASE_URL}/address/$id', body: data, headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-          "Authorization":
-          '${globals.token}'
-        });
+      "Authorization": '${globals.token}'
+    });
     print(response.body);
     if (response.statusCode == 200) {
       return response;
@@ -121,9 +131,8 @@ class Api {
         await http.delete('${URLS.BASE_URL}/address/$id', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-          "Authorization":
-          '${globals.token}'
-        });
+      "Authorization": '${globals.token}'
+    });
     print(response.body);
     if (response.statusCode == 200) {
       return response;
@@ -186,28 +195,9 @@ class Api {
     }
   }
 
-  //----------users-------
-  // ignore: non_constant_identifier_names
-  static Future<String> get_userInfoById(data, id) async {
-    print(data);
-    final response = await http.post('${URLS.BASE_URL}/products/$id',
-        body: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        });
-    if (response.statusCode >= 200 && response.statusCode <= 204) {
-      return response.body;
-    } else {
-      return '';
-    }
-  }
-
   // ignore: non_constant_identifier_names
   static Future<String> get_UserByToken() async {
-        print('test');
-        print(globals.token);
-        
+
     final response = await http.get('${URLS.BASE_URL}/auth_user', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -216,8 +206,16 @@ class Api {
     print(response.body);
     Map<String, dynamic> temp = jsonDecode(response.body);
     globals.rolId = temp['rol_id'];
+    globals.name = temp['name'];
+    globals.lastName = temp['last_name'];
+    globals.email = temp['email'];
+    Map<String, dynamic> dataTemp;
     if (response.statusCode >= 200 && response.statusCode <= 204) {
-      return response.body;
+      dataTemp = jsonDecode(response.body);
+      dataTemp['email'] = dataTemp['email'].toString() ;
+      dataTemp['phone'] = desEnc(dataTemp['phone']);
+      
+      return dataTemp.toString();
     } else {
       return '';
     }
@@ -228,8 +226,7 @@ class Api {
     final response = await http.get('${URLS.BASE_URL}/categories/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization":
-      '${globals.token}'
+      "Authorization": '${globals.token}'
     });
     print(response.body);
     if (response.statusCode == 200) {
@@ -241,7 +238,8 @@ class Api {
   }
 
   static Future<http.Response> products_by_categories(id) async {
-    final response = await http.get('${URLS.BASE_URL}/prod_by_category/$id', headers: {
+    final response =
+        await http.get('${URLS.BASE_URL}/prod_by_category/$id', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
     });
@@ -253,16 +251,15 @@ class Api {
       return null;
     }
   }
-  
+
   //ShoppingCar
-   static Future<bool> add_ShoppingCar(data) async {
-    final response = await http.post('${URLS.BASE_URL}/add-to-sc/',
-        body: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}'
-        });
+  static Future<bool> add_ShoppingCar(data) async {
+    final response =
+        await http.post('${URLS.BASE_URL}/add-to-sc/', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -271,12 +268,42 @@ class Api {
   }
 
   static Future<String> get_ShoppingCar() async {
-    final response = await http.get('${URLS.BASE_URL}/prods-of-sc/',
-    headers: {
+    final response = await http.get('${URLS.BASE_URL}/prods-of-sc/', headers: {
       "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}',
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
     });
+
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      print(response.body);
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  static Future<String> pay_ShopingCar() async {
+    final response = await http.get('${URLS.BASE_URL}/pay-sc/', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    });
+
+    if (response.statusCode >= 200 && response.statusCode <= 204) {
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+    static Future<String> pay_id(String id) async {
+      Map<String, String> data = {'data': id};
+    final response = await http.post('${URLS.BASE_URL}/paypalid/', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    }, body: data,
+    );
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;

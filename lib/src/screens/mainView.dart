@@ -25,9 +25,9 @@ class _MainView extends State<MainView>{
 
 
   @override
-  void initState() {;
+  void initState() {
     super.initState();
-
+    
   }
   _getDrawerItemWidget(int p){
     switch(p){
@@ -59,11 +59,11 @@ class _MainView extends State<MainView>{
     return ListView(
       children: <Widget>[
         UserAccountsDrawerHeader(
-          accountName: Text(name),
-          accountEmail: Text(email),
+          accountName: Text(globals.name),
+          accountEmail: Text(globals.email),
           currentAccountPicture: CircleAvatar(
             backgroundColor: Colors.red,
-            child: Text(name[0], style: TextStyle(fontSize: 40),),
+            child: Text(globals.name[0], style: TextStyle(fontSize: 40),),
           ),
         ),
         ListTile(
