@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
         '/createProduct':(context) => ProductForm(),
         '/sellers':(context) => PaymentsView(),
         '/address':(context) => AddressView(),
+        '/shoppingCar':(context) => ShoppingCar(),
+        '/put_user':(context) => AddressView(),
       },
     );
   }

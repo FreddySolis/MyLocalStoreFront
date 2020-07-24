@@ -109,6 +109,7 @@ class _MainView extends State<MainView>{
           onTap: (){
             setState(() {
               Navigator.of(context).pop();
+              Api.logOut();
               Navigator.of(context).pushNamed('/Login');
             });
           },

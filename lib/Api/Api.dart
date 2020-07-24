@@ -221,6 +221,21 @@ class Api {
       return '';
     }
   }
+  static Future<http.Response> get_userById(int id) async {
+    final response = await http.get('${URLS.BASE_URL}/user-inf/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization":
+      '${globals.token}'
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      //print(response.body);
+      return response;
+    } else {
+      return null;
+    }
+  }
 
   //----------categorias-------
   static Future<http.Response> categorias_get() async {
