@@ -49,22 +49,25 @@ class _ShoppingCarState extends State<ShoppingCar> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  data2[index]['name'],
-                                  style: cardTitles,
-                                ),
-                                Text(
-                                  'Precio: \$ ${data2[index]['price']}',
-                                  style: cardText,
-                                ),
-                                Text(
-                                  'Cantidad: ${data2[index]['cantidad']}',
-                                  style: cardText,
-                                ),
-                                Text(
-                                  'Subtotal: \$ ${data2[index]['subtotal']}',
-                                  style: cardText,
-                                ),
+                                Center(
+                                    child: Column(children: <Widget>[
+                                  Text(
+                                    data2[index]['name'],
+                                    style: cardTitles,
+                                  ),
+                                  Text(
+                                    'Precio: \$ ${data2[index]['price']}',
+                                    style: cardText,
+                                  ),
+                                  Text(
+                                    'Cantidad: ${data2[index]['cantidad']}',
+                                    style: cardText,
+                                  ),
+                                  Text(
+                                    'Subtotal: \$ ${data2[index]['subtotal']}',
+                                    style: cardText,
+                                  ),
+                                ])),
                               ],
                             ),
                           )

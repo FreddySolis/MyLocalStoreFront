@@ -65,6 +65,19 @@ class Api {
       return false;
     }
   }
+  //change-password
+  static Future<bool> update_Password(data) async {
+    final response = await http.post('${URLS.BASE_URL}/change-password', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   static Future<bool> update_user(data) async {
     final response =
