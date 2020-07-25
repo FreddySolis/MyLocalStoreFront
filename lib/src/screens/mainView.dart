@@ -63,7 +63,7 @@ class _MainView extends State<MainView>{
           accountEmail: Text(globals.email),
           currentAccountPicture: CircleAvatar(
             backgroundColor: Colors.red,
-            child: Text(globals.name[0], style: TextStyle(fontSize: 40),),
+            child: Text(globals.name[0], style: TextStyle(fontSize: 40, color: Colors.white),),
           ),
         ),
         ListTile(

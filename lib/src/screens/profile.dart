@@ -59,22 +59,22 @@ class _ProfileState extends State<Profile> {
   initNamesCards() {
     setState(() {
       if (globals.rolId == 1) {
-        cardName1 = 'Editar info';
-        cardName2 = 'Compras';
-        cardName3 = 'Direcciones';
+        cardName1 = 'Crear Vendedor';
+        cardName2 = 'Crear Productos';
+        cardName3 = 'Ventas';
         icon1 = Icon(
-          Icons.build,
+          Icons.person_add,
           color: Colors.green[300],
           size: 40,
         );
         icon2 = Icon(
-          Icons.shop,
+          Icons.create,
           color: Colors.yellow[500],
           size: 40,
         );
         icon3 = Icon(
-          Icons.local_shipping,
-          color: Colors.brown,
+          Icons.attach_money,
+          color: Colors.green[600],
           size: 40,
         );
       } else if (globals.rolId == 2) {
@@ -97,23 +97,23 @@ class _ProfileState extends State<Profile> {
           size: 40,
         );
       } else {
-        cardName1 = 'Crear Vendedor';
-        cardName2 = 'Crear Productos';
-        cardName3 = 'Ventas';
-              icon1 = Icon(
-          Icons.person_add,
-          color: Colors.green[300],
-          size: 40,
+        cardName1 = 'Editar info';
+        cardName2 = 'Compras';
+        cardName3 = 'Direcciones';
+        icon1 = Icon(
+        Icons.build,
+        color: Colors.green[300],
+        size: 40,
         );
         icon2 = Icon(
-          Icons.create,
-          color: Colors.yellow[500],
-          size: 40,
+        Icons.shop,
+        color: Colors.yellow[500],
+        size: 40,
         );
         icon3 = Icon(
-          Icons.attach_money,
-          color: Colors.green[600],
-          size: 40,
+        Icons.local_shipping,
+        color: Colors.brown,
+        size: 40,
         );
       }
     });
@@ -209,7 +209,7 @@ void actions(int idCard, context) {
     switch (idCard) {
       case 1:
         print('test 2');
-        Navigator.of(context);
+        Navigator.of(context).pushNamed("/put_user");
         break;
       case 2:
         Navigator.of(context).pushNamed("/sellers");
@@ -227,13 +227,13 @@ void actions(int idCard, context) {
     switch (idCard) {
       case 1:
         print('test 3');
-        Navigator.of(context).pushNamed("/createSeller");
+        Navigator.of(context).pushNamed("/put_user");
         break;
       case 2:
-        Navigator.of(context).pushNamed("/createProduct");
+        Navigator.of(context).pushNamed("/shoppingList");
         break;
       case 3:
-        Navigator.of(context).pushNamed("/sellers");
+        Navigator.of(context).pushNamed("/address");
         break;
       case 4:
         break;
