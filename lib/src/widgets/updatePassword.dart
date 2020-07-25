@@ -65,6 +65,13 @@ class UpdatePasswordState extends State<UpdatePassword> {
                             ),
                           ),
                           obscureText: true,
+                          validator: (value) {
+                            if (RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])').hasMatch(value)) {
+                              return null;
+                            } else {
+                              return 'contraseña NO VALIDA';
+                            }
+                          },
                           onChanged: (value) {
                             if (RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])')
                                     .hasMatch(value) &&
@@ -98,6 +105,13 @@ class UpdatePasswordState extends State<UpdatePassword> {
                             ),
                           ),
                           obscureText: true,
+                          validator: (value) {
+                            if (RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])').hasMatch(value)) {
+                              return null;
+                            } else {
+                              return 'contraseña2 NO VALIDA';
+                            }
+                          },
                           onChanged: (value) {
                             if (value == password.text) {
                               pass = value;
@@ -145,11 +159,15 @@ class UpdatePasswordState extends State<UpdatePassword> {
                 if (sucess) {
                   showDialog(
                     builder: (context) => AlertDialog(
-                      title: Text('Contraseña actualizad con éxito'),
+                      title: Text('Contraseña actualizada con éxito'),
                         actions: <Widget>[
                           FlatButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Api.logOut().then((sucess){
+                                Navigator.of(context).pushReplacementNamed('/Login');
+                              }).catchError((onError){
+                                print("ERROR LOGOUT");
+                              });
                             },
                             child: Text('Ok'),
                           )
@@ -157,7 +175,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
                       ),
                     context: context
                   );
-                  Navigator.of(context).pushReplacementNamed('/Login');
+                  
                   /*Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProductList()));*/
                 } else {
