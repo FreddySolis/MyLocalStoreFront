@@ -59,7 +59,6 @@ class _AddressViewState extends State<AddressView> {
       if(value != null){
         var jsonData = json.decode(value);
         setState(() {
-          addressExist = true;
           for(var i in jsonData){
             Direccion direc = Direccion(i["id"],i["Street"], i["contactphone"], i["zip_code"], i["city"], i["state"]);
             direcciones.add(direc);
@@ -68,6 +67,9 @@ class _AddressViewState extends State<AddressView> {
         print(direcciones.length);
       }
     });
+    if(direcciones.length > 0){
+      addressExist = true;
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -252,7 +254,7 @@ class _AddressViewState extends State<AddressView> {
             //addressController2.text = addressController.text;
             addressController.text.isEmpty ? _validate = true : _validate = false;
             //addressController.clear();
-            addressExist = true;
+
           });
           //mapData["address"] = addressController.text;
           mapData["street"] = street.text;
@@ -260,10 +262,10 @@ class _AddressViewState extends State<AddressView> {
           mapData["zip_code"] = code.text;
           //mapData["col"] = col.text;
           //mapData["city"] = city.text;
-          mapData["city"] = _selectCountry;
+          mapData["city"] = city.text;
           //mapData["state"] = state.text;
           mapData["state"] = _selectState;
-          mapData["country"] = country.text;
+          mapData["country"] =  _selectCountry;
           mapData["phone_number"] = phone.text;
           /*mapData["indications"] = indications.text;
               mapData["street1"] = street1.text;
@@ -761,7 +763,6 @@ class _AddressViewState extends State<AddressView> {
                       //addressController2.text = addressController.text;
                       addressController.text.isEmpty ? _validate = true : _validate = false;
                       //addressController.clear();
-                      addressExist = true;
                     });
                     //mapData["address"] = addressController.text;
                     mapData["street"] = street.text;
@@ -769,10 +770,10 @@ class _AddressViewState extends State<AddressView> {
                     mapData["zip_code"] = code.text;
                     //mapData["col"] = col.text;
                     //mapData["city"] = city.text;
-                    mapData["city"] = _selectCountry;
+                    mapData["city"] = city.text;
                     //mapData["state"] = state.text;
                     mapData["state"] = _selectState;
-                    mapData["country"] = country.text;
+                    mapData["country"] =  _selectCountry;
                     mapData["phone_number"] = phone.text;
                     /*mapData["indications"] = indications.text;
                         mapData["street1"] = street1.text;
