@@ -246,6 +246,39 @@ class _ProductListState extends State<ProductList> {
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) => ProductList()));
       } else {
+        updateProductInCar(idProduct, numProduct, c);
+        return;
+      }
+    }).catchError((onError){print("ESTE ES EL ERROR $onError");});
+
+  }
+
+  void updateProductInCar(int idProduct,int numProduct, BuildContext c2) async{
+    var mapData = new Map<String, int>();
+    mapData['product_id'] = idProduct;
+    mapData['quantity'] = numProduct;
+
+    await Api.update_shoppingCar(JsonEncoder().convert(mapData)).then((sucess){
+      if (sucess) {
+        showDialog(
+          builder: (context) => AlertDialog(
+            title: Text('Sumado al carrito'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(c2).pop();
+                },
+                child: Text('Ok'),
+              )
+            ],
+          ),
+          context: c2
+        );
+          return;
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => ProductList()));
+      } else {
         showDialog(
           builder: (context) => AlertDialog(
             title: Text('error al agregar a compra'),
@@ -253,18 +286,19 @@ class _ProductListState extends State<ProductList> {
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.of(c).pop();
+                  Navigator.of(c2).pop();
                 },
                 child: Text('Ok'),
               )
             ],
           ),
-          context: c
+          context: c2
         );
           return;
       }
-    }).catchError((onError){print("ESTE ES EL ERROR $onError");});
-
+    }).catchError((onError){
+      print("ESTE ES EL ERROR $onError");
+    });
   }
 
 void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {

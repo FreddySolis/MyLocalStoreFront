@@ -114,17 +114,18 @@ class _SecondViewState extends State<SecondView> {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
           mapData['birthday'] = calendarController.text;
-          mapData['rol_id'] = '1';
+          mapData['rol_id'] = '3';
           mapData['genre'] = 'm';
           Api.registro(JsonEncoder().convert(mapData)).then((sucess) {
             if (sucess) {
               showDialog(
                   builder: (context) => AlertDialog(
-                        title: Text('registrado con exito'),
+                        title: Text('El registro ha sido exitoso'),
                         actions: <Widget>[
                           FlatButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              calendarController.clear();
+                              Navigator.of(context).pushReplacementNamed('/Login');
                             },
                             child: Text('Ok'),
                           )

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:login_app/src/screens/ShoppingList.dart';
 import 'package:login_app/src/screens/addressView.dart';
+import 'package:login_app/src/screens/createProfile.dart';
 import 'package:login_app/src/screens/createSeller.dart';
 import 'package:login_app/src/screens/firstView.dart';
 import 'package:login_app/src/screens/mainView.dart';
@@ -15,7 +17,9 @@ import 'package:login_app/src/screens/shoppingCar.dart';
     )
   );
 }*/
-
+class StaticVariable{
+static String token = '' ;
+}
 
 
 void main(){
@@ -38,7 +42,9 @@ class MyApp extends StatelessWidget {
         '/sellers':(context) => PaymentsView(),
         '/address':(context) => AddressView(),
         '/shoppingCar':(context) => ShoppingCar(),
-        '/put_user':(context) => AddressView(),
+        '/put_user':(context) => SecondView(),
+        '/shoppingList':(context) => ShoppingList(),
+
       },
     );
   }

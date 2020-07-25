@@ -60,7 +60,12 @@ class _PaymentsViewState extends State<PaymentsView>{
     );
   }
 
-  getPayment(){
+  getPayment() async{
+    payment =[];
+   /* for(var i=0; i < 3; i++){
+      Payment direc = Payment(i,i, i+1, "status", 100, "created_at");
+      payment.add(direc);
+    }*/
     Api.get_Ventas().then((value){
       if(value != null){
         var jsonData = json.decode(value.body);
@@ -75,22 +80,28 @@ class _PaymentsViewState extends State<PaymentsView>{
       }
     });
   }
-  getUser(int id){
-    Api.get_userById(id).then((value){
+  getUser(int id) async{
+    user = User("name $id","last_name", "email", "phone", "genre");
+
+    /*Api.get_userById(id).then((value){
       if(value != null){
         var jsonData = json.decode(value.body);
         setState(() {
           user = User(jsonData["name"],jsonData["last_name"], jsonData["email"], jsonData["phone"], jsonData["genre"]);
         });
       }
-    });
+    });*/
   }
-  getProducts(){
-    Api.get_Ventas().then((value){
+  getProducts(int id) async{
+    for(var i = 0; i<5;i++){
+      Producto direc = Producto(i,"produto $i", i+3);
+      products.add(direc);
+    }
+    /*Api.get_UsersPayment(id).then((value){
       if(value != null){
-        var jsonData = json.decode(value.body);
+        var jsonData = json.decode(value);
         setState(() {
-          for(var i in jsonData){
+          for(var i in jsonData['product']){
             Producto direc = Producto(i["id"],i["user_id"], i["sc_id"], i["status"], i["cart_total"], i["created_at"]);
             products.add(direc);
           }
@@ -98,7 +109,7 @@ class _PaymentsViewState extends State<PaymentsView>{
         //get_ShoppingCar();
         print(products.length);
       }
-    });
+    });*/
   }
 
   Widget _Ventas(BuildContext context, int index){
@@ -109,6 +120,8 @@ class _PaymentsViewState extends State<PaymentsView>{
             onTap: () {
               var i = payment[index].id;
               print("index $i");
+              getUser(payment[index].user_id);
+              getProducts(payment[index].sc_id);
               _showDialog(i);
             } ,
             child:Container(
@@ -165,71 +178,101 @@ class _PaymentsViewState extends State<PaymentsView>{
   }
   _showDialog(index) async{
     getUser(index);
-    showDialog(
+    await showDialog(
         context: context,
         builder: (BuildContext context){
-          return AlertDialog(
-            title: Text("Detalles"),
-            actions: <Widget>[
-              Container(
-              child: Column(
-                children: <Widget>[
-                    Row(
+          return Container(
+              padding: EdgeInsets.all(5.0),
+            child: AlertDialog(
+              title: Text("Detalles"),
+              content: SingleChildScrollView(
+                child:
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                "Usuario",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Icon(Icons.person, size: 30,)
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                user.name,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                user.last_name,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            )
+                          ],
+                        ),
                         Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(
-                            user.name,
+                            user.phone,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            user.email,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Produtos",
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Container(
-                          child: Text(
-                            user.last_name,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
+                        SingleChildScrollView(
+                          child:  Stack(
+                            children: <Widget>[
+                              Container(width: 200, height: 100,
+                                  child: Column(
+                                    children: <Widget>[
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: products.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              child: Text(products[index].name),
+                                            );
+                                          }
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ],
+                          )
                         )
+
                       ],
-                    ),
-                    Container(
-                      child: Text(
-                        user.phone,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      child: Text(
-                        user.email,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      child: Text(
-                        "Produtos",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              child: Text(products[index].name),
-                            );
-                          }
-                      ),
                     )
 
-                  ],
-                )
               ),
-            ],
+              actions: <Widget>[
+              ],
+            )
           );
         }
     );
@@ -257,12 +300,12 @@ class User{
   User(this.name, this.last_name, this.email, this.phone, this.genre);
 }
 class Producto{
+  var id;
   var name;
-  var precio;
-  var sc_id;
+  var price;
   var status;
   var cart_total;
   var created_at;
 
-  Producto(this.name, this.precio, this.sc_id, this.status, this.cart_total, this.created_at);
+  Producto(this.id, this.name, this.price);
 }

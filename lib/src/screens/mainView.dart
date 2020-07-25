@@ -32,7 +32,6 @@ class _MainView extends State<MainView>{
   _getDrawerItemWidget(int p){
     switch(p){
       case 0: return ProductList();
-
       case 2: return ShoppingCar();
     }
   }
@@ -64,7 +63,7 @@ class _MainView extends State<MainView>{
           accountEmail: Text(globals.email),
           currentAccountPicture: CircleAvatar(
             backgroundColor: Colors.red,
-            child: Text(globals.name[0], style: TextStyle(fontSize: 40),),
+            child: Text(globals.name[0], style: TextStyle(fontSize: 40, color: Colors.white),),
           ),
         ),
         ListTile(
@@ -90,19 +89,19 @@ class _MainView extends State<MainView>{
             });
           },
         ),
-
-        ListTile(
-          title: Text("Carro"),
-          leading: Icon(Icons.shopping_cart),
-          selected: (2 == _select),
-          onTap: (){
-            setState(() {
+        if(globals.rolId==3)
+          ListTile(
+            title: Text("Carro"),
+            leading: Icon(Icons.shopping_cart),
+            selected: (2 == _select),
+            onTap: (){
+              setState(() {
               Navigator.of(context).pop();
               _select = 2;
               _selectTitle = "Carro";
-            });
-          },
-        ),
+              });
+            },
+          ),
         Divider(),
         ListTile(
           title: Text("Cerrar Sesion"),
@@ -110,8 +109,8 @@ class _MainView extends State<MainView>{
           onTap: (){
             setState(() {
               Navigator.of(context).pop();
-              Api.logOut();
               Navigator.of(context).pushNamed('/Login');
+              Api.logOut();
             });
           },
         ),

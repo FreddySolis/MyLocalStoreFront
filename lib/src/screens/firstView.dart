@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
     if (token != null) {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
-      Navigator.of(context).pushNamed('/MainView');
+      Navigator.of(context).pushReplacementNamed('/MainView');
       /*Navigator.push(
           context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }

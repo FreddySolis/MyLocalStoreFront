@@ -321,6 +321,21 @@ class Api {
     }
   }
 
+  static Future<bool> update_shoppingCar(data) async {
+    final response = await http.put('${URLS.BASE_URL}/upt-to-sc/',
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": '${globals.token}',
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<String> pay_ShopingCar() async {
     final response = await http.get('${URLS.BASE_URL}/pay-sc/', headers: {
       "Content-Type": "application/json",
