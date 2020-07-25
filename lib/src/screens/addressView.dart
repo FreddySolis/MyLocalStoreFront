@@ -57,6 +57,7 @@ class _AddressViewState extends State<AddressView> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffolKey,
+      appBar: _appbarr(),
       body: _body(),
     );
   }

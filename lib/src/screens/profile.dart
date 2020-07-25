@@ -191,11 +191,14 @@ void actions(int idCard, context) {
     switch (idCard) {
       case 1:
         print('test 1');
+        Navigator.of(context).pushNamed("/createSeller");
         break;
       case 2:
+        Navigator.of(context).pushNamed("/createProduct");
         break;
 
       case 3:
+        Navigator.of(context).pushNamed("/sellers");
         break;
 
       case 4:
@@ -206,11 +209,14 @@ void actions(int idCard, context) {
     switch (idCard) {
       case 1:
         print('test 2');
+        Navigator.of(context);
         break;
       case 2:
+        Navigator.of(context).pushNamed("/sellers");
         break;
 
       case 3:
+        Navigator.of(context).pushNamed("/createProduct");
         break;
 
       case 4:
@@ -222,14 +228,13 @@ void actions(int idCard, context) {
       case 1:
         print('test 3');
         Navigator.of(context).pushNamed("/createSeller");
-
         break;
       case 2:
-
+        Navigator.of(context).pushNamed("/createProduct");
         break;
       case 3:
+        Navigator.of(context).pushNamed("/sellers");
         break;
-
       case 4:
         break;
       default:

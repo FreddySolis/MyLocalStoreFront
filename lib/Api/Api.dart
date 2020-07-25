@@ -74,6 +74,19 @@ class Api {
       return false;
     }
   }
+  //change-password
+  static Future<bool> update_Password(data) async {
+    final response = await http.post('${URLS.BASE_URL}/change-password', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   static Future<bool> update_user(data) async {
     final response =
@@ -213,7 +226,8 @@ class Api {
       "Authorization": '${globals.token}'
     });
     print(response.body);
-    Map<String, dynamic> temp = jsonDecode(response.body);
+    //Map<String, dynamic> temp = jsonDecode(response.body);
+    Map<String, dynamic> temp = json.decode(response.body);
     globals.rolId = temp['rol_id'];
     globals.name = temp['name'];
     globals.lastName = temp['last_name'];
@@ -227,6 +241,21 @@ class Api {
       return dataTemp.toString();
     } else {
       return '';
+    }
+  }
+  static Future<http.Response> get_userById(int id) async {
+    final response = await http.get('${URLS.BASE_URL}/user-inf/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization":
+      '${globals.token}'
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      //print(response.body);
+      return response;
+    } else {
+      return null;
     }
   }
 
@@ -347,6 +376,23 @@ class Api {
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
+    } else {
+      return null;
+    }
+  }
+
+  //----------Ventas-------
+  static Future<http.Response> get_Ventas() async {
+    final response = await http.get('${URLS.BASE_URL}/all-payments/', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization":
+      '${globals.token}'
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      //print(response.body);
+      return response;
     } else {
       return null;
     }
