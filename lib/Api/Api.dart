@@ -26,7 +26,7 @@ class Api {
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       Map<String, dynamic> temp = jsonDecode(response.body);
       globals.token = 'Bearer ' + temp['token'];
-      get_UserByToken();
+      await get_UserByToken();
       final prefs = await SharedPreferences.getInstance();
 
       prefs.setString('token', globals.token);
@@ -52,8 +52,7 @@ class Api {
 
       return true;
     } else {
-            final prefs = await SharedPreferences.getInstance();
-
+      final prefs = await SharedPreferences.getInstance();
       prefs.remove('token');
       return false;
     }
@@ -243,6 +242,8 @@ class Api {
       return '';
     }
   }
+
+
   static Future<http.Response> get_userById(int id) async {
     final response = await http.get('${URLS.BASE_URL}/user-inf/$id', headers: {
       "Content-Type": "application/json",
@@ -335,7 +336,7 @@ class Api {
   }
 
     static Future<String> pay_id(String id) async {
-      Map<String, String> data = {'data': id};
+      Map<String, String> data = {'pay_id': id};
     final response = await http.post('${URLS.BASE_URL}/paypalid/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",

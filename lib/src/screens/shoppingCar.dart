@@ -79,28 +79,82 @@ class _ShoppingCarState extends State<ShoppingCar> {
               );
             }))),
           ),
-          SizedBox(
-            height: 100,
-            child: Center(
-              child: Text("Monto total: \$ $total"),
+          payButton(
+            Text(
+              'Pagar',
+              style: TextStyle(color: backgroundColor),
             ),
+            Text(
+              'Monto total: \$ $total',
+              style: TextStyle(color: backgroundColor),
+            ),
+            secondary,
           ),
-          RaisedButton(onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => PaypalPayment(
-                  onFinish: (number) async {
-                    // payment done
-                    Api.pay_ShopingCar().then((sucess) {});
-                    Api.pay_id(number.toString()).then((sucess) {});
-                  },
-                ),
-              ),
-            );
-          })
         ]),
       ),
     );
+  }
+
+  Widget payButton(Text text, Text text2, Color color) {
+    return Material(
+      elevation: 5,
+        child: ButtonTheme(
+            minWidth: 50.0,
+            height: 50.0,
+            child: RaisedButton(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              color: color,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Center(
+                    child: text,
+                  ),
+                  Padding(padding: EdgeInsets.all(2)),
+                  Center(
+                    child: text2,
+                  )
+                ],
+              ),
+              onPressed: () {
+                pay();
+              },
+            )));
+  }
+
+  void pay() async {
+    String temp = '';
+    await Api.direccion_get().then((sucess) {
+      temp = sucess;
+    });
+    if (temp != '[]') {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => PaypalPayment(
+            onFinish: (number) async {
+              // payment done
+              await Api.pay_ShopingCar().then((sucess) {});
+              await Api.pay_id(number.toString()).then((sucess) {});
+            },
+          ),
+        ),
+      );
+    } else {
+      showDialog(
+          builder: (context) => AlertDialog(
+                title:
+                    Text('agrega una direccion para poder realizar tu compra'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+          context: context);
+    }
   }
 
   getProductsInCar() async {

@@ -39,9 +39,9 @@ class _LoginState extends State<Login> {
   void isLogued() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final token = prefs.getString('token') ?? '';
-    print('token : ' + token);
-    if (token != '') {
+    final token = prefs.getString('token') ?? null;
+
+    if (token != null) {
       globals.token = token;
       await Api.get_UserByToken().then((value) => null);
       Navigator.of(context).pushNamed('/MainView');
@@ -181,6 +181,7 @@ class _LoginState extends State<Login> {
               print(JsonEncoder().convert(mapData));
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
+                  
                   Navigator.of(context).pushReplacementNamed('/MainView');
                   /*Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProductList()));*/

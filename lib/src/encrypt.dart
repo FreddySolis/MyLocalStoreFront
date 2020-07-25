@@ -16,13 +16,12 @@ String enc(String text) {
       .base64); // R4PxiU3h8YoIRqVowBXm36ZcCeNeZ4s1OvVBTfFlZRdmohQqOpPQqD1YecJeZMAop/hZ4OxqgC1WtwvX/hP9mw==
       
   return encrypted.base64;
-  return text;
 }
 
 
 String desEnc(String text) {
   
-  /*final Encrypted encText = Encrypted.from64(text);
+  final Encrypted encText = Encrypted.from64(text);
   final key = Key.fromUtf8('xxxSecretKey1xxxxxxSecretKey1xxx');
   final iv = IV.fromLength(16);
 
@@ -33,7 +32,7 @@ String desEnc(String text) {
 
   print(decrypted);
 
-  return decrypted;*/
+  return decrypted;
 
-  return text;
+
 }

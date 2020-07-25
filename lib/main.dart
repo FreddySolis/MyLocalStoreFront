@@ -5,21 +5,20 @@ import 'package:login_app/src/screens/firstView.dart';
 import 'package:login_app/src/screens/mainView.dart';
 import 'package:login_app/src/screens/paymentsView.dart';
 import 'package:login_app/src/screens/productForm.dart';
+import 'package:login_app/src/screens/shoppingCar.dart';
 
-void main(){
+/*void main(){
   
   runApp(
     MaterialApp(
       home: Login()
     )
   );
-}
-class StaticVariable{
-static String token = '' ;
-}
+}*/
 
 
-/*void main(){
+
+void main(){
   runApp(MyApp());
 }
 
@@ -31,6 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'MyStore',
       initialRoute: "/Login",
       routes: {
+        '/':(context) => Login(),
         '/Login':(context) => Login(),
         '/MainView':(context) => MainView(),
         '/createSeller':(context) => CreateSeller(),
@@ -42,4 +42,4 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-}*/
+}

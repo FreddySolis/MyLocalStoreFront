@@ -23,7 +23,7 @@ final TextEditingController size = TextEditingController();
 
 class ProductForm extends StatefulWidget {
   final String text;
-  ProductForm({this.text, Key key}) : super(key: key);
+  ProductForm({ this.text, Key key}) : super(key: key);
 
   @override
   _ProductFormState createState() => _ProductFormState();
@@ -37,7 +37,11 @@ class _ProductFormState extends State<ProductForm> {
 
   @override
   void initState() {
+    if(widget.text != null){
     initData(widget.text);
+    }else{
+
+    }
     super.initState();
     setState(() {
       images.add("Add Image");
@@ -224,7 +228,7 @@ class _ProductFormState extends State<ProductForm> {
                   (int.parse(mapData['discount']) / 100))
               .toString();
           print(mapData['final_price']);
-          if (widget.text != '') {
+          if (widget.text == null) {
             Api.product_create(JsonEncoder().convert(mapData))
                 .then((sucess) {
               if (sucess && imgs.length>0) {

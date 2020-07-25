@@ -7,7 +7,7 @@ import 'package:login_app/src/screens/productList.dart';
 import 'package:login_app/src/screens/profile.dart';
 import 'package:login_app/src/screens/shoppingCar.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
-
+import 'package:login_app/configs.dart';
 
 import 'firstView.dart';
 
@@ -41,6 +41,7 @@ class _MainView extends State<MainView>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: secondary,
         title: Row(
           children: <Widget>[
             Text(_selectTitle),
