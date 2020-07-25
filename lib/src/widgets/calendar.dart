@@ -33,11 +33,14 @@ class _MyCalendarState extends State<MyCalendar> {
 
   void showAlert() {
     AlertDialog dialog = AlertDialog(
-      content: CalendarDatePicker(
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1900, 01),
-        lastDate: DateTime(2101),
-        onDateChanged: setDate,
+      content: Container(
+        width: 50,
+        child: CalendarDatePicker(
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900, 01),
+          lastDate: DateTime(2101),
+          onDateChanged: setDate,
+        ),
       ),
       actions: <Widget>[
         FlatButton(
