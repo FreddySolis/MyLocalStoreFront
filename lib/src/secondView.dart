@@ -132,7 +132,6 @@ class _SecondViewState extends State<SecondView> {
                         ],
                       ),
                   context: context);
-              Navigator.pop(context);
             } else {
               showDialog(
                   builder: (context) => AlertDialog(
