@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/configs.dart';
+import 'package:login_app/src/encrypt.dart';
 
 final TextEditingController password = TextEditingController();
 
@@ -107,7 +108,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
                           },
                           onSaved: (value) {
                             print("contra $pass");
-                            mapData['password'] = pass;
+                            mapData['password'] = enc(pass);
                           },
                         ),
                         SizedBox(height: 15,),
