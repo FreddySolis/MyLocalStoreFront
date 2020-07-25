@@ -179,13 +179,17 @@ class _ProductFormState extends State<ProductForm> {
 
   void getFileImage(int index) async {
     _imageFile.then((file) async {
-      imgs.add(file);
-      setState(() {
-        ImageUploadModel imageUpload = new ImageUploadModel();
-        imageUpload.imageFile = file;
-        imageUpload.imageUrl = '';
-        images.replaceRange(index, index + 1, [imageUpload]);
-      });
+      if(file!=null){
+        imgs.add(file);
+        setState(() {
+          ImageUploadModel imageUpload = new ImageUploadModel();
+          imageUpload.imageFile = file;
+          imageUpload.imageUrl = '';
+          images.replaceRange(index, index + 1, [imageUpload]);
+        });
+      }
+    }).catchError((onError){
+      print("EROR EN EL IMG $onError");
     });
   }
 
