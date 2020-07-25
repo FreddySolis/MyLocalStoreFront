@@ -274,8 +274,8 @@ class _LoginState extends State<Login> {
         }
       },
       onSaved: (String value) {
-        print(value);
-      mapData['email'] = value;
+        print(enc(value));
+      mapData['email'] = enc(value);
       },
     );
   }

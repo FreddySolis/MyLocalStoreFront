@@ -10,6 +10,11 @@ class URLS {
       'http://ec2-54-81-19-209.compute-1.amazonaws.com:8000';
 }
 
+/*class URLS {
+  static const String BASE_URL =
+      'http://86ce75530f16.ngrok.io/';
+}*/
+
 class Api {
   static Future<bool> login(data) async {
     final response = await http.post('${URLS.BASE_URL}/login',
@@ -47,6 +52,9 @@ class Api {
 
       return true;
     } else {
+            final prefs = await SharedPreferences.getInstance();
+
+      prefs.remove('token');
       return false;
     }
   }
@@ -59,6 +67,7 @@ class Api {
           "Accept": "application/json"
         });
     print(response.body);
+        print(response.statusCode);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return true;
     } else {
@@ -208,11 +217,11 @@ class Api {
     globals.rolId = temp['rol_id'];
     globals.name = temp['name'];
     globals.lastName = temp['last_name'];
-    globals.email = temp['email'];
+    globals.email = desEnc(temp['email']);
     Map<String, dynamic> dataTemp;
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       dataTemp = jsonDecode(response.body);
-      dataTemp['email'] = dataTemp['email'].toString() ;
+      dataTemp['email'] = desEnc(dataTemp['email'].toString());
       dataTemp['phone'] = desEnc(dataTemp['phone']);
       
       return dataTemp.toString();

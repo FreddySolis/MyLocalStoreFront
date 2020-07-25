@@ -282,7 +282,7 @@ class _CreateSeller extends State<CreateSeller>{
           formKey.currentState.save();
           mapData["name"] = nameController.text;
           mapData["last_name"] = lastnameController.text;
-          mapData["email"] = emailController.text;
+          mapData["email"] = enc(emailController.text);
           mapData["password"] = enc(passwordController.text);
           mapData["password_confirmation"] = enc(passwordController2.text);
           mapData["rol_id"] = "2";

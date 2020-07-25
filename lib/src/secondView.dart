@@ -251,7 +251,8 @@ class _SecondViewState extends State<SecondView> {
         }
       },
       onSaved: (String value) {
-        mapData[mapName] = value;
+        print(enc(value) + '0000000000000');
+        mapData[mapName] = enc(value);
       },
     );
   }
