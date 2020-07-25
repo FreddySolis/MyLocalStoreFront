@@ -61,11 +61,12 @@ class _PaymentsViewState extends State<PaymentsView>{
   }
 
   getPayment() async{
-    for(var i=0; i < 3; i++){
+    payment =[];
+   /* for(var i=0; i < 3; i++){
       Payment direc = Payment(i,i, i+1, "status", 100, "created_at");
       payment.add(direc);
-    }
-    /*Api.get_Ventas().then((value){
+    }*/
+    Api.get_Ventas().then((value){
       if(value != null){
         var jsonData = json.decode(value.body);
         setState(() {
@@ -77,7 +78,7 @@ class _PaymentsViewState extends State<PaymentsView>{
         //get_ShoppingCar();
         print(payment.length);
       }
-    });*/
+    });
   }
   getUser(int id) async{
     user = User("name $id","last_name", "email", "phone", "genre");
@@ -180,12 +181,13 @@ class _PaymentsViewState extends State<PaymentsView>{
     await showDialog(
         context: context,
         builder: (BuildContext context){
-          return Container(width: 300, height: 300,
+          return Container(
+              padding: EdgeInsets.all(5.0),
             child: AlertDialog(
               title: Text("Detalles"),
               content: SingleChildScrollView(
-                child: Expanded(
-                    child: Column(
+                child:
+                    Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Row(
@@ -219,6 +221,7 @@ class _PaymentsViewState extends State<PaymentsView>{
                           ],
                         ),
                         Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             user.phone,
                             textAlign: TextAlign.left,
@@ -226,6 +229,7 @@ class _PaymentsViewState extends State<PaymentsView>{
                           ),
                         ),
                         Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             user.email,
                             textAlign: TextAlign.left,
@@ -233,34 +237,40 @@ class _PaymentsViewState extends State<PaymentsView>{
                           ),
                         ),
                         Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(
                             "Produtos",
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        Expanded (
-                          child: Container(width: 50, height: 50,
-                            child: ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: 1,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    child: Text(products[index].name),
-                                  );
-                                }
-                            ),
+                        SingleChildScrollView(
+                          child:  Stack(
+                            children: <Widget>[
+                              Container(width: 200, height: 100,
+                                  child: Column(
+                                    children: <Widget>[
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: products.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              child: Text(products[index].name),
+                                            );
+                                          }
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ],
                           )
-                        ),
+                        )
+
                       ],
                     )
-                ),
+
               ),
               actions: <Widget>[
-                Container(
-                  width: 300, height: 300,
-                )
               ],
             )
           );
