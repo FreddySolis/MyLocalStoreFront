@@ -6,6 +6,8 @@ import 'package:login_app/configs.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
 import 'dart:convert';
 
+import 'package:login_app/src/screens/productForm.dart';
+
 final TextEditingController name = TextEditingController();
 final TextEditingController price = TextEditingController();
 final TextEditingController finalPrice = TextEditingController();
@@ -217,153 +219,6 @@ class _ProductListState extends State<ProductList> {
     );
   }
 
-  void deleteProduct(int idProduct, BuildContext contex) async {
-    await Api.product_delete(idProduct).then((sucess) {
-      if (sucess) {
-        showDialog(
-            builder: (context) => AlertDialog(
-                  title: Text('Producto eliminado con éxito'),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        getProducts();
-                        Navigator.pop(context);
-                        Navigator.of(contex).pop();
-                      },
-                      child: Text('Ok'),
-                    )
-                  ],
-                ),
-            context: contex);
-        return;
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => ProductList()));
-      } else {
-        showDialog(
-            builder: (context) => AlertDialog(
-                  title: Text('error al eliminar producto'),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        getProducts();
-                        Navigator.pop(context);
-                        Navigator.of(contex).pop();
-                      },
-                      child: Text('Ok'),
-                    )
-                  ],
-                ),
-            context: contex);
-        return;
-      }
-    }).catchError((onError) {
-      print("ESTE ES EL ERROR eliminar $onError");
-    });
-  }
-
-  List<Widget> btn(BuildContext contextPop, Map<String, dynamic> infoProduct) {
-    var quant = 1;
-    quantity.text = quant.toString();
-
-    if (globals.rolId == 3) {
-      return <Widget>[
-        Expanded(
-            child: FloatingActionButton(
-          child: Icon(Icons.add_shopping_cart),
-          backgroundColor: const Color(0xFF1BC0C5),
-          onPressed: () {
-            showDialog(
-                context: contextPop,
-                builder: (BuildContext contextPop2) {
-                  return Dialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      child: SizedBox(
-                          height: 150,
-                          child: Column(
-                            children: <Widget>[
-                              ListTile(
-                                title: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: FloatingActionButton(
-                                          onPressed: () {
-                                            if (quant == 0) {
-                                              quant = 0;
-                                              quantity.text = quant.toString();
-                                            } else {
-                                              quant = quant - 1;
-                                              quantity.text = quant.toString();
-                                            }
-                                          },
-                                          child: Icon(Icons.remove)),
-                                    ),
-                                    Expanded(
-                                      child: TextFormField(
-                                        textAlign: TextAlign.center,
-                                        controller: quantity,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: FloatingActionButton(
-                                          onPressed: () {
-                                            quant = quant + 1;
-                                            quantity.text = quant.toString();
-                                          },
-                                          child: Icon(Icons.add)),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              FloatingActionButton(
-                                onPressed: () {
-                                  addShopping(
-                                      infoProduct['id'], quant, contextPop2);
-                                },
-                                child: Icon(Icons.done),
-                              )
-                            ],
-                          )));
-                });
-          },
-        )),
-        Expanded(
-            child: FloatingActionButton(
-          child: Icon(Icons.cancel),
-          backgroundColor: Colors.red,
-          onPressed: () {
-            Navigator.of(contextPop).pop();
-            cleanFields();
-          },
-        )),
-      ];
-    } else if (globals.rolId == 2 || globals.rolId == 1) {
-      return <Widget>[
-        Expanded(
-          child: FloatingActionButton(
-          child: Icon(Icons.edit),
-          backgroundColor: const Color(0xFF1BC0C5),
-          onPressed: () {
-            print("PUSHANDO BTN");
-            // Navigator.push(context,
-            // MaterialPageRoute(builder: (context) => ProductList()));
-            Navigator.of(context).pushNamed("/createProduct");
-          },
-        )),
-        Expanded(
-          child: FloatingActionButton(
-          child: Icon(Icons.delete),
-          backgroundColor: Colors.red,
-          onPressed: () {
-            deleteProduct(infoProduct['id'], contextPop);
-          })),
-      ];
-    }
-  }
-
   addShopping(int idProduct, int numProduct, BuildContext c) async {
     var mapData = new Map<String, int>();
     mapData['product_id'] = idProduct;
@@ -396,8 +251,7 @@ class _ProductListState extends State<ProductList> {
     });
   }
 
-  void updateProductInCar(
-      int idProduct, int numProduct, BuildContext c2) async {
+  void updateProductInCar( int idProduct, int numProduct, BuildContext c2) async {
     var mapData = new Map<String, int>();
     mapData['product_id'] = idProduct;
     mapData['quantity'] = numProduct;
@@ -419,8 +273,6 @@ class _ProductListState extends State<ProductList> {
                 ),
             context: c2);
         return;
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => ProductList()));
       } else {
         showDialog(
             builder: (context) => AlertDialog(
@@ -516,6 +368,153 @@ class _ProductListState extends State<ProductList> {
           });
     }).catchError((err) {
       print("ESTE ES EL ERROR $err");
+    });
+  }
+
+  List<Widget> btn(BuildContext contextPop, Map<String, dynamic> infoProduct) {
+    var quant = 1;
+    quantity.text = quant.toString();
+
+    if (globals.rolId == 3) {
+      return <Widget>[
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.add_shopping_cart),
+          backgroundColor: const Color(0xFF1BC0C5),
+          onPressed: () {
+            showDialog(
+                context: contextPop,
+                builder: (BuildContext contextPop2) {
+                  return Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: SizedBox(
+                          height: 150,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: FloatingActionButton(
+                                          onPressed: () {
+                                            if (quant == 0) {
+                                              quant = 0;
+                                              quantity.text = quant.toString();
+                                            } else {
+                                              quant = quant - 1;
+                                              quantity.text = quant.toString();
+                                            }
+                                          },
+                                          child: Icon(Icons.remove)),
+                                    ),
+                                    Expanded(
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        controller: quantity,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: FloatingActionButton(
+                                          onPressed: () {
+                                            quant = quant + 1;
+                                            quantity.text = quant.toString();
+                                          },
+                                          child: Icon(Icons.add)),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  addShopping(
+                                      infoProduct['id'], quant, contextPop2);
+                                },
+                                child: Icon(Icons.done),
+                              )
+                            ],
+                          )));
+                });
+          },
+        )),
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.cancel),
+          backgroundColor: Colors.red,
+          onPressed: () {
+            Navigator.of(contextPop).pop();
+            cleanFields();
+          },
+        )),
+      ];
+    } else if (globals.rolId == 2 || globals.rolId == 1) {
+      return <Widget>[
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.edit),
+          backgroundColor: const Color(0xFF1BC0C5),
+          onPressed: () {
+            String id = infoProduct['id'].toString();
+            print("PUSHANDO BTN");
+            Navigator.push(contextPop,
+                MaterialPageRoute(builder: (context) => ProductForm(text: id)));
+            // Navigator.of(contextPop).pushNamed("/createProduct");
+          },
+        )),
+        Expanded(
+            child: FloatingActionButton(
+                child: Icon(Icons.delete),
+                backgroundColor: Colors.red,
+                onPressed: () {
+                  deleteProduct(infoProduct['id'], contextPop);
+                })),
+      ];
+    }
+  }
+
+  void deleteProduct(int idProduct, BuildContext contex) async {
+    await Api.product_delete(idProduct).then((sucess) {
+      if (sucess) {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('Producto eliminado con éxito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        getProducts();
+                        Navigator.pop(context);
+                        Navigator.of(contex).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: contex);
+        return;
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => ProductList()));
+      } else {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('error al eliminar producto'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(contex).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: contex);
+        return;
+      }
+    }).catchError((onError) {
+      print("ESTE ES EL ERROR eliminar $onError");
     });
   }
 }
