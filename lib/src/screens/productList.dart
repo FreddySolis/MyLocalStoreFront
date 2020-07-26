@@ -469,13 +469,38 @@ class _ProductListState extends State<ProductList> {
                 child: Icon(Icons.delete),
                 backgroundColor: Colors.red,
                 onPressed: () {
-                  deleteProduct(infoProduct['id'], contextPop);
+                  showDialog(
+                    context: contextPop,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title:
+                          Text("Eliminar Producto de la lista"),
+                          content: Text("¿Esta seguro de eliminar este producto de la lista?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                color: Colors.green,
+                                child: Text("Si"),
+                                onPressed: () {
+                                  deleteProduct(infoProduct['id'], context, contextPop);
+                                  // Navigator.of(contextPop).pop();
+                                },
+                              ),
+                              FlatButton(
+                                color: Colors.red,
+                                child: Text("No"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                      );
+                    });
                 })),
       ];
     }
   }
 
-  void deleteProduct(int idProduct, BuildContext contex) async {
+  void deleteProduct(int idProduct, BuildContext contex,BuildContext main) async {
     await Api.product_delete(idProduct).then((sucess) {
       if (sucess) {
         showDialog(
@@ -487,6 +512,7 @@ class _ProductListState extends State<ProductList> {
                         getProducts();
                         Navigator.pop(context);
                         Navigator.of(contex).pop();
+                        Navigator.of(main).pop();
                       },
                       child: Text('Ok'),
                     )
@@ -494,8 +520,6 @@ class _ProductListState extends State<ProductList> {
                 ),
             context: contex);
         return;
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => ProductList()));
       } else {
         showDialog(
             builder: (context) => AlertDialog(

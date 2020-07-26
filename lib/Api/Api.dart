@@ -352,6 +352,20 @@ class Api {
     }
   }
 
+  static Future<bool> delete_ProductShoppingCar(id) async {
+    final response = await http.delete('${URLS.BASE_URL}/del-to-sc/$id',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": '${globals.token}',
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<String> pay_ShopingCar() async {
     final response = await http.get('${URLS.BASE_URL}/pay-sc/', headers: {
       "Content-Type": "application/json",

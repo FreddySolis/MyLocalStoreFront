@@ -79,7 +79,7 @@ class _ShoppingCarState extends State<ShoppingCar> {
                                                     color: Colors.green,
                                                     child: Text("Si"),
                                                     onPressed: () {
-                                                      //Put your code here which you want to execute on Yes button click.
+                                                      deleteProductInCar(data2[index]['idProduct']);
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
@@ -203,6 +203,7 @@ class _ShoppingCarState extends State<ShoppingCar> {
         aux['subtotal'] = suma;
         total = total + suma;
         aux['cantidad'] = value['quantity'];
+        aux['idProduct'] = slug;
         aux2.add(aux);
         suma = 0;
         print("Valor AUX $aux");
@@ -212,6 +213,45 @@ class _ShoppingCarState extends State<ShoppingCar> {
         data2 = aux2;
         data = dataTemp;
       });
+    });
+  }
+
+  void deleteProductInCar(idProduct) async{
+    await Api.delete_ProductShoppingCar(idProduct).then((succes) {
+      if(succes){
+        showDialog(
+          builder: (context) => AlertDialog(
+                title:
+                    Text('Producto eliminado del carrito'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getProductsInCar();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+          context: context);
+      }else{
+        showDialog(
+          builder: (context) => AlertDialog(
+                title:
+                    Text('No se pudo eliminar producto del carrito'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+          context: context);
+      }
+    }).catchError((onError){
+      print("error al eliminar de carro $onError");
     });
   }
 }
