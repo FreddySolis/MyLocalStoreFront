@@ -37,8 +37,9 @@ class _LoginState extends State<Login> {
   }
 
   void isLogued() async {
-    final prefs = await SharedPreferences.getInstance();
 
+    final prefs = await SharedPreferences.getInstance();
+    //prefs.remove('token');
     final token = prefs.getString('token') ?? null;
 
     if (token != null) {

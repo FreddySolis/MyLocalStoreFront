@@ -23,6 +23,7 @@ final TextEditingController size = TextEditingController();
 
 class ProductForm extends StatefulWidget {
   final String text;
+  
   ProductForm({ this.text, Key key}) : super(key: key);
 
   @override
