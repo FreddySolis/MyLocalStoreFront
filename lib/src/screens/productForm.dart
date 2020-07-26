@@ -258,6 +258,10 @@ class _ProductFormState extends State<ProductForm> {
                       description.clear();
                       stock.clear();
                       imgs.clear();
+                      images.clear();
+                      images.add("Add Image");
+                      images.add("Add Image");
+                      images.add("Add Image");
                     });
                 //print(sucess);
               } else {
