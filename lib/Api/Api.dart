@@ -181,7 +181,8 @@ class Api {
         body: data,
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": '${globals.token}'
         });
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return true;
@@ -207,8 +208,23 @@ class Api {
         body: data,
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          "Authorization": '${globals.token}'
         });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> product_delete(id) async {
+    final response =
+        await http.delete('${URLS.BASE_URL}/products/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -324,6 +340,20 @@ class Api {
   static Future<bool> update_shoppingCar(data) async {
     final response = await http.put('${URLS.BASE_URL}/upt-to-sc/',
         body: data,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": '${globals.token}',
+        });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> delete_ProductShoppingCar(id) async {
+    final response = await http.delete('${URLS.BASE_URL}/del-to-sc/$id',
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

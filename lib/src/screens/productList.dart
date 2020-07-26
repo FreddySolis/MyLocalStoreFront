@@ -3,7 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/configs.dart';
+import 'package:login_app/src/extras/variables.dart' as globals;
 import 'dart:convert';
+
+import 'package:login_app/src/screens/productForm.dart';
 
 final TextEditingController name = TextEditingController();
 final TextEditingController price = TextEditingController();
@@ -95,32 +98,31 @@ class _ProductListState extends State<ProductList> {
 
   getCategories() async {
     var categorias = new List<Categoria>();
-    Categoria cat = Categoria(0,"Todos");
+    Categoria cat = Categoria(0, "Todos");
     categorias.add(cat);
-    Api.categorias_get().then((value){
-      if(value != null){
+    Api.categorias_get().then((value) {
+      if (value != null) {
         var jsonData = json.decode(value.body);
-        setState((){
-          for(var i in jsonData){
-            Categoria cat = Categoria(i["id"],i["name"]);
+        setState(() {
+          for (var i in jsonData) {
+            Categoria cat = Categoria(i["id"], i["name"]);
             categorias.add(cat);
           }
         });
         _dropCategoria = buildDropdownMenuItems(categorias);
         _selectCategoria = _dropCategoria[0].value;
-
-      }else{
+      } else {
         print("Error");
       }
     });
   }
 
-  filtrerProducts(id) async{
+  filtrerProducts(id) async {
     List<Product> fireTemp = [];
     List dataTemp;
 
-    Api.products_by_categories(id).then((value){
-      if(value != null){
+    Api.products_by_categories(id).then((value) {
+      if (value != null) {
         dataTemp = json.decode(value.body);
         productsRef.once().then((DataSnapshot snap) {
           var keys = snap.value.keys;
@@ -132,26 +134,25 @@ class _ProductListState extends State<ProductList> {
           }
           for (int i = 0; i < dataTemp.length; i++) {
             fireTemp.forEach((g) => {
-              if (dataTemp[i]['slug'] == g.slug)
-                {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
-            });
+                  if (dataTemp[i]['slug'] == g.slug)
+                    {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
+                });
           }
           setState(() {
             data = dataTemp;
           });
         });
-
-      }else{
+      } else {
         print("Error");
       }
     });
   }
 
-  onChangeDropItem(Categoria selectedCat){
+  onChangeDropItem(Categoria selectedCat) {
     print(selectedCat.id);
-    if(selectedCat.id!=0){
+    if (selectedCat.id != 0) {
       filtrerProducts(selectedCat.id);
-    }else{
+    } else {
       getProducts();
     }
     setState(() {
@@ -217,240 +218,329 @@ class _ProductListState extends State<ProductList> {
       }),
     );
   }
-}
 
-  addShopping(int idProduct,int numProduct, BuildContext c) async{
+  addShopping(int idProduct, int numProduct, BuildContext c) async {
     var mapData = new Map<String, int>();
     mapData['product_id'] = idProduct;
     mapData['quantity'] = numProduct;
 
     print(JsonEncoder().convert(mapData));
-    await Api.add_ShoppingCar(JsonEncoder().convert(mapData)).then((sucess){
+    await Api.add_ShoppingCar(JsonEncoder().convert(mapData)).then((sucess) {
       if (sucess) {
         showDialog(
-          builder: (context) => AlertDialog(
-            title: Text('Agregado al carrito'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.of(c).pop();
-                },
-                child: Text('Ok'),
-              )
-            ],
-          ),
-          context: c
-        );
-          return;
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => ProductList()));
+            builder: (context) => AlertDialog(
+                  title: Text('Agregado al carrito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(c).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: c);
+        return;
       } else {
         updateProductInCar(idProduct, numProduct, c);
         return;
       }
-    }).catchError((onError){print("ESTE ES EL ERROR $onError");});
-
-  }
-
-  void updateProductInCar(int idProduct,int numProduct, BuildContext c2) async{
-    var mapData = new Map<String, int>();
-    mapData['product_id'] = idProduct;
-    mapData['quantity'] = numProduct;
-
-    await Api.update_shoppingCar(JsonEncoder().convert(mapData)).then((sucess){
-      if (sucess) {
-        showDialog(
-          builder: (context) => AlertDialog(
-            title: Text('Sumado al carrito'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.of(c2).pop();
-                },
-                child: Text('Ok'),
-              )
-            ],
-          ),
-          context: c2
-        );
-          return;
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => ProductList()));
-      } else {
-        showDialog(
-          builder: (context) => AlertDialog(
-            title: Text('error al agregar a compra'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.of(c2).pop();
-                },
-                child: Text('Ok'),
-              )
-            ],
-          ),
-          context: c2
-        );
-          return;
-      }
-    }).catchError((onError){
+    }).catchError((onError) {
       print("ESTE ES EL ERROR $onError");
     });
   }
 
-void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {
-  List imgList = [];
-  var quant=1;
+  void updateProductInCar( int idProduct, int numProduct, BuildContext c2) async {
+    var mapData = new Map<String, int>();
+    mapData['product_id'] = idProduct;
+    mapData['quantity'] = numProduct;
 
-  productsRef
-      .orderByChild("slug")
-      .equalTo(infoProduct["slug"])
-      .once()
-      .then((DataSnapshot snap) {
-    var keys = snap.value.keys;
-    var dat = snap.value;
+    await Api.update_shoppingCar(JsonEncoder().convert(mapData)).then((sucess) {
+      if (sucess) {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('Sumado al carrito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(c2).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: c2);
+        return;
+      } else {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('error al agregar a compra'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(c2).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: c2);
+        return;
+      }
+    }).catchError((onError) {
+      print("ESTE ES EL ERROR $onError");
+    });
+  }
 
-    for (var oneKey in keys) {
-      Product pro = Product(dat[oneKey]['img'], dat[oneKey]['slug']);
-      imgList.add(pro.img);
-    }
+  void showInfoProduct(BuildContext conte, Map<String, dynamic> infoProduct) {
+    List imgList = [];
 
-    name.text = infoProduct["name"];
-    price.text = infoProduct["price"].toString();
-    discount.text = infoProduct["discount"].toString();
-    stock.text = infoProduct["stock"].toString();
-    description.text = infoProduct["description"];
-    size.text = infoProduct["size"];
+    productsRef
+        .orderByChild("slug")
+        .equalTo(infoProduct["slug"])
+        .once()
+        .then((DataSnapshot snap) {
+      var keys = snap.value.keys;
+      var dat = snap.value;
+
+      for (var oneKey in keys) {
+        Product pro = Product(dat[oneKey]['img'], dat[oneKey]['slug']);
+        imgList.add(pro.img);
+      }
+
+      name.text = infoProduct["name"];
+      price.text = infoProduct["price"].toString();
+      discount.text = infoProduct["discount"].toString();
+      stock.text = infoProduct["stock"].toString();
+      description.text = infoProduct["description"];
+      size.text = infoProduct["size"];
+
+      showDialog(
+          context: conte,
+          builder: (BuildContext contextPop) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
+              child: SingleChildScrollView(
+                child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                            child: CarouselSlider(
+                          options: CarouselOptions(autoPlay: true),
+                          items: imgList
+                              .map((item) => Container(
+                                    child: Center(
+                                        child: Image.network(item,
+                                            fit: BoxFit.fill)),
+                                  ))
+                              .toList(),
+                        )),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormFields(
+                            controller: name, text: "Nombre del producto"),
+                        TextFormFields(
+                            controller: description, text: "Descripción"),
+                        TextFormFields(controller: price, text: "Precio"),
+                        TextFormFields(controller: discount, text: "Descuento"),
+                        TextFormFields(controller: stock, text: "Stock"),
+                        TextFormFields(controller: size, text: "Cantidad"),
+                        SizedBox(
+                            width: 320.0,
+                            child: Column(children: <Widget>[
+                              ListTile(
+                                title:
+                                    Row(children: btn(contextPop, infoProduct)),
+                              )
+                            ])),
+                      ],
+                    )),
+              ),
+            );
+          });
+    }).catchError((err) {
+      print("ESTE ES EL ERROR $err");
+    });
+  }
+
+  List<Widget> btn(BuildContext contextPop, Map<String, dynamic> infoProduct) {
+    var quant = 1;
     quantity.text = quant.toString();
 
-    showDialog(
-        context: conte,
-        builder: (BuildContext contextPop) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)), //this right here
-            child: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                          child: CarouselSlider(
-                        options: CarouselOptions(autoPlay: true),
-                        items: imgList
-                            .map((item) => Container(
-                                  child: Center(
-                                      child: Image.network(item,
-                                          fit: BoxFit.fill)),
-                                ))
-                            .toList(),
-                      )),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      TextFormFields(
-                          controller: name, text: "Nombre del producto"),
-                      TextFormFields(
-                          controller: description, text: "Descripción"),
-                      TextFormFields(controller: price, text: "Precio"),
-                      TextFormFields(controller: discount, text: "Descuento"),
-                      TextFormFields(controller: stock, text: "Stock"),
-                      TextFormFields(controller: size, text: "Cantidad"),
-                      SizedBox(
-                          width: 320.0,
-                          child: Column(children: <Widget>[
-                            ListTile(
-                              title: Row(
-                                children: <Widget>[
-                                  Expanded(
+    if (globals.rolId == 3) {
+      return <Widget>[
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.add_shopping_cart),
+          backgroundColor: const Color(0xFF1BC0C5),
+          onPressed: () {
+            showDialog(
+                context: contextPop,
+                builder: (BuildContext contextPop2) {
+                  return Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: SizedBox(
+                          height: 150,
+                          child: Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Row(
+                                  children: <Widget>[
+                                    Expanded(
                                       child: FloatingActionButton(
-                                    child: Icon(Icons.add_shopping_cart),
-                                    backgroundColor: const Color(0xFF1BC0C5),
-                                    onPressed: () {
-                                       showDialog(
-                                        context: contextPop,
-                                        builder: (BuildContext contextPop2) {
-                                          return Dialog(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20.0)),
-                                              child: SizedBox(
-                                                height: 150,
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      ListTile(
-                                                        title: Row(
-                                                          children: <Widget>[
-                                                            Expanded(
-                                                              child: FloatingActionButton(
-                                                                  onPressed: () {
-                                                                    if(quant==0){
-                                                                      quant = 0;
-                                                                      quantity.text = quant.toString();
-                                                                    }else{
-                                                                      quant = quant-1;
-                                                                      quantity.text = quant.toString();
-                                                                    }
-                                                                    // Navigator.of(contextPop2).pop();
-                                                                  },
-                                                                  child: Icon(Icons.remove)),
-                                                            ),
-                                                            Expanded(
-                                                              child:
-                                                              TextFormField(
-                                                                textAlign: TextAlign.center,
-                                                                controller: quantity,
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: FloatingActionButton(
-                                                                  onPressed: () {
-                                                                    quant = quant+1;
-                                                                    quantity.text = quant.toString();
-                                                                    // Navigator.of(contextPop2).pop();
-                                                                  },
-                                                                  child: Icon(Icons.add)),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10,),
-                                                      FloatingActionButton(
-                                                        onPressed: () {
-                                                          addShopping(infoProduct['id'],quant,contextPop2);
-                                                        },
-                                                        child: Icon(Icons.done),
-                                                      )
-                                                    ],
-                                                  )));
-                                        });
-                                    },
-                                  )),
-                                  Expanded(
+                                          onPressed: () {
+                                            if (quant == 0) {
+                                              quant = 0;
+                                              quantity.text = quant.toString();
+                                            } else {
+                                              quant = quant - 1;
+                                              quantity.text = quant.toString();
+                                            }
+                                          },
+                                          child: Icon(Icons.remove)),
+                                    ),
+                                    Expanded(
+                                      child: TextFormField(
+                                        textAlign: TextAlign.center,
+                                        controller: quantity,
+                                      ),
+                                    ),
+                                    Expanded(
                                       child: FloatingActionButton(
-                                    child: Icon(Icons.cancel),
-                                    backgroundColor: Colors.red,
-                                    onPressed: () {
-                                      Navigator.of(contextPop).pop();
-                                      cleanFields();
-                                    },
-                                  )),
-                                ],
+                                          onPressed: () {
+                                            quant = quant + 1;
+                                            quantity.text = quant.toString();
+                                          },
+                                          child: Icon(Icons.add)),
+                                    )
+                                  ],
+                                ),
                               ),
-                            )
-                          ])),
-                    ],
-                  )),
-            ),
-          );
-        });
-  }).catchError((err) {
-    print("ESTE ES EL ERROR $err");
-  });
+                              SizedBox(
+                                height: 10,
+                              ),
+                              FloatingActionButton(
+                                onPressed: () {
+                                  addShopping(
+                                      infoProduct['id'], quant, contextPop2);
+                                },
+                                child: Icon(Icons.done),
+                              )
+                            ],
+                          )));
+                });
+          },
+        )),
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.cancel),
+          backgroundColor: Colors.red,
+          onPressed: () {
+            Navigator.of(contextPop).pop();
+            cleanFields();
+          },
+        )),
+      ];
+    } else if (globals.rolId == 2 || globals.rolId == 1) {
+      return <Widget>[
+        Expanded(
+            child: FloatingActionButton(
+          child: Icon(Icons.edit),
+          backgroundColor: const Color(0xFF1BC0C5),
+          onPressed: () {
+            String id = infoProduct['id'].toString();
+            print("PUSHANDO BTN");
+            Navigator.push(contextPop,
+                MaterialPageRoute(builder: (context) => ProductForm(text: id)));
+            // Navigator.of(contextPop).pushNamed("/createProduct");
+          },
+        )),
+        Expanded(
+            child: FloatingActionButton(
+                child: Icon(Icons.delete),
+                backgroundColor: Colors.red,
+                onPressed: () {
+                  showDialog(
+                    context: contextPop,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title:
+                          Text("Eliminar Producto de la lista"),
+                          content: Text("¿Esta seguro de eliminar este producto de la lista?"),
+                            actions: <Widget>[
+                              FlatButton(
+                                color: Colors.green,
+                                child: Text("Si"),
+                                onPressed: () {
+                                  deleteProduct(infoProduct['id'], context, contextPop);
+                                  // Navigator.of(contextPop).pop();
+                                },
+                              ),
+                              FlatButton(
+                                color: Colors.red,
+                                child: Text("No"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                      );
+                    });
+                })),
+      ];
+    }
+  }
+
+  void deleteProduct(int idProduct, BuildContext contex,BuildContext main) async {
+    await Api.product_delete(idProduct).then((sucess) {
+      if (sucess) {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('Producto eliminado con éxito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        getProducts();
+                        Navigator.pop(context);
+                        Navigator.of(contex).pop();
+                        Navigator.of(main).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: contex);
+        return;
+      } else {
+        showDialog(
+            builder: (context) => AlertDialog(
+                  title: Text('error al eliminar producto'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(contex).pop();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: contex);
+        return;
+      }
+    }).catchError((onError) {
+      print("ESTE ES EL ERROR eliminar $onError");
+    });
+  }
 }
 
 class Product {

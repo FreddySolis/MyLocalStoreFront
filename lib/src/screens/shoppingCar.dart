@@ -39,11 +39,6 @@ class _ShoppingCarState extends State<ShoppingCar> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          // Container(
-                          //   child: Image.network(
-                          //       'https://images.rappi.com.mx/restaurants_background/food-inn-comida-china-home1-1569623118508.png?d=200x200',
-                          //       fit: BoxFit.fill),
-                          // ),
                           Container(
                             margin: EdgeInsets.all(15),
                             child: Column(
@@ -67,6 +62,40 @@ class _ShoppingCarState extends State<ShoppingCar> {
                                     'Subtotal: \$ ${data2[index]['subtotal']}',
                                     style: cardText,
                                   ),
+                                  FloatingActionButton(
+                                      child: Icon(Icons.delete),
+                                      backgroundColor: Colors.red,
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title:
+                                                    Text("Eliminar de carrito"),
+                                                content: Text(
+                                                    "¿Esta seguro de eliminar este producto de su carrito?"),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    color: Colors.green,
+                                                    child: Text("Si"),
+                                                    onPressed: () {
+                                                      deleteProductInCar(data2[index]['idProduct']);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  FlatButton(
+                                                    color: Colors.red,
+                                                    child: Text("No"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      })
                                 ])),
                               ],
                             ),
@@ -97,7 +126,7 @@ class _ShoppingCarState extends State<ShoppingCar> {
 
   Widget payButton(Text text, Text text2, Color color) {
     return Material(
-      elevation: 5,
+        elevation: 5,
         child: ButtonTheme(
             minWidth: 50.0,
             height: 50.0,
@@ -174,6 +203,7 @@ class _ShoppingCarState extends State<ShoppingCar> {
         aux['subtotal'] = suma;
         total = total + suma;
         aux['cantidad'] = value['quantity'];
+        aux['idProduct'] = slug;
         aux2.add(aux);
         suma = 0;
         print("Valor AUX $aux");
@@ -183,6 +213,45 @@ class _ShoppingCarState extends State<ShoppingCar> {
         data2 = aux2;
         data = dataTemp;
       });
+    });
+  }
+
+  void deleteProductInCar(idProduct) async{
+    await Api.delete_ProductShoppingCar(idProduct).then((succes) {
+      if(succes){
+        showDialog(
+          builder: (context) => AlertDialog(
+                title:
+                    Text('Producto eliminado del carrito'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getProductsInCar();
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+          context: context);
+      }else{
+        showDialog(
+          builder: (context) => AlertDialog(
+                title:
+                    Text('No se pudo eliminar producto del carrito'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+          context: context);
+      }
+    }).catchError((onError){
+      print("error al eliminar de carro $onError");
     });
   }
 }

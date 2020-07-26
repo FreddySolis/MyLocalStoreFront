@@ -7,12 +7,12 @@ import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/configs.dart';
 import 'package:login_app/src/providers/upload_img_provider.dart';
+import 'package:random_string/random_string.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
 int id;
-int count=6;
 String slug;
 final TextEditingController name = TextEditingController();
 final TextEditingController price = TextEditingController();
@@ -223,8 +223,7 @@ class _ProductFormState extends State<ProductForm> {
       ),
       onPressed: () {
         if (formKey.currentState.validate()) {
-          count = count+1;
-          slug = "Slug$count";
+          slug = "Slug"+generateSlug();
           formKey.currentState.save();
           mapData['slug'] = slug;
           upload.slug = slug;
@@ -237,6 +236,7 @@ class _ProductFormState extends State<ProductForm> {
             Api.product_create(JsonEncoder().convert(mapData))
                 .then((sucess) {
               if (sucess && imgs.length>0) {
+                print("longitud arreglo ${imgs.length}");
                 upload.uploadStatusImg(imgs);
                 showDialog(
                     builder: (context) => AlertDialog(
@@ -259,6 +259,10 @@ class _ProductFormState extends State<ProductForm> {
                       description.clear();
                       stock.clear();
                       imgs.clear();
+                      images.clear();
+                      images.add("Add Image");
+                      images.add("Add Image");
+                      images.add("Add Image");
                     });
                 //print(sucess);
               } else {
@@ -447,6 +451,15 @@ class _ProductFormState extends State<ProductForm> {
       },
     );
   }
+}
+
+String generateSlug(){
+  var num = randomNumeric(5);
+  var let = randomString(5);
+
+  var fin = num+let;
+
+  return fin;
 }
 
 class ImageUploadModel {

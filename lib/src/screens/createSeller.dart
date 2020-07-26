@@ -296,7 +296,7 @@ class _CreateSeller extends State<CreateSeller>{
               print(value);
               if(value){
                 _alert("Registro Exitoso");
-                Navigator.of(context).pop();
+                
               }else{
                 _alert("Error al Registrar");
               }

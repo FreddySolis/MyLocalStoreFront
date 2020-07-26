@@ -15,6 +15,7 @@ class _PaymentsViewState extends State<PaymentsView>{
   var payment = new List<Payment>();
   User user = null;
   var products = new List<Producto>();
+  bool paymentsExist = false;
 
   @override
   void initState(){
@@ -36,21 +37,36 @@ class _PaymentsViewState extends State<PaymentsView>{
   }
 
   Widget _listPayment(){
-    return SingleChildScrollView(
-      child: Container(
-          child: Column(
-            children: <Widget>[
-              ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: payment.length,
-                  itemBuilder: (context, index) => _Ventas(context, index)
-              ),
-            ],
-          ),
+    if(paymentsExist){
+      return SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: payment.length,
+                    itemBuilder: (context, index) => _Ventas(context, index)
+                ),
+              ],
+            ),
 
-      )
-    );
+          )
+      );
+    }else{
+      return Container(
+        padding: EdgeInsets.all(15.0),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Aun no existen ventas :(",
+          style: TextStyle(
+            fontSize: 40.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
 
   }
   Widget _appbarr(){
@@ -73,6 +89,15 @@ class _PaymentsViewState extends State<PaymentsView>{
           for(var i in jsonData){
             Payment direc = Payment(i["id"],i["user_id"], i["sc_id"], i["status"], i["cart_total"], i["created_at"]);
             payment.add(direc);
+          }
+          if(payment.length > 0){
+            setState(() {
+              paymentsExist = true;
+            });
+          }else {
+            setState(() {
+              paymentsExist = false;
+            });
           }
         });
         //get_ShoppingCar();
