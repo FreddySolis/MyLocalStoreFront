@@ -44,6 +44,7 @@ class _AddressViewState extends State<AddressView> {
 
   var direcciones = new List<Direccion>();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -60,33 +61,40 @@ class _AddressViewState extends State<AddressView> {
         var jsonData = json.decode(value);
         setState(() {
           for(var i in jsonData){
-            Direccion direc = Direccion(i["id"],i["Street"], i["contactphone"], i["zip_code"], i["city"], i["state"]);
+            Direccion direc = Direccion(i["id"],i["street"], i["phone_number"], i["zip_code"], i["city"], i["state"]);
             direcciones.add(direc);
+          }
+          if(direcciones.length > 0){
+            setState(() {
+              addressExist = true;
+            });
+          }else{
+            setState(() {
+              addressExist = false;
+            });
           }
         });
         print(direcciones.length);
       }
     });
-    if(direcciones.length > 0){
-      addressExist = true;
-    }
+
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffolKey,
       appBar: _appbarr(),
-      body: _body(),
+      body: _body(context),
     );
   }
 
   Widget _appbarr(){
     return AppBar(
-      backgroundColor: Colors.green,
+      backgroundColor: submitFormButtonColor,
       title: Text("Direccion", style: TextStyle(color: Colors.black),),
     );
   }
-  Widget _body(){
+  Widget _body(BuildContext context){
     return
       SingleChildScrollView(
         child: Stack(
@@ -106,10 +114,11 @@ class _AddressViewState extends State<AddressView> {
                     )
                   ),
                   Container(
+                    width: 300,
                     padding: EdgeInsets.all(10.0),
                     child: _buttonAddressAccess(),
                   ),
-                  _exist()
+                  _exist(context)
                 ],
               ),
             ),
@@ -119,7 +128,7 @@ class _AddressViewState extends State<AddressView> {
       );
 
   }
-  Widget _exist(){
+  Widget _exist(context){
     if(addressExist){
       return Container(
         child: Column(
@@ -167,7 +176,7 @@ class _AddressViewState extends State<AddressView> {
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                _showDialog(direcciones[index].id);
+                _showDialog(direcciones[index].id, context);
                 var i = direcciones[index].id;
                 print("index $i");
               } ,
@@ -271,7 +280,7 @@ class _AddressViewState extends State<AddressView> {
               mapData["street1"] = street1.text;
               mapData["street2"] = street2.text;*/
           print(JsonEncoder().convert(mapData));
-          /*Api.direccion_post(JsonEncoder().convert(mapData)).then((value){
+          Api.direccion_post(JsonEncoder().convert(mapData)).then((value){
             var jsonData = json.decode(value.body);
             if(jsonData["messaje"] != "Dirección guardada exitosamente"){
               print(value.body);
@@ -283,6 +292,11 @@ class _AddressViewState extends State<AddressView> {
                 indications.clear();
                 street1.clear();
                 street2.clear();
+                street.clear();
+                code.clear();
+                city.clear();
+                _selectState = "Chiapas";
+                _selectCountry = "Mexico";
                 addressExist = true;
                 _getAddress();
               });
@@ -292,7 +306,7 @@ class _AddressViewState extends State<AddressView> {
               _snackBar(Text("Error al guardar"));
               print(jsonData);
             }
-          });*/
+          });
 
         }else{
           _snackBar(Text("Existen campos vacios o erroneos"));
@@ -302,7 +316,7 @@ class _AddressViewState extends State<AddressView> {
 
       },
       padding: EdgeInsets.all(8.0),
-      color: Colors.lightGreen,
+      color: submitFormButtonColor,
       child: Text(
         "Ingrese Direccion",
         style: TextStyle(
@@ -502,10 +516,9 @@ class _AddressViewState extends State<AddressView> {
                   ),
                 ),*/
               ),
-              Expanded(
+              Container(
                 child: DropdownButton<String>(
                   value: _selectCountry,
-                  icon: Icon(Icons.person_outline),
                   style: TextStyle(color: Colors.black,  fontSize: 18),
                   underline: Container(
                     height: 2,
@@ -643,11 +656,11 @@ class _AddressViewState extends State<AddressView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child:  Text(
-                      direcciones[index].calle,
+                    child: Text(
+                      "Calle : ${direcciones[index].calle}",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold
+                          fontSize: 25, fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -663,23 +676,24 @@ class _AddressViewState extends State<AddressView> {
               padding: EdgeInsets.all(5.0),
               alignment: Alignment.topCenter,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
                     child:  Text(
-                      direcciones[index].telefono,
+                      "Telefono de Contacto: ${direcciones[index].telefono}",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold
+                          fontSize: 18, fontWeight: FontWeight.normal
                       ),
                     ),
                   ),
-                  Container(
+                  Expanded(
                     child: Icon(
                       Icons.phone, size: 20,
                     ),
-                  )
+                  ),
+                  SizedBox(width: 80,)
                 ],
               ),
             ),
@@ -688,23 +702,23 @@ class _AddressViewState extends State<AddressView> {
               alignment: Alignment.topCenter,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     child:  Text(
-                      direcciones[index].ciudad,
+                      "Ciudad : ${direcciones[index].ciudad}",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold
+                          fontSize: 18, fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
                   Expanded(
                     child:  Text(
-                      direcciones[index].estado,
+                      "Estado : ${direcciones[index].estado}",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold
+                          fontSize: 18, fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -715,10 +729,10 @@ class _AddressViewState extends State<AddressView> {
               padding: EdgeInsets.all(5.0),
               alignment: Alignment.topLeft,
               child: Text(
-                direcciones[index].codigo,
+                "Codigo Postal : ${direcciones[index].codigo}",
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.bold
+                    fontSize: 18, fontWeight: FontWeight.bold
                 ),
               ),
             )
@@ -736,101 +750,112 @@ class _AddressViewState extends State<AddressView> {
     );
     _scaffolKey.currentState.showSnackBar(snackBar);
   }
-  _showDialog(index) async{
+  _showDialog(index, BuildContext context) async{
     showDialog(
         context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Text("Editar Direccion"),
-            content: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  //_addressSearchTextField(),
-                  Form(
-                    key: formKey,
-                    child: _addressInputs(),
-                  )
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text("Aceptar"),
-                onPressed: (){
-                  if(formKey.currentState.validate()){
-                    setState(() {
-                      //addressController2.text = addressController.text;
-                      addressController.text.isEmpty ? _validate = true : _validate = false;
-                      //addressController.clear();
-                    });
-                    //mapData["address"] = addressController.text;
-                    mapData["street"] = street.text;
-                    //mapData["number"] = number.text;
-                    mapData["zip_code"] = code.text;
-                    //mapData["col"] = col.text;
-                    //mapData["city"] = city.text;
-                    mapData["city"] = city.text;
-                    //mapData["state"] = state.text;
-                    mapData["state"] = _selectState;
-                    mapData["country"] =  _selectCountry;
-                    mapData["phone_number"] = phone.text;
-                    /*mapData["indications"] = indications.text;
-                        mapData["street1"] = street1.text;
-                        mapData["street2"] = street2.text;*/
-                    print(JsonEncoder().convert(mapData));
-                    /*Api.direccion_put(index,JsonEncoder().convert(mapData)).then((value){
-                          var jsonData = json.decode(value.body);
-                          if(jsonData["messaje"] != "Dirección actualizada exitosamente"){
-                            print(value.body);
+        builder: (context){
+
+                return Container(
+                  width: 600,
+                  child: AlertDialog(
+                    title: Text("Editar Direccion"),
+                    content: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          //_addressSearchTextField(),
+                          //_addressInputs(),
+                          Form(
+                            key: formKey2,
+                            child: _addressInputs(),
+                          )
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Aceptar"),
+                        onPressed: (){
+                          if(formKey2.currentState.validate()){
                             setState(() {
                               //addressController2.text = addressController.text;
                               addressController.text.isEmpty ? _validate = true : _validate = false;
-                              addressController.clear();
-                              phone.clear();
-                              indications.clear();
-                              street1.clear();
-                              street2.clear();
-                              addressExist = true;
-                              _getAddress();
-
+                              //addressController.clear();
                             });
-                            _snackBar(Text("Direccion Guardada"));
-                            Navigator.of(context).pop();
-                            print("Direccion nueva: "+ addressController.text);
+                            //mapData["address"] = addressController.text;
+                            mapData["street"] = street.text;
+                            //mapData["number"] = number.text;
+                            mapData["zip_code"] = code.text;
+                            //mapData["col"] = col.text;
+                            //mapData["city"] = city.text;
+                            mapData["city"] = city.text;
+                            //mapData["state"] = state.text;
+                            mapData["state"] = _selectState;
+                            mapData["country"] =  _selectCountry;
+                            mapData["phone_number"] = phone.text;
+                            /*mapData["indications"] = indications.text;
+                        mapData["street1"] = street1.text;
+                        mapData["street2"] = street2.text;*/
+                            print(JsonEncoder().convert(mapData));
+                            Api.direccion_put(index,JsonEncoder().convert(mapData)).then((value){
+                              var jsonData = json.decode(value.body);
+                              if(jsonData["messaje"] != "Dirección actualizada exitosamente"){
+                                print(value.body);
+                                setState(() {
+                                  //addressController2.text = addressController.text;
+                                  addressController.text.isEmpty ? _validate = true : _validate = false;
+                                  addressController.clear();
+                                  phone.clear();
+                                  indications.clear();
+                                  street1.clear();
+                                  street2.clear();
+                                  street.clear();
+                                  code.clear();
+                                  city.clear();
+                                  _selectState = "Chiapas";
+                                  _selectCountry = "Mexico";
+                                  addressExist = true;
+                                  _getAddress();
+
+                                });
+                                _snackBar(Text("Direccion Guardada"));
+                                Navigator.of(context).pop();
+                                print("Direccion nueva: "+ addressController.text);
+                              }else{
+                                _snackBar(Text("Error al Actualizar"));
+                                print(jsonData["messaje"]);
+                              }
+                            });
+
                           }else{
-                            _snackBar(Text("Error al Actualizar"));
-                            print(jsonData["messaje"]);
+                            _snackBar(Text("Existen campos vacios o erroneos"));
+                            print("nell prro");
                           }
-                        });*/
 
-                  }else{
-                    _snackBar(Text("Existen campos vacios o erroneos"));
-                    print("nell prro");
-                  }
+                        },
+                      ),
+                      FlatButton(
+                        child: Text("Eliminar",style: TextStyle(color: Colors.red),),
+                        onPressed: (){
+                          Api.direccion_delete(index).then((value) {
+                            var jsonData = json.decode(value.body);
+                            if (jsonData["messaje"] != "Dirección eliminada exitosamente") {
+                              setState(() {
+                                _getAddress();
+                              });
+                              _snackBar(Text("Eliminacion Exitosa"));
+                              Navigator.of(context).pop();
+                            }else{
+                              _snackBar(Text("Error al eliminar"));
+                              Navigator.of(context).pop();
+                            };
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                );
 
-                },
-              ),
-              FlatButton(
-                child: Text("Eliminar",style: TextStyle(color: Colors.red),),
-                onPressed: (){
-                  Api.direccion_delete(index).then((value) {
-                    var jsonData = json.decode(value.body);
-                    if (jsonData["messaje"] != "Dirección eliminada exitosamente") {
-                      setState(() {
-                        _getAddress();
-                      });
-                      _snackBar(Text("Eliminacion Exitosa"));
-                      Navigator.of(context).pop();
-                    }else{
-                      _snackBar(Text("Error al eliminar"));
-                      Navigator.of(context).pop();
-                    };
-                  });
-                },
-              )
-            ],
-          );
         }
     );
   }

@@ -41,6 +41,7 @@ class _MainView extends State<MainView>{
     return Scaffold(
       appBar: AppBar(
         backgroundColor: secondary,
+        automaticallyImplyLeading: false,
         title: Row(
           children: <Widget>[
             Text(_selectTitle),
