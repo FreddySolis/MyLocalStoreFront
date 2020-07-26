@@ -367,12 +367,13 @@ class Api {
   }
 
     static Future<String> pay_id(String id) async {
-      Map<String, String> data = {'pay_id': id};
-    final response = await http.post('${URLS.BASE_URL}/paypalid/', headers: {
+    var data = new Map<String, String>();
+      data['pay_id'] = id;
+    final response = await http.post('${URLS.BASE_URL}/paypalid',  body: data,headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}',
-    }, body: data,
+    }
     );
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
