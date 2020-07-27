@@ -23,89 +23,112 @@ class _ShoppingListState extends State<ShoppingList> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        body: Column(children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-                child: Column(
-                    children: List.generate(data.length, (index) {
-              return Center(
-                child: Column(children: <Widget>[
-                  Card(
-                    clipBehavior: Clip.antiAlias,
-                    margin: EdgeInsets.all(20),
-                    child: InkWell(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.all(15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                    child: Column(children: <Widget>[
-                                  Text(
-                                    "Monto total de compra: ${data[index]['cart_total']}",
-                                    style: cardTitles,
-                                  ),
-                                  Text(
-                                    "Fecha de la compra ${data[index]['created_at']}",
-                                    style: cardText,
-                                  ),
-                                ])),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      onTap: () => {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext contextPop) {
-                              return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                  child: SingleChildScrollView(
-                                      child: SizedBox(
-                                          child: Column(children: <Widget>[
-                                    Card(
-                                        child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          "Producto:  ${data[index]['name']}",
-                                          style: cardTitles,
-                                        ),
-                                        Text(
-                                          "Precio: \$ ${data[index]['price']}",
-                                          style: cardTitles,
-                                        ),
-                                        Text(
-                                          "Cantidad:  ${data[index]['quantity']}",
-                                          style: cardTitles,
-                                        ),
-                                        Text(
-                                          "Porción:  ${data[index]['size']}",
-                                          style: cardTitles,
-                                        ),
-                                        Text(
-                                          "Subtotal:  ${data[index]['subtotal']}",
-                                          style: cardTitles,
-                                        ),
-                                      ],
-                                    ))
-                                  ]))));
-                            }),
-                      },
-                    ),
-                  ),
-                ]),
-              );
-            }))),
-          ),
-        ]),
-      ),
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: textcolor,
+          title: Text('Listado de compras'),
+        ),
+        body: listShop()
+        ),
     );
+  }
+
+  Widget listShop() {
+    if (data.length > 0) {
+      return Column(children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+              child: Column(
+                  children: List.generate(data.length, (index) {
+            return Center(
+              child: Column(children: <Widget>[
+                Card(
+                  clipBehavior: Clip.antiAlias,
+                  margin: EdgeInsets.all(20),
+                  child: InkWell(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                  child: Column(children: <Widget>[
+                                Text(
+                                  "Monto total de compra: ${data[index]['cart_total']}",
+                                  style: cardTitles,
+                                ),
+                                Text(
+                                  "Fecha de la compra ${data[index]['created_at']}",
+                                  style: cardText,
+                                ),
+                              ])),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    onTap: () => {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext contextPop) {
+                            return Dialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                child: SingleChildScrollView(
+                                    child: SizedBox(
+                                        child: Column(children: <Widget>[
+                                  Card(
+                                      child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        "Producto:  ${data[index]['name']}",
+                                        style: cardTitles,
+                                      ),
+                                      Text(
+                                        "Precio: \$ ${data[index]['price']}",
+                                        style: cardTitles,
+                                      ),
+                                      Text(
+                                        "Cantidad:  ${data[index]['quantity']}",
+                                        style: cardTitles,
+                                      ),
+                                      Text(
+                                        "Porción:  ${data[index]['size']}",
+                                        style: cardTitles,
+                                      ),
+                                      Text(
+                                        "Subtotal:  ${data[index]['subtotal']}",
+                                        style: cardTitles,
+                                      ),
+                                    ],
+                                  ))
+                                ]))));
+                          }),
+                    },
+                  ),
+                ),
+              ]),
+            );
+          }))),
+        ),
+      ]);
+    }else{
+      return Container(
+        padding: EdgeInsets.all(15.0),
+        alignment: Alignment.center,
+        child: Text(
+          "Aún no tienes compras registradas, mira la lista de productos",
+          style: TextStyle(
+            fontSize: 30.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
   }
 
   getBuysUser() async {
