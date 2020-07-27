@@ -8,24 +8,24 @@ class UploadImgs {
   String url;
   String slug;
 
-  void uploadStatusImg( List<File> imgs) async {
+  Future<bool> uploadStatusImg( List<File> imgs) async {
     final StorageReference postImgRef =
-        FirebaseStorage.instance.ref().child("Products Imgs");
-
-    if (imgs.isNotEmpty) {
+      FirebaseStorage.instance.ref().child("Products Imgs");
+      
       for (var img in imgs) {
         var timeKey = DateTime.now();
         final StorageUploadTask uploadTask =
         postImgRef.child(timeKey.toString() + ".jpg").putFile(img);
         var imgUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
         url = imgUrl.toString();
-        print("===ImgURL=== $url");
-        saveToDataBase(url);
-      } 
+        print("=====ImgURL=====");
+        print(url);
+        saveToDataBase(url);  
+      }
       //save post a firebase real time
-      
       print("==================VE A CHEACAR FIREBASE, RUUUUUUUN===========");
-    }
+      return true;
+      
   }
 
   void saveToDataBase(String url) {

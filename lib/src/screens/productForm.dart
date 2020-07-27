@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -233,11 +234,14 @@ class _ProductFormState extends State<ProductForm> {
               .toString();
           print(mapData['final_price']);
           if (widget.text == null) {
-            Api.product_create(JsonEncoder().convert(mapData))
-                .then((sucess) {
-              if (sucess && imgs.length>0) {
+            if(imgs.length>0){
+              Api.product_create(JsonEncoder().convert(mapData))
+                .then((sucess) async {
+              if (sucess) {
+                upload.uploadStatusImg(imgs).whenComplete(
+                  clean()
+                );
                 print("longitud arreglo ${imgs.length}");
-                upload.uploadStatusImg(imgs);
                 showDialog(
                     builder: (context) => AlertDialog(
                           title: Text('Registro exitoso'),
@@ -251,20 +255,6 @@ class _ProductFormState extends State<ProductForm> {
                           ],
                         ),
                     context: context);
-                    setState(() {
-                      name.clear();
-                      price.clear();
-                      discount.clear();
-                      size.clear();
-                      description.clear();
-                      stock.clear();
-                      imgs.clear();
-                      images.clear();
-                      images.add("Add Image");
-                      images.add("Add Image");
-                      images.add("Add Image");
-                    });
-                //print(sucess);
               } else {
                 showDialog(
                     builder: (context) => AlertDialog(
@@ -281,6 +271,21 @@ class _ProductFormState extends State<ProductForm> {
                     context: context);
               }
             });
+            }else{
+              showDialog(
+                builder: (context) => AlertDialog(
+                title: Text('Debe seleccionar al menos una imagen'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Ok'),
+                  )
+                ],
+              ),
+              context: context);
+            }
           } else {
             Api.product_update(JsonEncoder().convert(mapData), id)
                 .then((sucess) {
@@ -450,6 +455,20 @@ class _ProductFormState extends State<ProductForm> {
         mapData[mapName] = value;
       },
     );
+  }
+
+  FutureOr<dynamic> clean(){
+    name.clear();
+    price.clear();
+    discount.clear();
+    size.clear();
+    description.clear();
+    stock.clear();
+    imgs.clear();
+    images.clear();
+    images.add("Add Image");
+    images.add("Add Image");
+    images.add("Add Image");
   }
 }
 
