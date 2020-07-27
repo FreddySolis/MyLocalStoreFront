@@ -284,14 +284,14 @@ class _PaymentsViewState extends State<PaymentsView>{
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 ),
-                                Container(
+                                /*Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     "Produtos",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                   ),
-                                ),
+                                ),*/
                                 /*SingleChildScrollView(
                                     child:  Container( width: 250, height: 250,
                                       child: Column(
