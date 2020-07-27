@@ -36,6 +36,11 @@ Icon icon3 = Icon(
   color: Colors.red,
   size: 40,
 );
+Icon icon4 = Icon(
+  Icons.error,
+  color: Colors.red,
+  size: 40,
+);
 
 class _ProfileState extends State<Profile> {
   @override
@@ -81,6 +86,7 @@ class _ProfileState extends State<Profile> {
         cardName1 = 'Editar info';
         cardName2 = 'ventas';
         cardName3 = 'Crear Productos';
+        cardName4 = 'Actualizar contraseña';
         icon1 = Icon(
           Icons.build,
           color: Colors.green[300],
@@ -96,10 +102,16 @@ class _ProfileState extends State<Profile> {
           color: Colors.yellow[500],
           size: 40,
         );
+        icon4 = Icon(
+          Icons.update,
+          color: Colors.yellow[500],
+          size: 40,
+        );
       } else {
         cardName1 = 'Editar info';
         cardName2 = 'Compras';
         cardName3 = 'Direcciones';
+        // cardName4 = 'Actualizar\n\ncontraseña';
         icon1 = Icon(
         Icons.build,
         color: Colors.green[300],
@@ -114,6 +126,11 @@ class _ProfileState extends State<Profile> {
         Icons.local_shipping,
         color: Colors.brown,
         size: 40,
+        );
+        icon4 = Icon(
+          Icons.update,
+          color: Colors.yellow[500],
+          size: 40,
         );
       }
     });
@@ -139,11 +156,7 @@ class _ProfileState extends State<Profile> {
                       children: <Widget>[
                         SingleChildScrollView(
                           child: Column(
-                            children: <Widget>[
-                              profileCard('$cardName1', icon1, 1, context),
-                              profileCard('$cardName2', icon2, 2, context),
-                              profileCard('$cardName3', icon3, 3, context)
-                            ],
+                            children: cards(context)
                           ),
                         )
                       ],
@@ -152,6 +165,23 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             )));
+  }
+}
+
+List<Widget> cards(BuildContext context){
+  if (globals.rolId == 1) {
+    return <Widget>[
+      profileCard('$cardName1', icon1, 1, context),
+      profileCard('$cardName2', icon2, 2, context),
+      profileCard('$cardName3', icon3, 3, context),
+    ];
+  }else{
+    return <Widget>[
+      profileCard('$cardName1', icon1, 1, context),
+      profileCard('$cardName2', icon2, 2, context),
+      profileCard('$cardName3', icon3, 3, context),
+      profileCard('Actualizar\ncontraseña', icon4, 4, context)
+    ];
   }
 }
 
@@ -220,6 +250,10 @@ void actions(int idCard, context) {
         break;
 
       case 4:
+        Navigator.of(context).pushNamed("/updatePassword");
+        break;
+      
+      case 5:
         break;
       default:
     }
@@ -236,6 +270,9 @@ void actions(int idCard, context) {
         Navigator.of(context).pushNamed("/address");
         break;
       case 4:
+        Navigator.of(context).pushNamed("/updatePassword");
+        break;
+      case 5:
         break;
       default:
     }

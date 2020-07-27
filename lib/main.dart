@@ -8,6 +8,7 @@ import 'package:login_app/src/screens/mainView.dart';
 import 'package:login_app/src/screens/paymentsView.dart';
 import 'package:login_app/src/screens/productForm.dart';
 import 'package:login_app/src/screens/shoppingCar.dart';
+import 'package:login_app/src/widgets/updatePassword.dart';
 
 /*void main(){
   
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
         '/shoppingCar':(context) => ShoppingCar(),
         '/put_user':(context) => SecondView(),
         '/shoppingList':(context) => ShoppingList(),
-
+        '/updatePassword':(context) => UpdatePassword(),
       },
     );
   }
