@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
 
 import '../../configs.dart';
+import '../encrypt.dart';
 
 
 class PaymentsView extends StatefulWidget {
@@ -20,6 +21,7 @@ class _PaymentsViewState extends State<PaymentsView>{
   @override
   void initState(){
     getPayment();
+
   }
 
   @override
@@ -87,12 +89,14 @@ class _PaymentsViewState extends State<PaymentsView>{
         var jsonData = json.decode(value.body);
         setState(() {
           for(var i in jsonData){
+            //User user = await getUser(i["user_id"]);
             Payment direc = Payment(i["id"],i["user_id"], i["sc_id"], i["status"], i["cart_total"], i["created_at"]);
             payment.add(direc);
           }
           if(payment.length > 0){
             setState(() {
               paymentsExist = true;
+
             });
           }else {
             setState(() {
@@ -102,39 +106,58 @@ class _PaymentsViewState extends State<PaymentsView>{
         });
         //get_ShoppingCar();
         print(payment.length);
+        print(payment[0].id);
+        for(Payment p in payment){
+          print(p.id);
+          getUser(p);
+          getProducts(p);
+        }
       }
     });
   }
-  getUser(int id) async{
-    user = User("name $id","last_name", "email", "phone", "genre");
 
-    /*Api.get_userById(id).then((value){
-      if(value != null){
-        var jsonData = json.decode(value.body);
-        setState(() {
-          user = User(jsonData["name"],jsonData["last_name"], jsonData["email"], jsonData["phone"], jsonData["genre"]);
-        });
-      }
-    });*/
+   getUser(Payment p) async{
+    //user = User("name $id","last_name", "email", "phone", "genre");
+      User user1;
+      /*final response = await Api.get_userById(index);
+      var jsonData = json.decode(response.body);
+      print(User.fromJson(jsonData));
+      return User.fromJson(jsonData);*/
+      Api.get_userById(p.user_id).then((value){
+        if(value != null){
+          var jsonData = json.decode(value.body);
+          setState(() {
+            user1 = User(jsonData["name"],jsonData["last_name"], desEnc(jsonData["email"]), desEnc(jsonData["phone"]), jsonData["genre"]);
+            p.user = user1;
+            print(p.user.name);
+          });
+        }
+
+      });
+      //User usuario = getUser(p.user_id);
+      //print("usuario: $user1");
   }
-  getProducts(int id) async{
-    for(var i = 0; i<5;i++){
+  getProducts(Payment p) async{
+    products = [];
+    /*for(var i = 0; i<5;i++){
       Producto direc = Producto(i,"produto $i", i+3);
       products.add(direc);
-    }
-    /*Api.get_UsersPayment(id).then((value){
+    }*/
+    Api.get_UsersPayment(p.sc_id).then((value){
       if(value != null){
         var jsonData = json.decode(value);
+        print(jsonData);
         setState(() {
           for(var i in jsonData['product']){
-            Producto direc = Producto(i["id"],i["user_id"], i["sc_id"], i["status"], i["cart_total"], i["created_at"]);
+            Producto direc = Producto(i["id"],i["name"], i["price"]);
             products.add(direc);
           }
         });
         //get_ShoppingCar();
+        p.products = products;
         print(products.length);
       }
-    });*/
+    });
   }
 
   Widget _Ventas(BuildContext context, int index){
@@ -145,9 +168,9 @@ class _PaymentsViewState extends State<PaymentsView>{
             onTap: () {
               var i = payment[index].id;
               print("index $i");
-              getUser(payment[index].user_id);
-              getProducts(payment[index].sc_id);
-              _showDialog(i);
+              //getUser(payment[index].user_id);
+              //getProducts(payment[index].sc_id);
+              _showDialog(index);
             } ,
             child:Container(
               width: 400,
@@ -202,103 +225,102 @@ class _PaymentsViewState extends State<PaymentsView>{
     );
   }
   _showDialog(index) async{
-    getUser(index);
     await showDialog(
         context: context,
         builder: (BuildContext context){
           return Container(
-              padding: EdgeInsets.all(5.0),
-            child: AlertDialog(
-              title: Text("Detalles"),
-              content: SingleChildScrollView(
-                child:
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                "Usuario",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Icon(Icons.person, size: 30,)
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                user.name,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                user.last_name,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            )
-                          ],
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            user.phone,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            user.email,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Produtos",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          child:  Stack(
-                            children: <Widget>[
-                              Container(width: 200, height: 100,
-                                  child: Column(
-                                    children: <Widget>[
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: products.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              child: Text(products[index].name),
-                                            );
-                                          }
+                padding: EdgeInsets.all(5.0),
+                child: AlertDialog(
+                  title: Text("Detalles"),
+                  content: SingleChildScrollView(
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        "Usuario",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                       ),
-                                    ],
-                                  )
-                              ),
-                            ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text(
+                                        payment[index].user.name,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: Text(
+                                        payment[index].user.last_name,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    payment[index].user.phone,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    payment[index].user.email,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Produtos",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                /*SingleChildScrollView(
+                                    child:  Container( width: 250, height: 250,
+                                      child: Column(
+                                        children: <Widget>[
+                                          ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: payment[index].products.length,
+                                              itemBuilder: (context, inde) {
+                                                return Text(payment[index].products[inde].name);
+                                              }
+                                          ),
+
+                                        ],
+                                      ),
+                                    )
+                                )*/
+
+                              ],
+                            )
                           )
-                        )
 
-                      ],
-                    )
+                        ],
+                      )
+                  ),
+                  actions: <Widget>[
+                  ],
+                )
+            );
 
-              ),
-              actions: <Widget>[
-              ],
-            )
-          );
         }
     );
   }
@@ -312,25 +334,39 @@ class Payment{
   var status;
   var cart_total;
   var created_at;
+  User user;
+  List<Producto> products;
 
   Payment(this.id, this.user_id, this.sc_id, this.status, this.cart_total, this.created_at);
+
+  setUser(user){
+    this.user = user;
+  }
 }
 class User{
-  var name;
-  var last_name;
-  var email;
-  var phone;
-  var genre;
+  final String name;
+  final String last_name;
+  final String email;
+  final String phone;
+  final String genre;
 
   User(this.name, this.last_name, this.email, this.phone, this.genre);
+
+  /*factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['userId'],
+      last_name: json['last_name'],
+      email: json['email'],
+      phone: json['phone'],
+      genre: json['genre']
+    );
+  }*/
+
 }
 class Producto{
   var id;
   var name;
   var price;
-  var status;
-  var cart_total;
-  var created_at;
 
   Producto(this.id, this.name, this.price);
 }
