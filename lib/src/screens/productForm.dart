@@ -458,17 +458,19 @@ class _ProductFormState extends State<ProductForm> {
   }
 
   FutureOr<dynamic> clean(){
-    name.clear();
-    price.clear();
-    discount.clear();
-    size.clear();
-    description.clear();
-    stock.clear();
-    imgs.clear();
-    images.clear();
-    images.add("Add Image");
-    images.add("Add Image");
-    images.add("Add Image");
+    setState((){
+      name.clear();
+      price.clear();
+      discount.clear();
+      size.clear();
+      description.clear();
+      stock.clear();
+      imgs.clear();
+      images.clear();
+      images.add("Add Image");
+      images.add("Add Image");
+      images.add("Add Image");
+    });
   }
 }
 
