@@ -102,7 +102,7 @@ class _ProductListState extends State<ProductList> {
     categorias.add(cat);
     Api.categorias_get().then((value) {
       if (value != null) {
-        var jsonData = json.decode(value.body);
+        var jsonData = json.decode(value);
         setState(() {
           for (var i in jsonData) {
             Categoria cat = Categoria(i["id"], i["name"]);

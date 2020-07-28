@@ -4,12 +4,12 @@ import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/configs.dart';
+import 'package:login_app/src/extras/variables.dart' as globals;
 
 double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
 
-final TextEditingController calendarController = TextEditingController();
 final TextEditingController name = TextEditingController();
 final TextEditingController lastname = TextEditingController();
 final TextEditingController email = TextEditingController();
@@ -40,22 +40,22 @@ class _SecondViewState extends State<SecondView> {
   }
 
     void initData() async {
-    List dataTemp;
+    Map<String,dynamic> dataTemp;
     await Api.get_UserByToken().then((sucess) {
-      dataTemp = jsonDecode(sucess);
+      dataTemp = sucess;
     });
     setState(() {
-      name.text = dataTemp[0]['name'];
-      lastname.text = dataTemp[0]['last_name'].toString();
-      email.text = dataTemp[0]['email'].toString();
-      birthday.text = dataTemp[0]['birthday'].toString();
-      genre.text = dataTemp[0]['genre'];
-      phone.text = dataTemp[0]['phone'];
+      name.text = globals.name;
+      lastname.text = globals.lastName;
+      email.text = globals.email;
+      birthday.text = dataTemp['birthday'].toString();
+      genre.text = dataTemp['genre'];
+      phone.text = dataTemp['phone'];
     });
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  var mapData = new Map<String, String>();
+  var mapData = new Map<String, dynamic>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +63,7 @@ class _SecondViewState extends State<SecondView> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: textcolor,
-        title: Text('Registro'),
+        title: Text('Editar Perfil'),
       ),
       body: SingleChildScrollView(
           child: ConstrainedBox(
@@ -91,7 +91,7 @@ class _SecondViewState extends State<SecondView> {
                         Container(
                           padding: EdgeInsets.only(left: marginDistance),
                           child: MyCalendar(
-                            controller: calendarController,
+                            controller: birthday,
                             name: 'Cumpleaños',
                           ),
 
@@ -135,7 +135,7 @@ class _SecondViewState extends State<SecondView> {
       onPressed: () {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
-          mapData['birthday'] = calendarController.text;
+          mapData['birthday'] = birthday.text;
           mapData['genre'] = 'm';
           Api.update_user(JsonEncoder().convert(mapData)).then((sucess) {
             if (sucess) {
@@ -362,3 +362,4 @@ TextStyle textStyle = TextStyle(
 
 UnderlineInputBorder underlineInputBorder =
     UnderlineInputBorder(borderSide: BorderSide(color: textFieldsunderlineColor));
+

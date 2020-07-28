@@ -43,8 +43,13 @@ class _LoginState extends State<Login> {
 
     if (token != null) {
       globals.token = token;
-      await Api.get_UserByToken().then((value) => null);
-      Navigator.of(context).pushReplacementNamed('/MainView');
+      await Api.get_UserByToken().then((value){
+        if(value != ''){
+                  Navigator.of(context).pushReplacementNamed('/MainView');
+        }
+
+      });
+      
       /*Navigator.push(
           context, MaterialPageRoute(builder: (context) => ProductList()));*/
     }
@@ -151,31 +156,6 @@ class _LoginState extends State<Login> {
                           ),
                           registerButtonColor,
                         ),
-                        RaisedButton(
-                            child: Text('perfil'),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  /*MaterialPageRoute(
-                                  builder: (context) => ProductForm(text: 'testSlug')));*/
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile()));
-                            }),
-                        RaisedButton(
-                            child: Text('log'),
-                            onPressed: () {
-                              Api.logOut().then((value) => null);
-                            }),
-                        RaisedButton(
-                            child: Text('test paypal'),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  /*MaterialPageRoute(
-                                  builder: (context) => ProductForm(text: 'testSlug')));*/
-                                  MaterialPageRoute(
-                                      builder: (context) => makePayment()));
-                            })
                       ],
                     ),
                   )),
