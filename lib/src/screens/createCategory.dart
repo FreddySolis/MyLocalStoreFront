@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
+import 'package:login_app/src/screens/mainView.dart';
 import 'package:login_app/src/screens/productForm.dart';
 import 'package:login_app/src/screens/productList.dart';
 import 'dart:convert';
@@ -33,40 +34,72 @@ class _CategoriesState extends State<Categories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            child: Column(
-      children: <Widget>[
-        table(categorysTemp, context),
-        RaisedButton(
-          child: Text('create'),
-          onPressed: () {
-            showDialog(
-                builder: (context) => AlertDialog(
-                      title: Text('create'),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () {
-                            Api.create_category(
-                                {'name': categoryControllerCreate.text});
-                            Navigator.pop(context);
-                          },
-                          child: Text('ok'),
-                        ),
-                        Container(
-                          width: 50, // do it in both Container
-                          child: Column(
-                            children: <Widget>[
-                              nameField('name', categoryControllerCreate),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                context: context);
-          },
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: textcolor,
+          title: Text('Categorías'),
         ),
-      ],
-    )));
+        body: SingleChildScrollView(
+          child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child: Column(
+                children: <Widget>[
+                  table(categorysTemp, context),
+                  RaisedButton(
+                    child: Icon(Icons.add),
+                    color: submitFormButtonColor,
+                    onPressed: () {
+                      showDialog(
+                          builder: (context) => AlertDialog(
+                                title: Text('Crear categoría'),
+                                content: nameField(
+                                            'Nombre', categoryControllerCreate),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      Api.create_category({
+                                        'name': categoryControllerCreate.text
+                                      }).then((onValue){
+                                        if(onValue){
+                                          Navigator.pop(context);
+                                          Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) => MainView()));
+                                        }else{
+                                          showDialog(
+                                          builder: (context) => AlertDialog(
+                                                title: Text(
+                                                    'Error al agregar categoria'),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Ok'),
+                                                  )
+                                                ],
+                                              ),
+                                          context: context);
+                                        }
+                                      });
+                                     
+                                    },
+                                    child: Text('Registrar'),
+                                  ),
+                                ],
+                              ),
+                          context: context);
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
+        )));
+    // );
   }
 
   void initCategory() async {
@@ -89,54 +122,55 @@ Widget table(List<dynamic> myRowDataList, BuildContext context) {
   myRowDataList.forEach((element) {
     rowsTable.add(DataRow(cells: [
       DataCell(Text(element['name'])),
-      DataCell(RaisedButton(onPressed: () {
-        //
-        categoryController.text = element['name'];
-        showDialog(
-            builder: (context) => AlertDialog(
-                  title: Text('Update'),
-                  actions: <Widget>[
-                    FlatButton(
-                      onPressed: () {
-                        Api.update_category(
-                            {'name': categoryController.text}, element['id']);
-                        Navigator.pop(context);
-                      },
-                      child: Text('ok'),
+      DataCell(RaisedButton(
+          child: Icon(Icons.edit),
+          color: const Color(0xFF1BC0C5),
+          onPressed: () {
+            //
+            categoryController.text = element['name'];
+            showDialog(
+                builder: (context) => AlertDialog(
+                      title: Text('Actualizar categoría'),
+                      content:nameField('Nombre', categoryController),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            Api.update_category(
+                                {'name': categoryController.text},
+                                element['id']);
+                            Navigator.pop(context);
+                            Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MainView()));
+                              categoryController.clear();
+                          },
+                          child: Text('Actualizar'),
+                        ),
+                      ],
                     ),
-                    Container(
-                      width: 50, // do it in both Container
-                      child: Column(
-                        children: <Widget>[
-                          nameField('name', categoryController),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-            context: context);
-        //
-      }))
+                context: context);
+            //
+          }))
     ]));
   });
 
-  return DataTable(
+  return Center(
+    child: DataTable(
     columns: const <DataColumn>[
       DataColumn(
         label: Text(
-          'Name',
-          style: TextStyle(fontStyle: FontStyle.italic),
+          'Nombre categoría',
+          style: TextStyle(fontStyle: FontStyle.normal),
         ),
       ),
       DataColumn(
         label: Text(
-          'Edit',
-          style: TextStyle(fontStyle: FontStyle.italic),
+          'Editar',
+          style: TextStyle(fontStyle: FontStyle.normal),
         ),
       ),
     ],
     rows: rowsTable,
-  );
+  ));
 }
 
 Widget nameField(String name, TextEditingController controller) {
