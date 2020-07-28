@@ -47,11 +47,14 @@ class Api {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.remove('token');
-
+      print('token eliminado c:');
+      globals.token = null;
       return true;
     } else {
+
       final prefs = await SharedPreferences.getInstance();
       prefs.remove('token');
+            globals.token = null;
       return false;
     }
   }
