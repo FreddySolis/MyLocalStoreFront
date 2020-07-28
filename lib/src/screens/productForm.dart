@@ -86,14 +86,15 @@ class _ProductFormState extends State<ProductForm> {
         resultCategory[element['name']] = element['id'];
       });
     });
-
-    Map<String, dynamic> dataTemp2;
-    await Api.getCategoryById(idCategory.toString()).then((sucess) {
-      dataTemp2 = jsonDecode(sucess);
-    });
-    setState(() {
-      selectedCategory = dataTemp2['name'];
-    });
+    if (widget.text != null) {
+      Map<String, dynamic> dataTemp2;
+      await Api.getCategoryById(idCategory.toString()).then((sucess) {
+        dataTemp2 = jsonDecode(sucess);
+      });
+      setState(() {
+        selectedCategory = dataTemp2['name'];
+      });
+    }
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -276,60 +277,58 @@ class _ProductFormState extends State<ProductForm> {
               .toString();
           print(mapData['final_price']);
           if (widget.text == null) {
-                        slug = "Slug" + generateSlug();
+            slug = "Slug" + generateSlug();
             mapData['slug'] = slug;
             upload.slug = slug;
-            if(imgs.length>0){
+            if (imgs.length > 0) {
               Api.product_create(JsonEncoder().convert(mapData))
-                .then((sucess) async {
-              if (sucess) {
-                upload.uploadStatusImg(imgs).whenComplete(
-                  clean()
-                );
-                print("longitud arreglo ${imgs.length}");
-                showDialog(
-                    builder: (context) => AlertDialog(
-                          title: Text('Registro exitoso'),
-                          actions: <Widget>[
-                            FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Ok'),
-                            )
-                          ],
-                        ),
-                    context: context);
-              } else {
-                showDialog(
-                    builder: (context) => AlertDialog(
-                          title: Text('error al registro'),
-                          actions: <Widget>[
-                            FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Ok'),
-                            )
-                          ],
-                        ),
-                    context: context);
-              }
-            });
-            }else{
+                  .then((sucess) async {
+                if (sucess) {
+                  upload.uploadStatusImg(imgs).whenComplete(clean());
+                  print("longitud arreglo ${imgs.length}");
+                  showDialog(
+                      builder: (context) => AlertDialog(
+                            title: Text('Registro exitoso'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Ok'),
+                              )
+                            ],
+                          ),
+                      context: context);
+                } else {
+                  showDialog(
+                      builder: (context) => AlertDialog(
+                            title: Text('error al registro'),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Ok'),
+                              )
+                            ],
+                          ),
+                      context: context);
+                }
+              });
+            } else {
               showDialog(
-                builder: (context) => AlertDialog(
-                title: Text('Debe seleccionar al menos una imagen'),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Ok'),
-                  )
-                ],
-              ),
-              context: context);
+                  builder: (context) => AlertDialog(
+                        title: Text('Debe seleccionar al menos una imagen'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Ok'),
+                          )
+                        ],
+                      ),
+                  context: context);
             }
           } else {
             Api.product_update(JsonEncoder().convert(mapData), id)
@@ -518,8 +517,8 @@ class _ProductFormState extends State<ProductForm> {
     );
   }
 
-  FutureOr<dynamic> clean(){
-    setState((){
+  FutureOr<dynamic> clean() {
+    setState(() {
       name.clear();
       price.clear();
       discount.clear();
