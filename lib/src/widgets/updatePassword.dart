@@ -27,12 +27,11 @@ class UpdatePasswordState extends State<UpdatePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: backgroundColor,
         appBar: AppBar(
-          title: Row(
-            children: <Widget>[
-              Text("Restablecer contraseña"),
-            ],
-          ),
+          centerTitle: true,
+          backgroundColor: textcolor,
+          title: Text('Actualizar contraseña'),
         ),
         body: Padding(
           padding: EdgeInsets.all(20),

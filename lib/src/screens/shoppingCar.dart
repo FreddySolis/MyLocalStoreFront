@@ -13,7 +13,6 @@ class ShoppingCar extends StatefulWidget {
 
 class _ShoppingCarState extends State<ShoppingCar> {
   List data = new List();
-  List data2 = new List();
   int total = 0;
 
   @override
@@ -24,104 +23,119 @@ class _ShoppingCarState extends State<ShoppingCar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        body: Column(children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-                child: Column(
-                    children: List.generate(data2.length, (index) {
-              return Center(
-                child: Column(children: <Widget>[
-                  Card(
-                    margin: EdgeInsets.all(20),
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.all(15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Center(
-                                    child: Column(children: <Widget>[
-                                  Text(
-                                    data2[index]['name'],
-                                    style: cardTitles,
-                                  ),
-                                  Text(
-                                    'Precio: \$ ${data2[index]['price']}',
-                                    style: cardText,
-                                  ),
-                                  Text(
-                                    'Cantidad: ${data2[index]['cantidad']}',
-                                    style: cardText,
-                                  ),
-                                  Text(
-                                    'Subtotal: \$ ${data2[index]['subtotal']}',
-                                    style: cardText,
-                                  ),
-                                  FloatingActionButton(
-                                      child: Icon(Icons.delete),
-                                      backgroundColor: Colors.red,
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title:
-                                                    Text("Eliminar de carrito"),
-                                                content: Text(
-                                                    "¿Esta seguro de eliminar este producto de su carrito?"),
-                                                actions: <Widget>[
-                                                  FlatButton(
-                                                    color: Colors.green,
-                                                    child: Text("Si"),
-                                                    onPressed: () {
-                                                      deleteProductInCar(data2[index]['idProduct']);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                  FlatButton(
-                                                    color: Colors.red,
-                                                    child: Text("No"),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            });
-                                      })
-                                ])),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+    return Container(child: Scaffold(body: listShoppingCar()));
+  }
+
+  Widget listShoppingCar() {
+    if (data.length > 0) {
+      return Column(children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+              child: Column(
+                  children: List.generate(data.length, (index) {
+            return Center(
+              child: Column(children: <Widget>[
+                Card(
+                  margin: EdgeInsets.all(20),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                  child: Column(children: <Widget>[
+                                Text(
+                                  data[index]['name'],
+                                  style: cardTitles,
+                                ),
+                                Text(
+                                  'Precio: \$ ${data[index]['price']}',
+                                  style: cardText,
+                                ),
+                                Text(
+                                  'Cantidad: ${data[index]['cantidad']}',
+                                  style: cardText,
+                                ),
+                                Text(
+                                  'Subtotal: \$ ${data[index]['subtotal']}',
+                                  style: cardText,
+                                ),
+                                FloatingActionButton(
+                                    child: Icon(Icons.delete),
+                                    backgroundColor: Colors.red,
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext contex) {
+                                            return AlertDialog(
+                                              title:
+                                                  Text("Eliminar de carrito"),
+                                              content: Text(
+                                                  "¿Esta seguro de eliminar este producto de su carrito?"),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  color: Colors.green,
+                                                  child: Text("Si"),
+                                                  onPressed: () {
+                                                    deleteProductInCar(
+                                                      data[index]['idProduct'],
+                                                      contex,
+                                                    );
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  color: Colors.red,
+                                                  child: Text("No"),
+                                                  onPressed: () {
+                                                    Navigator.of(contex).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    })
+                              ])),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                ]),
-              );
-            }))),
+                ),
+              ]),
+            );
+          }))),
+        ),
+        payButton(
+          Text(
+            'Pagar',
+            style: TextStyle(color: backgroundColor),
           ),
-          payButton(
-            Text(
-              'Pagar',
-              style: TextStyle(color: backgroundColor),
-            ),
-            Text(
-              'Monto total: \$ $total',
-              style: TextStyle(color: backgroundColor),
-            ),
-            secondary,
+          Text(
+            'Monto total: \$ $total',
+            style: TextStyle(color: backgroundColor),
           ),
-        ]),
-      ),
-    );
+          secondary,
+        ),
+      ]);
+    } else {
+      return Container(
+        padding: EdgeInsets.all(15.0),
+        alignment: Alignment.center,
+        child: Text(
+          "No hay productos agregados al carrito",
+          style: TextStyle(
+            fontSize: 30.0,
+            fontWeight: FontWeight.w600,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
   }
 
   Widget payButton(Text text, Text text2, Color color) {
@@ -210,47 +224,57 @@ class _ShoppingCarState extends State<ShoppingCar> {
       });
       setState(() {
         print("total = $total");
-        data2 = aux2;
-        data = dataTemp;
+        if (dataTemp != '[]') {
+          setState((){
+            data = aux2;
+          });
+        } else {
+          setState((){
+            data.length = 0;
+          }); 
+        }
       });
     });
   }
 
-  void deleteProductInCar(idProduct) async{
+  void deleteProductInCar(
+    idProduct,
+    BuildContext secondary,
+  ) async {
     await Api.delete_ProductShoppingCar(idProduct).then((succes) {
-      if(succes){
+      if (succes) {
         showDialog(
-          builder: (context) => AlertDialog(
-                title:
-                    Text('Producto eliminado del carrito'),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      getProductsInCar();
-                    },
-                    child: Text('Ok'),
-                  )
-                ],
-              ),
-          context: context);
-      }else{
+            builder: (context) => AlertDialog(
+                  title: Text('Producto eliminado del carrito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(secondary).pop();
+                        // Navigator.of(main).pop();
+                        getProductsInCar();
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: context);
+      } else {
         showDialog(
-          builder: (context) => AlertDialog(
-                title:
-                    Text('No se pudo eliminar producto del carrito'),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Ok'),
-                  )
-                ],
-              ),
-          context: context);
+            builder: (context) => AlertDialog(
+                  title: Text('No se pudo eliminar producto del carrito'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+            context: context);
       }
-    }).catchError((onError){
+    }).catchError((onError) {
       print("error al eliminar de carro $onError");
     });
   }

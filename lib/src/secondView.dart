@@ -4,11 +4,13 @@ import 'package:login_app/src/widgets/calendar.dart';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/configs.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 double bottomDistance = 20;
 double marginDistance = 20;
 DateTime date;
-
+String avisoUrl =
+    'https://drive.google.com/file/d/15HjfrViEGDhGCarGyTtvnFYQ5AkfEMH3/view?usp=sharing';
 final TextEditingController calendarController = TextEditingController();
 
 void setDate(DateTime dateTime) {
@@ -79,8 +81,31 @@ class _SecondViewState extends State<SecondView> {
                             padding: EdgeInsets.only(bottom: bottomDistance)),
                         Center(child: submidButton()),
                         SizedBox(
-                          width: 20,
-                        )
+                          width: 50,
+                          height: 20,
+                        ),
+                        Container(
+                            alignment: Alignment.center,
+                            child: InkWell(
+                                child: Text(
+                                  "Aviso de privacidad\ny\ncondiciones",
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.w600,
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(5.0, 5.0),
+                                        blurRadius: 3.0,
+                                        color: Colors.blue.shade900.withOpacity(0.4)
+                                      ),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {
+                                  launch(avisoUrl);
+                                })),
                       ],
                     ),
                   )))),
@@ -125,7 +150,8 @@ class _SecondViewState extends State<SecondView> {
                           FlatButton(
                             onPressed: () {
                               calendarController.clear();
-                              Navigator.of(context).pushReplacementNamed('/Login');
+                              Navigator.of(context)
+                                  .pushReplacementNamed('/Login');
                             },
                             child: Text('Ok'),
                           )
@@ -329,14 +355,12 @@ class _SecondViewState extends State<SecondView> {
 
 ////
 TextStyle placeHolderStyle = TextStyle(
-    fontFamily: 'Monserrat',
-    fontWeight: FontWeight.bold,
-    color: textcolor);
+    fontFamily: 'Monserrat', fontWeight: FontWeight.bold, color: textcolor);
 TextStyle textStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 17,
     fontFamily: 'Monserrat',
     color: inputsTextColor);
 
-UnderlineInputBorder underlineInputBorder =
-    UnderlineInputBorder(borderSide: BorderSide(color: textFieldsunderlineColor));
+UnderlineInputBorder underlineInputBorder = UnderlineInputBorder(
+    borderSide: BorderSide(color: textFieldsunderlineColor));
