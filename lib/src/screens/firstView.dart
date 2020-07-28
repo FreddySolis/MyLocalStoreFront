@@ -201,8 +201,7 @@ class _LoginState extends State<Login> {
                                                       emailRecover.text = '';
                                                       Navigator.pop(context2);
                                                       Navigator.pop(contex2);
-                                                      Navigator.of(contex)
-                                                          .pop();
+                                                      Navigator.pop(contex);
                                                     },
                                                     child: Text('Ok'),
                                                   )
