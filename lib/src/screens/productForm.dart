@@ -349,6 +349,7 @@ class _ProductFormState extends State<ProductForm> {
                           actions: <Widget>[
                             FlatButton(
                               onPressed: () {
+                                clean();
                                 Navigator.pop(context);
                                 Navigator.push(context2,
                                 MaterialPageRoute(builder: (context) => MainView()));
