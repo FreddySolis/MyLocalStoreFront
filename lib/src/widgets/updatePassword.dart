@@ -83,6 +83,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
                             }
                           },
                         ),
+                        SizedBox(height: 20.0),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Confirmar Contraseña",
