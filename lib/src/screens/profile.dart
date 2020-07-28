@@ -243,6 +243,11 @@ void actions(int idCard, context) {
         break;
 
       case 4:
+        Navigator.of(context).pushNamed("/categories");
+        break;
+
+      case 5:
+              Navigator.of(context).pushNamed("/updatePassword");
         break;
       default:
     }
