@@ -9,7 +9,7 @@ import 'package:login_app/src/screens/paymentsView.dart';
 import 'package:login_app/src/screens/productForm.dart';
 import 'package:login_app/src/screens/shoppingCar.dart';
 import 'package:login_app/src/widgets/updatePassword.dart';
-
+import 'package:login_app/src/screens/createCategory.dart';
 /*void main(){
   
   runApp(
@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/put_user':(context) => SecondView(),
         '/shoppingList':(context) => ShoppingList(),
         '/updatePassword':(context) => UpdatePassword(),
+        '/categories':(context) => Categories(),
       },
     );
   }

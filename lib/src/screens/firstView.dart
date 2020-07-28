@@ -11,7 +11,7 @@ import 'package:login_app/src/extras/variables.dart' as globals;
 import 'package:login_app/src/widgets/makePayment.dart';
 //routes
 import 'package:login_app/src/secondView.dart';
-import 'package:login_app/src/screens/profile.dart';
+
 
 final TextEditingController email = TextEditingController();
 final TextEditingController emailRecover = TextEditingController();

@@ -7,15 +7,12 @@ import 'package:login_app/src/extras/variables.dart' as globals;
 
 import 'createSeller.dart';
 
-
 class Profile extends StatefulWidget {
   Profile({Key key}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
 }
-
-
 
 String cardName1 = '';
 String cardName2 = '';
@@ -37,6 +34,11 @@ Icon icon3 = Icon(
   size: 40,
 );
 Icon icon4 = Icon(
+  Icons.error,
+  color: Colors.red,
+  size: 40,
+);
+Icon icon5 = Icon(
   Icons.error,
   color: Colors.red,
   size: 40,
@@ -107,28 +109,38 @@ class _ProfileState extends State<Profile> {
           color: Colors.yellow[500],
           size: 40,
         );
+                icon5 = Icon(
+          Icons.category,
+          color: Colors.yellow[500],
+          size: 40,
+        );
       } else {
         cardName1 = 'Editar info';
         cardName2 = 'Compras';
         cardName3 = 'Direcciones';
         // cardName4 = 'Actualizar\n\ncontraseña';
         icon1 = Icon(
-        Icons.build,
-        color: Colors.green[300],
-        size: 40,
+          Icons.build,
+          color: Colors.green[300],
+          size: 40,
         );
         icon2 = Icon(
-        Icons.shop,
-        color: Colors.yellow[500],
-        size: 40,
+          Icons.shop,
+          color: Colors.yellow[500],
+          size: 40,
         );
         icon3 = Icon(
-        Icons.local_shipping,
-        color: Colors.brown,
-        size: 40,
+          Icons.local_shipping,
+          color: Colors.brown,
+          size: 40,
         );
         icon4 = Icon(
           Icons.update,
+          color: Colors.yellow[500],
+          size: 40,
+        );
+        icon5 = Icon(
+          Icons.category,
           color: Colors.yellow[500],
           size: 40,
         );
@@ -155,9 +167,7 @@ class _ProfileState extends State<Profile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SingleChildScrollView(
-                          child: Column(
-                            children: cards(context)
-                          ),
+                          child: Column(children: cards(context)),
                         )
                       ],
                     ),
@@ -168,19 +178,20 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-List<Widget> cards(BuildContext context){
+List<Widget> cards(BuildContext context) {
   if (globals.rolId == 1) {
     return <Widget>[
       profileCard('$cardName1', icon1, 1, context),
       profileCard('$cardName2', icon2, 2, context),
       profileCard('$cardName3', icon3, 3, context),
     ];
-  }else{
+  } else {
     return <Widget>[
       profileCard('$cardName1', icon1, 1, context),
       profileCard('$cardName2', icon2, 2, context),
       profileCard('$cardName3', icon3, 3, context),
-      profileCard('Actualizar\ncontraseña', icon4, 4, context)
+      profileCard('Crear categoria', icon5, 4, context),
+      profileCard('Actualizar\ncontraseña', icon4, 5, context)
     ];
   }
 }
@@ -250,10 +261,11 @@ void actions(int idCard, context) {
         break;
 
       case 4:
-        Navigator.of(context).pushNamed("/updatePassword");
+        Navigator.of(context).pushNamed("/categories");
         break;
-      
+
       case 5:
+              Navigator.of(context).pushNamed("/updatePassword");
         break;
       default:
     }
@@ -270,14 +282,17 @@ void actions(int idCard, context) {
         Navigator.of(context).pushNamed("/address");
         break;
       case 4:
-        Navigator.of(context).pushNamed("/updatePassword");
+        Navigator.of(context).pushNamed("/categories");
         break;
       case 5:
+              Navigator.of(context).pushNamed("/updatePassword");
         break;
       default:
     }
   }
 }
+
+
 
 Widget customAppBar() {
   return AppBar(

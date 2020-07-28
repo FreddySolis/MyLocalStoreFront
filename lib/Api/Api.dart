@@ -90,6 +90,37 @@ class Api {
     }
   }
 
+    
+  static Future<bool> update_category(data,slug) async {
+    print(json.encode(data));
+    final response = await http
+        .put('${URLS.BASE_URL}/categories/$slug', body: json.encode(data), headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+    static Future<bool> create_category(data) async {
+    print(json.encode(data));
+    final response = await http
+        .post('${URLS.BASE_URL}/categories/', body: json.encode(data), headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<bool> recovery_Password(data) async {
     final response = await http.post('${URLS.BASE_URL}/password_recovery', body: data, headers: {
       "Content-Type": "application/json",
