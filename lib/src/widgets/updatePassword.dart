@@ -18,6 +18,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
   final formKey = GlobalKey<FormState>();
   String pass;
   var mapData = new Map<String, String>();
+  bool pas;
 
   @override
   void initState() {
@@ -83,6 +84,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
                             }
                           },
                         ),
+                        SizedBox(height: 20.0),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: "Confirmar Contraseña",
@@ -108,14 +110,16 @@ class UpdatePasswordState extends State<UpdatePassword> {
                             if (RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[!@#\$&*~])').hasMatch(value)) {
                               return null;
                             } else {
-                              return 'contraseña2 NO VALIDA';
+                              return 'contraseña NO VALIDA';
                             }
                           },
                           onChanged: (value) {
                             if (value == password.text) {
                               pass = value;
+                              pas= true;
                               print("Contraseñas correctas");
                             } else {
+                              pas= false;
                               print("Las contraseñas no coinciden");
                             }
                           },
@@ -151,7 +155,7 @@ class UpdatePasswordState extends State<UpdatePassword> {
             ],
           ),
           onPressed: () {
-            if (formKey.currentState.validate()) {
+            if (formKey.currentState.validate() && pas) {
               formKey.currentState.save();
               print(JsonEncoder().convert(mapData));
               Api.update_Password(JsonEncoder().convert(mapData)).then((sucess) {
@@ -194,6 +198,20 @@ class UpdatePasswordState extends State<UpdatePassword> {
                   return;
                 }
               });
+            }else{
+              showDialog(
+                builder: (context) => AlertDialog(
+                title: Text('Las contraseñas no coinciden o no es valida\ncorrobore, por favor.'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Ok'),
+                    )
+                  ],
+                ),
+              context: context);
             }
           },
         ));

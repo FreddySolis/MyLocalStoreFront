@@ -87,6 +87,19 @@ class Api {
     }
   }
 
+  static Future<bool> recovery_Password(data) async {
+    final response = await http.post('${URLS.BASE_URL}/password_recovery', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    });
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print("ERROR API ${response.body}");
+      return false;
+    }
+  }
+
   static Future<bool> update_user(data) async {
     print(data);
     final response =

@@ -6,14 +6,15 @@ import 'package:login_app/src/providers/push_notifications_provider.dart';
 import 'package:login_app/src/encrypt.dart';
 import 'dart:convert';
 import 'package:login_app/configs.dart';
-import 'package:login_app/src/screens/mainView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:login_app/src/extras/variables.dart' as globals;
 import 'package:login_app/src/widgets/makePayment.dart';
 //routes
 import 'package:login_app/src/secondView.dart';
-import 'package:login_app/src/screens/productList.dart';
 import 'package:login_app/src/screens/profile.dart';
+
+final TextEditingController email = TextEditingController();
+final TextEditingController emailRecover = TextEditingController();
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -25,9 +26,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final pushNotification = new PushNotificationProvider();
   Widget svg = SvgPicture.network(
-    'https://firebasestorage.googleapis.com/v0/b/mystore-54a31.appspot.com/o/logo%2Flogo.svg?alt=media&token=a0872a7f-be0b-478f-bd4d-212f2ec7463c',
-    semanticsLabel: 'Acme Logo'
-  );
+      'https://firebasestorage.googleapis.com/v0/b/mystore-54a31.appspot.com/o/logo%2Flogo.svg?alt=media&token=a0872a7f-be0b-478f-bd4d-212f2ec7463c',
+      semanticsLabel: 'Acme Logo');
 
   @override
   void initState() {
@@ -37,7 +37,6 @@ class _LoginState extends State<Login> {
   }
 
   void isLogued() async {
-
     final prefs = await SharedPreferences.getInstance();
     //prefs.remove('token');
     final token = prefs.getString('token') ?? null;
@@ -57,7 +56,11 @@ class _LoginState extends State<Login> {
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey2 = GlobalKey<FormState>();
+
   var mapData = new Map<String, String>();
+  var mapData2 = new Map<String, String>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +115,30 @@ class _LoginState extends State<Login> {
                           ),
                           buttonLoginColor,
                         ),
-                        SizedBox(height: 100.0),
+                        SizedBox(height: 10.0),
+                        Container(
+                            alignment: Alignment.center,
+                            child: InkWell(
+                                child: Text(
+                                  "¿Olvidaste tu contraseña?",
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: inputsTextColor,
+                                    fontWeight: FontWeight.w600,
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                          offset: Offset(5.0, 5.0),
+                                          blurRadius: 3.0,
+                                          color:
+                                              inputsTextColor.withOpacity(0.4)),
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () {
+                                  showRecovery(context);
+                                })),
+                        SizedBox(height: 30.0),
                         Text(
                           "No tienes cuenta aun?",
                           style: TextStyle(
@@ -136,6 +162,79 @@ class _LoginState extends State<Login> {
             ),
           ),
         )));
+  }
+
+  void showRecovery(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext contex) {
+          if (email.text != null) emailRecover.text = email.text;
+          return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              content: Builder(builder: (contex2) {
+                return Container(
+                  width: 300.0,
+                  height: 150.0,
+                  child: Column(
+                    children: <Widget>[
+                      Form(
+                          key: formKey2,
+                          child: Column(children: <Widget>[
+                            emailFieldRecovery(),
+                            SizedBox(height: 10.0),
+                            FlatButton(
+                              color: buttonLoginColor,
+                              child: Text("Recuperar"),
+                              onPressed: () {
+                                if (formKey2.currentState.validate()) {
+                                  mapData2['email'] = enc(emailRecover.text);
+                                  Api.recovery_Password(JsonEncoder().convert(mapData2)).then((success) {
+                                    if (success) {
+                                      showDialog(
+                                          builder: (context2) => AlertDialog(
+                                                title: Text(
+                                                    'Listo!, revise su correo'),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      emailRecover.text = '';
+                                                      Navigator.pop(context2);
+                                                      Navigator.pop(contex2);
+                                                      Navigator.of(contex)
+                                                          .pop();
+                                                    },
+                                                    child: Text('Ok'),
+                                                  )
+                                                ],
+                                              ),
+                                          context: contex);
+                                    } else {
+                                      showDialog(
+                                          builder: (context) => AlertDialog(
+                                                title: Text(
+                                                    'Ocurrió un error al recuperar contraseña'),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('Ok'),
+                                                  )
+                                                ],
+                                              ),
+                                          context: contex);
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                          ])),
+                    ],
+                  ),
+                );
+              }));
+        });
   }
 
   Widget loginButton(Text text, Color color) {
@@ -162,7 +261,6 @@ class _LoginState extends State<Login> {
               print(JsonEncoder().convert(mapData));
               Api.login(JsonEncoder().convert(mapData)).then((sucess) {
                 if (sucess) {
-                  
                   Navigator.of(context).pushReplacementNamed('/MainView');
                   /*Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProductList()));*/
@@ -216,6 +314,7 @@ class _LoginState extends State<Login> {
 
   Widget emailField() {
     return TextFormField(
+      controller: email,
       keyboardType: TextInputType.emailAddress,
       style: textStyle,
       obscureText: false,
@@ -242,7 +341,37 @@ class _LoginState extends State<Login> {
       },
       onSaved: (String value) {
         print(enc(value));
-      mapData['email'] = enc(value);
+        mapData['email'] = enc(value);
+      },
+    );
+  }
+
+  Widget emailFieldRecovery() {
+    return TextFormField(
+      controller: emailRecover,
+      keyboardType: TextInputType.emailAddress,
+      style: textStyle,
+      obscureText: false,
+      decoration: InputDecoration(
+          labelText: 'Correo Electronico',
+          labelStyle: placeHolderStyle,
+          hoverColor: inputsTextColor,
+          fillColor: backgroundColor,
+          filled: true,
+          focusedBorder: underlineInputBorder,
+          enabledBorder: UnderlineInputBorder(
+              borderRadius: new BorderRadius.circular(10),
+              borderSide: new BorderSide(color: inputsTextColor)),
+          prefixIcon: Icon(
+            Icons.email,
+            color: iconColor,
+          )),
+      validator: (value) {
+        if (RegExp('.+[@].+').hasMatch(value)) {
+          return null;
+        } else {
+          return 'correo invalido';
+        }
       },
     );
   }
