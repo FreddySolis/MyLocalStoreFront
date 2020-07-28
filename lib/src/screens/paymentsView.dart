@@ -30,11 +30,11 @@ class _PaymentsViewState extends State<PaymentsView>{
     return Scaffold(
       appBar: _appbarr(),
       body: Container(
-        child: Column(
+        child: SingleChildScrollView(child:Column(
           children: <Widget>[
             _listPayment()
           ],
-        ),
+        )),
       ),
     );
   }

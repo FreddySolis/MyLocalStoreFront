@@ -271,11 +271,11 @@ class _ProductFormState extends State<ProductForm> {
       onPressed: () {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
-
+          double discount = (int.parse(mapData['price'])) *
+                  (int.parse(mapData['discount']) / 100);
+          double priceDiscount = (int.parse(mapData['price']))-discount;
           mapData['category_id'] = resultCategory[selectedCategory];
-          mapData['final_price'] = (int.parse(mapData['price']) *
-                  (int.parse(mapData['discount']) / 100))
-              .toString();
+          mapData['final_price'] = priceDiscount.toString();
           print(mapData['final_price']);
           if (widget.text == null) {
             slug = "Slug" + generateSlug();
