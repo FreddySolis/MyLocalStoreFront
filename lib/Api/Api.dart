@@ -47,11 +47,14 @@ class Api {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.remove('token');
-
+      print('token eliminado c:');
+      globals.token = null;
       return true;
     } else {
+
       final prefs = await SharedPreferences.getInstance();
       prefs.remove('token');
+            globals.token = null;
       return false;
     }
   }
@@ -411,15 +414,14 @@ class Api {
   }
 
   static Future<String> pay_id(String id) async {
-    var data = new Map<String, String>();
-    data['pay_id'] = id;
-    final response =
-        await http.post('${URLS.BASE_URL}/paypalid', body: data, headers: {
-      "Content-Type": "application/json",
+    Map<String,String> headers = {"Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": '${globals.token}',
-    });
+      "Authorization": '${globals.token}',};
+    final msg = jsonEncode({"pay_id":id});
 
+    final response =
+        await http.post('${URLS.BASE_URL}/paypalid', body: msg, headers: headers);
+    print(response.statusCode);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
     } else {
