@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:login_app/Api/Api.dart';
@@ -183,11 +184,11 @@ class _PaymentsViewState extends State<PaymentsView>{
     );
   }
 
-  Widget _cardVentas(int index){
-    int id = payment[index].id;
-    int user_id = payment[index].user_id;
-    int sc_id = payment[index].sc_id;
-    int total = payment[index].cart_total;
+  Widget _cardVentas(dynamic index){
+    dynamic id = payment[index].id;
+    dynamic user_id = payment[index].user_id;
+    dynamic sc_id = payment[index].sc_id;
+    dynamic total = payment[index].cart_total;
     return Card(
       margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
       elevation: 4.0,
