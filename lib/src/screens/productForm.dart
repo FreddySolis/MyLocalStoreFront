@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:login_app/Api/Api.dart';
 import 'package:login_app/configs.dart';
 import 'package:login_app/src/providers/upload_img_provider.dart';
+import 'package:login_app/src/screens/mainView.dart';
 import 'package:random_string/random_string.dart';
 
 double bottomDistance = 20;
@@ -69,7 +70,7 @@ class _ProductFormState extends State<ProductForm> {
         size.text = dataTemp['size'];
         id = dataTemp['id'];
         idCategory = dataTemp['category_id'];
-        mapData['slug'] = widget.text;
+        mapData['slug'] = dataTemp['slug'];
       });
     });
   }
@@ -293,6 +294,9 @@ class _ProductFormState extends State<ProductForm> {
                               FlatButton(
                                 onPressed: () {
                                   Navigator.pop(context);
+                                  Navigator.push(context2,
+                                  MaterialPageRoute(builder: (context) => MainView()));
+                                  // Navigator.of(context2).pushReplacementNamed('/MainView');
                                 },
                                 child: Text('Ok'),
                               )
@@ -323,6 +327,7 @@ class _ProductFormState extends State<ProductForm> {
                           FlatButton(
                             onPressed: () {
                               Navigator.pop(context);
+                              // Navigator.of(context2).pushReplacementNamed('/MainView');
                             },
                             child: Text('Ok'),
                           )
@@ -331,6 +336,9 @@ class _ProductFormState extends State<ProductForm> {
                   context: context);
             }
           } else {
+            if(imgs.length > 0){
+              upload.uploadStatusImg(imgs).whenComplete(clean());
+            }
             Api.product_update(JsonEncoder().convert(mapData), id)
                 .then((sucess) {
               if (sucess) {
@@ -342,7 +350,8 @@ class _ProductFormState extends State<ProductForm> {
                             FlatButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                Navigator.pop(context2);
+                                Navigator.push(context2,
+                                MaterialPageRoute(builder: (context) => MainView()));
                               },
                               child: Text('Ok'),
                             )
