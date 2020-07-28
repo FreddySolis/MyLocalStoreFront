@@ -30,8 +30,6 @@ class Api {
       final prefs = await SharedPreferences.getInstance();
 
       prefs.setString('token', globals.token);
-      print(true);
-
       return true;
     } else {
       return false;
@@ -66,16 +64,18 @@ class Api {
           "Accept": "application/json"
         });
     print(response.body);
-        print(response.statusCode);
+    print(response.statusCode);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return true;
     } else {
       return false;
     }
   }
+
   //change-password
   static Future<bool> update_Password(data) async {
-    final response = await http.post('${URLS.BASE_URL}/change-password', body: data, headers: {
+    final response = await http
+        .post('${URLS.BASE_URL}/change-password', body: data, headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}'
@@ -88,12 +88,14 @@ class Api {
   }
 
   static Future<bool> update_user(data) async {
+    print(data);
     final response =
-        await http.post('${URLS.BASE_URL}/register', body: data, headers: {
+        await http.put('${URLS.BASE_URL}/user-config/5', body: data, headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}'
     });
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -177,13 +179,12 @@ class Api {
   // ignore: non_constant_identifier_names
   static Future<bool> product_create(data) async {
     print(data);
-    final response = await http.post('${URLS.BASE_URL}/products/',
-        body: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}'
-        });
+    final response =
+        await http.post('${URLS.BASE_URL}/products/', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return true;
     } else {
@@ -204,13 +205,15 @@ class Api {
 
   // ignore: non_constant_identifier_names
   static Future<bool> product_update(data, id) async {
-    final response = await http.put('${URLS.BASE_URL}/products/$id',
-        body: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}'
-        });
+    print(data);
+    print(id);
+    final response =
+        await http.put('${URLS.BASE_URL}/products/$id', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -233,39 +236,37 @@ class Api {
   }
 
   // ignore: non_constant_identifier_names
-  static Future<String> get_UserByToken() async {
-
+  static Future<dynamic> get_UserByToken() async {
     final response = await http.get('${URLS.BASE_URL}/auth_user', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}'
     });
     print(response.body);
-    //Map<String, dynamic> temp = jsonDecode(response.body);
-    Map<String, dynamic> temp = json.decode(response.body);
-    globals.rolId = temp['rol_id'];
-    globals.name = temp['name'];
-    globals.lastName = temp['last_name'];
-    globals.email = desEnc(temp['email']);
-    Map<String, dynamic> dataTemp;
-    if (response.statusCode >= 200 && response.statusCode <= 204) {
+          Map<String, dynamic> temp = json.decode(response.body);
+    if (response.statusCode >= 200 && response.statusCode <= 204 && temp['message'] != 'Unauthenticated.'){
+      globals.rolId = temp['rol_id'];
+      globals.name = temp['name'];
+      globals.lastName = temp['last_name'];
+      globals.email = desEnc(temp['email']);
+      Map<String, dynamic> dataTemp;
       dataTemp = jsonDecode(response.body);
       dataTemp['email'] = desEnc(dataTemp['email'].toString());
       dataTemp['phone'] = desEnc(dataTemp['phone']);
-      
-      return dataTemp.toString();
+      print(dataTemp);
+      return dataTemp;
     } else {
+            final prefs = await SharedPreferences.getInstance();
+            prefs.remove('token');
       return '';
     }
   }
-
 
   static Future<http.Response> get_userById(int id) async {
     final response = await http.get('${URLS.BASE_URL}/user-inf/$id', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization":
-      '${globals.token}'
+      "Authorization": '${globals.token}'
     });
     print(response.body);
     if (response.statusCode == 200) {
@@ -277,7 +278,7 @@ class Api {
   }
 
   //----------categorias-------
-  static Future<http.Response> categorias_get() async {
+  static Future<String> categorias_get() async {
     final response = await http.get('${URLS.BASE_URL}/categories/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -286,7 +287,24 @@ class Api {
     print(response.body);
     if (response.statusCode == 200) {
       print(response.body);
-      return response;
+      return response.body;
+    } else {
+      return null;
+    }
+  }
+
+    static Future<String> getCategoryById(String id) async {
+      print(id+ ' id');
+    final response = await http.get('${URLS.BASE_URL}/categories/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}'
+    });
+    print('oooooooooooooooooooooooo');
+    print(response.body);
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response.body;
     } else {
       return null;
     }
@@ -338,13 +356,12 @@ class Api {
   }
 
   static Future<bool> update_shoppingCar(data) async {
-    final response = await http.put('${URLS.BASE_URL}/upt-to-sc/',
-        body: data,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}',
-        });
+    final response =
+        await http.put('${URLS.BASE_URL}/upt-to-sc/', body: data, headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -353,12 +370,12 @@ class Api {
   }
 
   static Future<bool> delete_ProductShoppingCar(id) async {
-    final response = await http.delete('${URLS.BASE_URL}/del-to-sc/$id',
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": '${globals.token}',
-        });
+    final response =
+        await http.delete('${URLS.BASE_URL}/del-to-sc/$id', headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": '${globals.token}',
+    });
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -380,15 +397,15 @@ class Api {
     }
   }
 
-    static Future<String> pay_id(String id) async {
+  static Future<String> pay_id(String id) async {
     var data = new Map<String, String>();
-      data['pay_id'] = id;
-    final response = await http.post('${URLS.BASE_URL}/paypalid',  body: data,headers: {
+    data['pay_id'] = id;
+    final response =
+        await http.post('${URLS.BASE_URL}/paypalid', body: data, headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}',
-    }
-    );
+    });
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
@@ -399,8 +416,8 @@ class Api {
 
   //Pays
   static Future<String> get_UsersPayment(id) async {
-    final response = await http.get('${URLS.BASE_URL}/products_by_cars/$id',
-    headers: {
+    final response =
+        await http.get('${URLS.BASE_URL}/products_by_cars/$id', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}',
@@ -414,8 +431,8 @@ class Api {
   }
 
   static Future<String> get_AllPayment() async {
-    final response = await http.post('${URLS.BASE_URL}/user-payments/',
-    headers: {
+    final response =
+        await http.post('${URLS.BASE_URL}/user-payments/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}',
@@ -433,8 +450,7 @@ class Api {
     final response = await http.get('${URLS.BASE_URL}/all-payments/', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization":
-      '${globals.token}'
+      "Authorization": '${globals.token}'
     });
     print(response.body);
     if (response.statusCode == 200) {

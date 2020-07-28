@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:login_app/Api/Api.dart';
-import 'package:login_app/src/encrypt.dart';
 import 'package:login_app/configs.dart';
 import 'package:login_app/src/providers/upload_img_provider.dart';
 import 'package:random_string/random_string.dart';
@@ -14,6 +13,10 @@ double marginDistance = 20;
 DateTime date;
 int id;
 String slug;
+List<String> categorys = [];
+String selectedCategory;
+int idCategory;
+Map<String, int> resultCategory = new Map();
 final TextEditingController name = TextEditingController();
 final TextEditingController price = TextEditingController();
 final TextEditingController discount = TextEditingController();
@@ -23,25 +26,26 @@ final TextEditingController size = TextEditingController();
 
 class ProductForm extends StatefulWidget {
   final String text;
-  
-  ProductForm({ this.text, Key key}) : super(key: key);
+
+  ProductForm({this.text, Key key}) : super(key: key);
 
   @override
   _ProductFormState createState() => _ProductFormState();
 }
 
 class _ProductFormState extends State<ProductForm> {
-  UploadImgs upload= new UploadImgs();
+  UploadImgs upload = new UploadImgs();
   List<Object> images = List<Object>();
   List<File> imgs = List<File>();
   Future<File> _imageFile;
 
   @override
   void initState() {
-    if(widget.text != null){
-    initData(widget.text);
-    }else{
-
+    if (widget.text != null) {
+      initData(widget.text);
+      initCategory();
+    } else {
+      initCategory();
     }
     super.initState();
     setState(() {
@@ -52,23 +56,47 @@ class _ProductFormState extends State<ProductForm> {
   }
 
   void initData(String text) async {
-    List dataTemp;
+    Map<String, dynamic> dataTemp;
     await Api.product_getBySlug(text).then((sucess) {
       dataTemp = jsonDecode(sucess);
+      setState(() {
+        name.text = dataTemp['name'];
+        price.text = dataTemp['price'].toString();
+        discount.text = dataTemp['discount'].toString();
+        stock.text = dataTemp['stock'].toString();
+        description.text = dataTemp['description'];
+        size.text = dataTemp['size'];
+        id = dataTemp['id'];
+        idCategory = dataTemp['category_id'];
+        mapData['slug'] = widget.text;
+      });
+    });
+  }
+
+  void initCategory() async {
+    categorys.clear();
+    List categorysTemp = [];
+    await Api.categorias_get().then((value) {
+      categorysTemp = json.decode(value);
     });
     setState(() {
-      name.text = dataTemp[0]['name'];
-      price.text = dataTemp[0]['price'].toString();
-      discount.text = dataTemp[0]['discount'].toString();
-      stock.text = dataTemp[0]['stock'].toString();
-      description.text = dataTemp[0]['description'];
-      size.text = dataTemp[0]['size'];
-      id = dataTemp[0]['id'];
+      categorysTemp.forEach((element) {
+        categorys.add(element['name']);
+        resultCategory[element['name']] = element['id'];
+      });
+    });
+
+    Map<String, dynamic> dataTemp2;
+    await Api.getCategoryById(idCategory.toString()).then((sucess) {
+      dataTemp2 = jsonDecode(sucess);
+    });
+    setState(() {
+      selectedCategory = dataTemp2['name'];
     });
   }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  var mapData = new Map<String, String>();
+  var mapData = new Map<String, dynamic>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,49 +107,65 @@ class _ProductFormState extends State<ProductForm> {
         title: Text('Crear Producto'),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              buildGridView(),
-              SizedBox(height: 30,),
-              form()
-            ],
-          ),
-        )
-      ),
+          child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: <Widget>[
+            buildGridView(),
+            SizedBox(
+              height: 30,
+            ),
+            form(context)
+          ],
+        ),
+      )),
     );
     // );
   }
 
-  Widget form(){
+  Widget form(BuildContext context) {
     return Form(
       key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            rowNameAndPrice(
-              'Nombre', 'precio', 'name', 'price', name, price
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: bottomDistance)
-            ),
-            rowDiscountAndStock('Descuento', 'cantidad', 'discount',
-              'stock', discount, stock
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: bottomDistance)
-            ),
-            rowDescriptionAndSize('Descripcion', 'Tamaño',
-              'description', 'size', description, size),
-            Padding(
-              padding: EdgeInsets.only(bottom: bottomDistance)
-            ),
-            Center(
-              child: submidButton()
-            ),
-          ],
+        children: <Widget>[
+          rowNameAndPrice('Nombre', 'precio', 'name', 'price', name, price),
+          Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
+          rowDiscountAndStock(
+              'Descuento', 'cantidad', 'discount', 'stock', discount, stock),
+          Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
+          rowDescriptionAndSize('Descripcion', 'Tamaño', 'description', 'size',
+              description, size),
+          Padding(padding: EdgeInsets.only(bottom: bottomDistance)),
+          SizedBox(
+            width: double.infinity,
+            // height: double.infinity,
+            child: dropDown(),
+          ),
+          Center(child: submidButton(context)),
+        ],
       ),
+    );
+  }
+
+  Widget dropDown() {
+    return DropdownButton<String>(
+      isExpanded: true,
+      value: selectedCategory,
+      items: categorys.map((String value) {
+        return new DropdownMenuItem<String>(
+          value: value,
+          child: new Text(
+            value,
+            style: textStyle,
+          ),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          selectedCategory = value;
+        });
+      },
     );
   }
 
@@ -184,7 +228,7 @@ class _ProductFormState extends State<ProductForm> {
 
   void getFileImage(int index) async {
     _imageFile.then((file) async {
-      if(file!=null){
+      if (file != null) {
         imgs.add(file);
         setState(() {
           ImageUploadModel imageUpload = new ImageUploadModel();
@@ -193,12 +237,12 @@ class _ProductFormState extends State<ProductForm> {
           images.replaceRange(index, index + 1, [imageUpload]);
         });
       }
-    }).catchError((onError){
+    }).catchError((onError) {
       print("EROR EN EL IMG $onError");
     });
   }
 
-  Widget submidButton() {
+  Widget submidButton(BuildContext context2) {
     return RaisedButton(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25.0),
@@ -223,19 +267,20 @@ class _ProductFormState extends State<ProductForm> {
       ),
       onPressed: () {
         if (formKey.currentState.validate()) {
-          slug = "Slug"+generateSlug();
           formKey.currentState.save();
-          mapData['slug'] = slug;
-          upload.slug = slug;
-          mapData['category_id'] = '1';
+
+          mapData['category_id'] = resultCategory[selectedCategory];
           mapData['final_price'] = (int.parse(mapData['price']) *
                   (int.parse(mapData['discount']) / 100))
               .toString();
           print(mapData['final_price']);
           if (widget.text == null) {
-            Api.product_create(JsonEncoder().convert(mapData))
-                .then((sucess) {
-              if (sucess && imgs.length>0) {
+            slug = "Slug" + generateSlug();
+            mapData['slug'] = slug;
+            upload.slug = slug;
+
+            Api.product_create(JsonEncoder().convert(mapData)).then((sucess) {
+              if (sucess && imgs.length > 0) {
                 print("longitud arreglo ${imgs.length}");
                 upload.uploadStatusImg(imgs);
                 showDialog(
@@ -251,19 +296,19 @@ class _ProductFormState extends State<ProductForm> {
                           ],
                         ),
                     context: context);
-                    setState(() {
-                      name.clear();
-                      price.clear();
-                      discount.clear();
-                      size.clear();
-                      description.clear();
-                      stock.clear();
-                      imgs.clear();
-                      images.clear();
-                      images.add("Add Image");
-                      images.add("Add Image");
-                      images.add("Add Image");
-                    });
+                setState(() {
+                  name.clear();
+                  price.clear();
+                  discount.clear();
+                  size.clear();
+                  description.clear();
+                  stock.clear();
+                  imgs.clear();
+                  images.clear();
+                  images.add("Add Image");
+                  images.add("Add Image");
+                  images.add("Add Image");
+                });
                 //print(sucess);
               } else {
                 showDialog(
@@ -286,6 +331,20 @@ class _ProductFormState extends State<ProductForm> {
                 .then((sucess) {
               if (sucess) {
                 print(sucess);
+                showDialog(
+                    builder: (context) => AlertDialog(
+                          title: Text('Producto actualizado con exito'),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context2);
+                              },
+                              child: Text('Ok'),
+                            )
+                          ],
+                        ),
+                    context: context);
               } else {
                 showDialog(
                     builder: (context) => AlertDialog(
@@ -447,17 +506,19 @@ class _ProductFormState extends State<ProductForm> {
         }
       },
       onSaved: (String value) {
+        print(mapName);
+        print(value);
         mapData[mapName] = value;
       },
     );
   }
 }
 
-String generateSlug(){
+String generateSlug() {
   var num = randomNumeric(5);
   var let = randomString(5);
 
-  var fin = num+let;
+  var fin = num + let;
 
   return fin;
 }

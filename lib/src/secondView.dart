@@ -114,7 +114,7 @@ class _SecondViewState extends State<SecondView> {
         if (formKey.currentState.validate()) {
           formKey.currentState.save();
           mapData['birthday'] = calendarController.text;
-          mapData['rol_id'] = '3';
+          mapData['rol_id'] = '2';
           mapData['genre'] = 'm';
           Api.registro(JsonEncoder().convert(mapData)).then((sucess) {
             if (sucess) {
