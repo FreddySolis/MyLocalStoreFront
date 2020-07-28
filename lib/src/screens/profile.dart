@@ -179,7 +179,7 @@ class _ProfileState extends State<Profile> {
 }
 
 List<Widget> cards(BuildContext context) {
-  if (globals.rolId == 1) {
+  if (globals.rolId == 3) {
     return <Widget>[
       profileCard('$cardName1', icon1, 1, context),
       profileCard('$cardName2', icon2, 2, context),

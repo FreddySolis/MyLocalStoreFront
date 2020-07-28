@@ -85,7 +85,7 @@ class _ProductListState extends State<ProductList> {
         }
         for (int i = 0; i < dataTemp.length; i++) {
           fireTemp.forEach((g) => {
-            
+
                 if (dataTemp[i]['slug'] == g.slug)
                   {dataTemp[i]['img'] = g.img, print("a ver ${dataTemp[i]}")}
               });
@@ -371,6 +371,7 @@ class _ProductListState extends State<ProductList> {
       print("ESTE ES EL ERROR $err");
     });
   }
+  
 
   List<Widget> btn(BuildContext contextPop, Map<String, dynamic> infoProduct) {
     var quant = 1;

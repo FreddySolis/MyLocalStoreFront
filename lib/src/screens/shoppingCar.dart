@@ -3,6 +3,7 @@ import 'package:login_app/Api/Api.dart';
 import 'package:login_app/configs.dart';
 import 'dart:convert';
 import 'package:login_app/src/widgets/PaypalPayment.dart';
+import 'package:login_app/src/screens/mainView.dart';
 
 class ShoppingCar extends StatefulWidget {
   ShoppingCar({Key key}) : super(key: key);
@@ -20,6 +21,9 @@ class _ShoppingCarState extends State<ShoppingCar> {
     getProductsInCar();
     super.initState();
   }
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +68,9 @@ class _ShoppingCarState extends State<ShoppingCar> {
                                   'Subtotal: \$ ${data[index]['subtotal']}',
                                   style: cardText,
                                 ),
-                                FloatingActionButton(
+                                RaisedButton(
                                     child: Icon(Icons.delete),
-                                    backgroundColor: Colors.red,
+                                    color: Colors.red,
                                     onPressed: () {
                                       showDialog(
                                           context: context,
@@ -176,8 +180,11 @@ class _ShoppingCarState extends State<ShoppingCar> {
           builder: (BuildContext context) => PaypalPayment(
             onFinish: (number) async {
               // payment done
-              await Api.pay_ShopingCar().then((sucess) {});
-              await Api.pay_id(number.toString()).then((sucess) {});
+              await Api.pay_ShopingCar().then((sucess) {
+                              Api.pay_id(number.toString()).then((sucess) {
+                              });
+              });
+              
             },
           ),
         ),

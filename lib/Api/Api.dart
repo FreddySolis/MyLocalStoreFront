@@ -23,6 +23,7 @@ class Api {
           "Content-Type": "application/json",
           "Accept": "application/json"
         });
+        print(response.body);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       Map<String, dynamic> temp = jsonDecode(response.body);
       globals.token = 'Bearer ' + temp['token'];
@@ -395,7 +396,6 @@ class Api {
     });
 
     if (response.statusCode >= 200 && response.statusCode <= 204) {
-      print(response.body);
       return response.body;
     } else {
       return null;
@@ -431,13 +431,18 @@ class Api {
   }
 
   static Future<String> pay_ShopingCar() async {
-    final response = await http.get('${URLS.BASE_URL}/pay-sc/', headers: {
+    final response = await http.post('${URLS.BASE_URL}/pay-sc', headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": '${globals.token}',
     });
 
+    print('payShopingCar');                        print(response.statusCode);
+
+              print(response.body);
+
     if (response.statusCode >= 200 && response.statusCode <= 204) {
+          print(response.body);
       return response.body;
     } else {
       return null;
@@ -452,7 +457,9 @@ class Api {
 
     final response =
         await http.post('${URLS.BASE_URL}/paypalid', body: msg, headers: headers);
+        print('paypalid');
     print(response.statusCode);
+    print(response.body);
     if (response.statusCode >= 200 && response.statusCode <= 204) {
       return response.body;
     } else {
